@@ -297,10 +297,7 @@
     document.getElementById("topbarTitle").textContent = titles[view] || "";
     if (view === "analytics") renderAnalytics();
     if (view === "students") renderStudentCards();
-    if (view === "settings") {
-      loadSettings();
-      renderSubscriptionPanel();
-    }
+    if (view === "settings") { loadSettings(); renderSubscriptionPanel(); }
     if (view === "materials") renderMaterials();
     if (view === "attendance") renderAttendance();
     if (view === "cbt") renderCBT();
@@ -958,9 +955,7 @@
   // ════════════════════════════════════════════════════
   window.exportStudentPDF = async function (studentId, aiComment) {
     if (!canUsePDF()) {
-      showUpgradeModal(
-        `Free plan allows ${FREE_PDF_LIMIT} PDF report cards per term. Upgrade to Pro for unlimited PDFs.`,
-      );
+      showUpgradeModal(`Free plan allows ${FREE_PDF_LIMIT} PDF report cards per term. Upgrade to Pro for unlimited PDFs.`);
       return;
     }
     const cls = classes.find((c) => c.id === activeClassId);
@@ -1081,9 +1076,7 @@
       pdf.save(`${student.name.replace(/\s+/g, "_")}_Report_Card.pdf`);
       incrementPdfCount();
       const _rem = isPro() ? "∞" : Math.max(0, FREE_PDF_LIMIT - getPdfCount());
-      const _remLabel = isPro()
-        ? ""
-        : ` · ${_rem} free PDF${_rem === 1 ? "" : "s"} left this term`;
+      const _remLabel = isPro() ? "" : ` · ${_rem} free PDF${_rem === 1 ? "" : "s"} left this term`;
       showToast(`✅ PDF generated for ${student.name}${_remLabel}`, "success");
     } catch (e) {
       console.error(e);
@@ -1094,9 +1087,7 @@
 
   window.exportAllPDFs = async function () {
     if (!canUseBulkPDF()) {
-      showUpgradeModal(
-        "Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.",
-      );
+      showUpgradeModal("Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.");
       return;
     }
     const students = allStudents[activeClassId] || [];
@@ -1174,9 +1165,7 @@
   // ════════════════════════════════════════════════════
   window.handleExcelUpload = function (files) {
     if (!canImportExcel()) {
-      showUpgradeModal(
-        "Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.",
-      );
+      showUpgradeModal("Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.");
       return;
     }
     if (!files.length) return;
@@ -1282,73 +1271,47 @@
   //  Master collation sheet: all students × all subjects
   // ════════════════════════════════════════════════════
   window.exportBroadsheet = function () {
-    if (!canUseBroadsheet()) {
-      showUpgradeModal(
-        "Broadsheet export is a Pro feature. Upgrade to export the full master collation sheet.",
-      );
-      return;
-    }
+    if (!canUseBroadsheet()) { showUpgradeModal("Broadsheet export is a Pro feature. Upgrade to export the full master collation sheet."); return; }
     const cls = classes.find((c) => c.id === activeClassId);
-    if (!cls) {
-      showToast("Select a class first", "error");
-      return;
-    }
+    if (!cls) { showToast("Select a class first", "error"); return; }
     const students = allStudents[activeClassId] || [];
-    if (!students.length) {
-      showToast("No students in this class", "info");
-      return;
-    }
-    if (!window.XLSX) {
-      showToast("SheetJS not loaded — please go online once first", "error");
-      return;
-    }
+    if (!students.length) { showToast("No students in this class", "info"); return; }
+    if (!window.XLSX) { showToast("SheetJS not loaded — please go online once first", "error"); return; }
 
     const ranked = rankStudents(students);
     const subjects = cls.subjects;
 
     // ── Build header rows ──
     const titleRow = [`${cls.name} — BROADSHEET`];
-    const termRow = [
-      `${settings.term || "Term"} · ${settings.session || "Session"}`,
-    ];
+    const termRow = [`${settings.term || "Term"} · ${settings.session || "Session"}`];
     const schoolRow = [settings.pdfSchool || currentUser?.org || "School"];
     const blankRow = [];
 
     // Header row 1: merged subject groups
     const h1 = ["S/N", "Student Name"];
-    subjects.forEach((s) => {
-      h1.push(s.name, "", "", "", "");
-    });
+    subjects.forEach(s => { h1.push(s.name, "", "", "", ""); });
     h1.push("Total", "Avg", "Grade", "Remark", "Position");
 
     // Header row 2: sub-columns
     const h2 = ["", ""];
-    subjects.forEach(() => {
-      h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade");
-    });
+    subjects.forEach(() => { h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade"); });
     h2.push("", "", "", "", "");
 
     // ── Data rows ──
     const dataRows = ranked.map((s, idx) => {
       const row = [idx + 1, s.name];
-      let totalSum = 0,
-        totalCount = 0;
-      subjects.forEach((sub) => {
-        const found = s.subjects.find((ss) => ss.id === sub.id);
-        const comp = found
-          ? computeSubject(found)
-          : { total: null, t: 0, p: 0, e: null };
+      let totalSum = 0, totalCount = 0;
+      subjects.forEach(sub => {
+        const found = s.subjects.find(ss => ss.id === sub.id);
+        const comp = found ? computeSubject(found) : { total: null, t: 0, p: 0, e: null };
         row.push(
           found?.test ?? "—",
           found?.prac ?? "—",
           found?.exam === "" ? "—" : (found?.exam ?? "—"),
           comp.total ?? "—",
-          gradeResult(comp.total).g,
+          gradeResult(comp.total).g
         );
-        if (comp.total !== null) {
-          totalSum += comp.total;
-          totalCount++;
-        }
+        if (comp.total !== null) { totalSum += comp.total; totalCount++; }
       });
       const avg = totalCount ? Math.round(totalSum / totalCount) : null;
       const gr = gradeResult(avg);
@@ -1357,159 +1320,94 @@
         avg ?? "—",
         gr.g,
         gr.r,
-        s.pos ? ordinal(s.pos) : "—",
+        s.pos ? ordinal(s.pos) : "—"
       );
       return row;
     });
 
     // ── Summary row ──
-    const classGraded = ranked.filter((s) => s.overall !== null);
+    const classGraded = ranked.filter(s => s.overall !== null);
     const classAvg = classGraded.length
-      ? Math.round(
-          classGraded.reduce((a, s) => a + s.overall, 0) / classGraded.length,
-        )
+      ? Math.round(classGraded.reduce((a, s) => a + s.overall, 0) / classGraded.length)
       : null;
     const summaryRow = ["", `CLASS AVERAGE`];
-    subjects.forEach((sub) => {
-      const scores = students
-        .map((s) => {
-          const found = s.subjects.find((ss) => ss.id === sub.id);
-          return found ? computeSubject(found).total : null;
-        })
-        .filter((v) => v !== null);
-      const avg = scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : null;
+    subjects.forEach(sub => {
+      const scores = students.map(s => {
+        const found = s.subjects.find(ss => ss.id === sub.id);
+        return found ? computeSubject(found).total : null;
+      }).filter(v => v !== null);
+      const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
       summaryRow.push("", "", "", avg ?? "—", "");
     });
     summaryRow.push("", classAvg ?? "—", gradeResult(classAvg).g, "", "");
 
     // ── Build worksheet ──
     const wb = XLSX.utils.book_new();
-    const wsData = [
-      titleRow,
-      schoolRow,
-      termRow,
-      blankRow,
-      h1,
-      h2,
-      ...dataRows,
-      blankRow,
-      summaryRow,
-    ];
+    const wsData = [titleRow, schoolRow, termRow, blankRow, h1, h2, ...dataRows, blankRow, summaryRow];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
 
     // Column widths
     const wscols = [{ wch: 5 }, { wch: 28 }];
-    subjects.forEach(() => {
-      [6, 6, 6, 7, 6].forEach((w) => wscols.push({ wch: w }));
-    });
-    [8, 6, 8, 14, 10].forEach((w) => wscols.push({ wch: w }));
-    ws["!cols"] = wscols;
+    subjects.forEach(() => { [6,6,6,7,6].forEach(w => wscols.push({ wch: w })); });
+    [8, 6, 8, 14, 10].forEach(w => wscols.push({ wch: w }));
+    ws['!cols'] = wscols;
 
     // Freeze top rows + header
-    ws["!freeze"] = { xSplit: 2, ySplit: 6 };
+    ws['!freeze'] = { xSplit: 2, ySplit: 6 };
 
     XLSX.utils.book_append_sheet(wb, ws, "Broadsheet");
-    const filename = `${cls.name}_Broadsheet_${(settings.term || "Term").replace(/\s/g, "_")}_${(settings.session || "").replace(/\//g, "-")}.xlsx`;
+    const filename = `${cls.name}_Broadsheet_${(settings.term || "Term").replace(/\s/g,"_")}_${(settings.session || "").replace(/\//g,"-")}.xlsx`;
     XLSX.writeFile(wb, filename);
     showToast(`✅ Broadsheet exported for ${cls.name}`, "success");
   };
 
   // Export broadsheet for ALL classes into one workbook (one sheet per class)
   window.exportAllBroadsheets = function () {
-    if (!canUseBroadsheet()) {
-      showUpgradeModal("Broadsheet export is a Pro feature.");
-      return;
-    }
-    if (!classes.length) {
-      showToast("No classes to export", "info");
-      return;
-    }
-    if (!window.XLSX) {
-      showToast("SheetJS not loaded — please go online once first", "error");
-      return;
-    }
+    if (!canUseBroadsheet()) { showUpgradeModal("Broadsheet export is a Pro feature."); return; }
+    if (!classes.length) { showToast("No classes to export", "info"); return; }
+    if (!window.XLSX) { showToast("SheetJS not loaded — please go online once first", "error"); return; }
     const wb = XLSX.utils.book_new();
-    classes.forEach((cls) => {
+    classes.forEach(cls => {
       const students = allStudents[cls.id] || [];
       if (!students.length) return;
       const ranked = rankStudents(students);
       const subjects = cls.subjects;
       const h1 = ["S/N", "Student Name"];
-      subjects.forEach((s) => {
-        h1.push(s.name, "", "", "", "");
-      });
+      subjects.forEach(s => { h1.push(s.name, "", "", "", ""); });
       h1.push("Total", "Avg", "Grade", "Remark", "Position");
       const h2 = ["", ""];
-      subjects.forEach(() => {
-        h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade");
-      });
+      subjects.forEach(() => { h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade"); });
       h2.push("", "", "", "", "");
       const dataRows = ranked.map((s, idx) => {
         const row = [idx + 1, s.name];
-        let totalSum = 0,
-          totalCount = 0;
-        subjects.forEach((sub) => {
-          const found = s.subjects.find((ss) => ss.id === sub.id);
-          const comp = found
-            ? computeSubject(found)
-            : { total: null, t: 0, p: 0, e: null };
-          row.push(
-            found?.test ?? "—",
-            found?.prac ?? "—",
-            found?.exam === "" ? "—" : (found?.exam ?? "—"),
-            comp.total ?? "—",
-            gradeResult(comp.total).g,
-          );
-          if (comp.total !== null) {
-            totalSum += comp.total;
-            totalCount++;
-          }
+        let totalSum = 0, totalCount = 0;
+        subjects.forEach(sub => {
+          const found = s.subjects.find(ss => ss.id === sub.id);
+          const comp = found ? computeSubject(found) : { total: null, t: 0, p: 0, e: null };
+          row.push(found?.test ?? "—", found?.prac ?? "—", found?.exam === "" ? "—" : (found?.exam ?? "—"), comp.total ?? "—", gradeResult(comp.total).g);
+          if (comp.total !== null) { totalSum += comp.total; totalCount++; }
         });
         const avg = totalCount ? Math.round(totalSum / totalCount) : null;
         const gr = gradeResult(avg);
-        row.push(
-          totalCount > 0 ? totalSum : "—",
-          avg ?? "—",
-          gr.g,
-          gr.r,
-          s.pos ? ordinal(s.pos) : "—",
-        );
+        row.push(totalCount > 0 ? totalSum : "—", avg ?? "—", gr.g, gr.r, s.pos ? ordinal(s.pos) : "—");
         return row;
       });
       const wsData = [
-        [
-          `${cls.name} — BROADSHEET`,
-          `${settings.term || ""} · ${settings.session || ""}`,
-        ],
+        [`${cls.name} — BROADSHEET`, `${settings.term || ""} · ${settings.session || ""}`],
         [],
-        h1,
-        h2,
-        ...dataRows,
+        h1, h2, ...dataRows
       ];
       const ws = XLSX.utils.aoa_to_sheet(wsData);
       const wscols = [{ wch: 5 }, { wch: 28 }];
-      subjects.forEach(() => {
-        [6, 6, 6, 7, 6].forEach((w) => wscols.push({ wch: w }));
-      });
-      [8, 6, 8, 14, 10].forEach((w) => wscols.push({ wch: w }));
-      ws["!cols"] = wscols;
+      subjects.forEach(() => { [6,6,6,7,6].forEach(w => wscols.push({ wch: w })); });
+      [8,6,8,14,10].forEach(w => wscols.push({ wch: w }));
+      ws['!cols'] = wscols;
       // Sheet name max 31 chars
       XLSX.utils.book_append_sheet(wb, ws, cls.name.slice(0, 31));
     });
-    if (!wb.SheetNames.length) {
-      showToast("No classes have students yet", "info");
-      return;
-    }
-    XLSX.writeFile(
-      wb,
-      `All_Classes_Broadsheet_${(settings.session || "").replace(/\//g, "-")}.xlsx`,
-    );
-    showToast(
-      `✅ All-classes broadsheet exported (${wb.SheetNames.length} sheets)`,
-      "success",
-    );
+    if (!wb.SheetNames.length) { showToast("No classes have students yet", "info"); return; }
+    XLSX.writeFile(wb, `All_Classes_Broadsheet_${(settings.session || "").replace(/\//g, "-")}.xlsx`);
+    showToast(`✅ All-classes broadsheet exported (${wb.SheetNames.length} sheets)`, "success");
   };
 
   // ════════════════════════════════════════════════════
@@ -1530,9 +1428,7 @@
       settings,
       currentUser,
     };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], {
-      type: "application/json",
-    });
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     const dateStr = new Date().toLocaleDateString("en-GB").replace(/\//g, "-");
@@ -1548,21 +1444,10 @@
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        if (!data.classes || !data.allStudents) {
-          showToast("Invalid backup file", "error");
-          return;
-        }
+        if (!data.classes || !data.allStudents) { showToast("Invalid backup file", "error"); return; }
         const classCount = data.classes.length;
-        const studentCount = Object.values(data.allStudents).reduce(
-          (a, b) => a + b.length,
-          0,
-        );
-        if (
-          !confirm(
-            `Restore backup from ${data.date ? new Date(data.date).toLocaleDateString() : "unknown date"}?\n\n${classCount} classes · ${studentCount} students\n\nThis will REPLACE all your current data.`,
-          )
-        )
-          return;
+        const studentCount = Object.values(data.allStudents).reduce((a, b) => a + b.length, 0);
+        if (!confirm(`Restore backup from ${data.date ? new Date(data.date).toLocaleDateString() : "unknown date"}?\n\n${classCount} classes · ${studentCount} students\n\nThis will REPLACE all your current data.`)) return;
         classes = data.classes;
         allStudents = data.allStudents;
         allMaterials = data.allMaterials || {};
@@ -1575,22 +1460,14 @@
         saveData();
         saveMaterials();
         saveTermHistory();
-        localStorage.setItem(
-          userKey("attendance"),
-          JSON.stringify(allAttendance),
-        );
+        localStorage.setItem(userKey("attendance"), JSON.stringify(allAttendance));
         localStorage.setItem(userKey("quizzes"), JSON.stringify(allQuizzes));
         renderSidebarClasses();
         renderSubjectTabs();
         renderTable();
         if (activeView === "materials") renderMaterials();
-        showToast(
-          `✅ Backup restored — ${classCount} classes, ${studentCount} students`,
-          "success",
-        );
-      } catch {
-        showToast("Failed to restore backup — file may be corrupted", "error");
-      }
+        showToast(`✅ Backup restored — ${classCount} classes, ${studentCount} students`, "success");
+      } catch { showToast("Failed to restore backup — file may be corrupted", "error"); }
     };
     reader.readAsText(file);
     input.value = "";
@@ -1602,40 +1479,20 @@
 
   // Save current term's results as a snapshot
   window.saveTermSnapshot = function () {
-    if (!canUseTermHistory()) {
-      showUpgradeModal(
-        "Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth.",
-      );
-      return;
-    }
-    if (!activeClassId) {
-      showToast("Select a class first", "error");
-      return;
-    }
-    const cls = classes.find((c) => c.id === activeClassId);
+    if (!canUseTermHistory()) { showUpgradeModal("Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth."); return; }
+    if (!activeClassId) { showToast("Select a class first", "error"); return; }
+    const cls = classes.find(c => c.id === activeClassId);
     const students = allStudents[activeClassId] || [];
-    if (!students.length) {
-      showToast("No students to save", "info");
-      return;
-    }
+    if (!students.length) { showToast("No students to save", "info"); return; }
     const term = settings.term || "Term";
     const session = settings.session || "Session";
     const label = `${term} · ${session}`;
 
     // Prevent duplicate snapshots for same term+session
-    const existing = (termHistory[activeClassId] || []).find(
-      (h) => h.term === term && h.session === session,
-    );
+    const existing = (termHistory[activeClassId] || []).find(h => h.term === term && h.session === session);
     if (existing) {
-      if (
-        !confirm(
-          `A snapshot for "${label}" already exists for ${cls.name}.\n\nOverwrite it with the current results?`,
-        )
-      )
-        return;
-      termHistory[activeClassId] = termHistory[activeClassId].filter(
-        (h) => !(h.term === term && h.session === session),
-      );
+      if (!confirm(`A snapshot for "${label}" already exists for ${cls.name}.\n\nOverwrite it with the current results?`)) return;
+      termHistory[activeClassId] = termHistory[activeClassId].filter(h => !(h.term === term && h.session === session));
     }
 
     const snapshot = {
@@ -1659,9 +1516,7 @@
   // Delete a snapshot
   window.deleteTermSnapshot = function (classId, snapshotId) {
     if (!confirm("Delete this term snapshot? This cannot be undone.")) return;
-    termHistory[classId] = (termHistory[classId] || []).filter(
-      (h) => h.id !== snapshotId,
-    );
+    termHistory[classId] = (termHistory[classId] || []).filter(h => h.id !== snapshotId);
     saveTermHistory();
     renderTermHistory();
     showToast("Snapshot deleted", "info");
@@ -1674,9 +1529,7 @@
 
     // Gather all snapshots across all classes, sorted by savedAt desc
     const all = [];
-    Object.values(termHistory).forEach((arr) =>
-      arr.forEach((h) => all.push(h)),
-    );
+    Object.values(termHistory).forEach(arr => arr.forEach(h => all.push(h)));
     all.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
 
     if (!all.length) {
@@ -1691,76 +1544,55 @@
 
     // Group by className
     const byClass = {};
-    all.forEach((h) => {
+    all.forEach(h => {
       if (!byClass[h.className]) byClass[h.className] = [];
       byClass[h.className].push(h);
     });
 
-    container.innerHTML = Object.entries(byClass)
-      .map(([className, snapshots]) => {
-        // Build comparison table (students as rows, terms as columns)
-        // Collect all unique student names across snapshots
-        const allStudentNames = [
-          ...new Set(snapshots.flatMap((s) => s.students.map((st) => st.name))),
-        ];
-        const termCols = snapshots.map((s) => s.label);
+    container.innerHTML = Object.entries(byClass).map(([className, snapshots]) => {
+      // Build comparison table (students as rows, terms as columns)
+      // Collect all unique student names across snapshots
+      const allStudentNames = [...new Set(snapshots.flatMap(s => s.students.map(st => st.name)))];
+      const termCols = snapshots.map(s => s.label);
 
-        const headerCols = termCols
-          .map(
-            (t) =>
-              `<th style="padding:.6rem 1rem;text-align:center;white-space:nowrap;font-size:.78rem;font-weight:700;color:var(--accent);border-bottom:2px solid var(--border);">${t}</th>`,
-          )
-          .join("");
-        const dataRows = allStudentNames
-          .map((name) => {
-            const cells = snapshots
-              .map((snap, si) => {
-                const st = snap.students.find((s) => s.name === name);
-                const overall = st ? computeStudentOverall(st) : null;
-                const gr = gradeResult(overall);
-                // Compare to previous snapshot
-                let trend = "";
-                if (si < snapshots.length - 1) {
-                  const prevSnap = snapshots[si + 1];
-                  const prevSt = prevSnap.students.find((s) => s.name === name);
-                  const prevOverall = prevSt
-                    ? computeStudentOverall(prevSt)
-                    : null;
-                  if (overall !== null && prevOverall !== null) {
-                    const diff = overall - prevOverall;
-                    if (diff > 0)
-                      trend = `<span style="color:#00b894;font-size:.72rem;font-weight:700;margin-left:.3rem;">▲${diff}</span>`;
-                    else if (diff < 0)
-                      trend = `<span style="color:#ef476f;font-size:.72rem;font-weight:700;margin-left:.3rem;">▼${Math.abs(diff)}</span>`;
-                    else
-                      trend = `<span style="color:var(--muted);font-size:.72rem;margin-left:.3rem;">—</span>`;
-                  }
-                }
-                if (overall === null)
-                  return `<td style="padding:.6rem 1rem;text-align:center;color:var(--muted);font-size:.82rem;">—</td>`;
-                return `<td style="padding:.6rem 1rem;text-align:center;">
+      const headerCols = termCols.map(t => `<th style="padding:.6rem 1rem;text-align:center;white-space:nowrap;font-size:.78rem;font-weight:700;color:var(--accent);border-bottom:2px solid var(--border);">${t}</th>`).join("");
+      const dataRows = allStudentNames.map(name => {
+        const cells = snapshots.map((snap, si) => {
+          const st = snap.students.find(s => s.name === name);
+          const overall = st ? computeStudentOverall(st) : null;
+          const gr = gradeResult(overall);
+          // Compare to previous snapshot
+          let trend = "";
+          if (si < snapshots.length - 1) {
+            const prevSnap = snapshots[si + 1];
+            const prevSt = prevSnap.students.find(s => s.name === name);
+            const prevOverall = prevSt ? computeStudentOverall(prevSt) : null;
+            if (overall !== null && prevOverall !== null) {
+              const diff = overall - prevOverall;
+              if (diff > 0) trend = `<span style="color:#00b894;font-size:.72rem;font-weight:700;margin-left:.3rem;">▲${diff}</span>`;
+              else if (diff < 0) trend = `<span style="color:#ef476f;font-size:.72rem;font-weight:700;margin-left:.3rem;">▼${Math.abs(diff)}</span>`;
+              else trend = `<span style="color:var(--muted);font-size:.72rem;margin-left:.3rem;">—</span>`;
+            }
+          }
+          if (overall === null) return `<td style="padding:.6rem 1rem;text-align:center;color:var(--muted);font-size:.82rem;">—</td>`;
+          return `<td style="padding:.6rem 1rem;text-align:center;">
             <span style="font-weight:700;font-family:var(--font-mono);font-size:.9rem;">${overall}%</span>
             <span class="grade-pill ${gr.cls}" style="font-size:.68rem;margin-left:.3rem;">${gr.g}</span>
             ${trend}
           </td>`;
-              })
-              .join("");
-            return `<tr><td style="padding:.6rem 1rem;font-weight:600;font-size:.85rem;border-right:1px solid var(--border);">${name}</td>${cells}</tr>`;
-          })
-          .join("");
+        }).join("");
+        return `<tr><td style="padding:.6rem 1rem;font-weight:600;font-size:.85rem;border-right:1px solid var(--border);">${name}</td>${cells}</tr>`;
+      }).join("");
 
-        const snapshotButtons = snapshots
-          .map(
-            (snap) =>
-              `<span style="font-size:.75rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-full);padding:.2rem .7rem;display:inline-flex;align-items:center;gap:.4rem;">
+      const snapshotButtons = snapshots.map(snap =>
+        `<span style="font-size:.75rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-full);padding:.2rem .7rem;display:inline-flex;align-items:center;gap:.4rem;">
           ${snap.label}
           <button onclick="exportSnapshotBroadsheet('${snap.classId}','${snap.id}')" title="Export broadsheet" style="background:none;border:none;cursor:pointer;color:var(--accent);padding:0;font-size:.9rem;"><i class="bi bi-file-earmark-spreadsheet"></i></button>
           <button onclick="deleteTermSnapshot('${snap.classId}','${snap.id}')" title="Delete" style="background:none;border:none;cursor:pointer;color:var(--danger);padding:0;font-size:.85rem;"><i class="bi bi-trash3"></i></button>
-        </span>`,
-          )
-          .join(" ");
+        </span>`
+      ).join(" ");
 
-        return `<div class="settings-section" style="margin-bottom:1.5rem;">
+      return `<div class="settings-section" style="margin-bottom:1.5rem;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:1rem;">
           <h3 style="margin:0;"><i class="bi bi-clock-history" style="color:var(--accent);"></i> ${className}</h3>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap;">${snapshotButtons}</div>
@@ -1777,63 +1609,34 @@
           </table>
         </div>
       </div>`;
-      })
-      .join("");
+    }).join("");
   }
 
   // Export a historical snapshot as a broadsheet Excel
   window.exportSnapshotBroadsheet = function (classId, snapshotId) {
-    const snap = (termHistory[classId] || []).find((h) => h.id === snapshotId);
-    if (!snap) {
-      showToast("Snapshot not found", "error");
-      return;
-    }
-    if (!window.XLSX) {
-      showToast("SheetJS not loaded", "error");
-      return;
-    }
+    const snap = (termHistory[classId] || []).find(h => h.id === snapshotId);
+    if (!snap) { showToast("Snapshot not found", "error"); return; }
+    if (!window.XLSX) { showToast("SheetJS not loaded", "error"); return; }
     const ranked = rankStudents(snap.students);
     const subjects = snap.subjects;
     const h1 = ["S/N", "Student Name"];
-    subjects.forEach((s) => {
-      h1.push(s.name, "", "", "", "");
-    });
+    subjects.forEach(s => { h1.push(s.name, "", "", "", ""); });
     h1.push("Total", "Avg", "Grade", "Remark", "Position");
     const h2 = ["", ""];
-    subjects.forEach(() => {
-      h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade");
-    });
+    subjects.forEach(() => { h2.push("Test/20", "Prac/20", "Exam/60", "Total", "Grade"); });
     h2.push("", "", "", "", "");
     const dataRows = ranked.map((s, idx) => {
       const row = [idx + 1, s.name];
-      let totalSum = 0,
-        totalCount = 0;
-      subjects.forEach((sub) => {
-        const found = s.subjects.find((ss) => ss.id === sub.id);
-        const comp = found
-          ? computeSubject(found)
-          : { total: null, t: 0, p: 0, e: null };
-        row.push(
-          found?.test ?? "—",
-          found?.prac ?? "—",
-          found?.exam === "" ? "—" : (found?.exam ?? "—"),
-          comp.total ?? "—",
-          gradeResult(comp.total).g,
-        );
-        if (comp.total !== null) {
-          totalSum += comp.total;
-          totalCount++;
-        }
+      let totalSum = 0, totalCount = 0;
+      subjects.forEach(sub => {
+        const found = s.subjects.find(ss => ss.id === sub.id);
+        const comp = found ? computeSubject(found) : { total: null, t: 0, p: 0, e: null };
+        row.push(found?.test ?? "—", found?.prac ?? "—", found?.exam === "" ? "—" : (found?.exam ?? "—"), comp.total ?? "—", gradeResult(comp.total).g);
+        if (comp.total !== null) { totalSum += comp.total; totalCount++; }
       });
       const avg = totalCount ? Math.round(totalSum / totalCount) : null;
       const gr = gradeResult(avg);
-      row.push(
-        totalCount > 0 ? totalSum : "—",
-        avg ?? "—",
-        gr.g,
-        gr.r,
-        s.pos ? ordinal(s.pos) : "—",
-      );
+      row.push(totalCount > 0 ? totalSum : "—", avg ?? "—", gr.g, gr.r, s.pos ? ordinal(s.pos) : "—");
       return row;
     });
     const wb = XLSX.utils.book_new();
@@ -1841,22 +1644,15 @@
       [`${snap.className} — BROADSHEET`, snap.label],
       [settings.pdfSchool || currentUser?.org || ""],
       [],
-      h1,
-      h2,
-      ...dataRows,
+      h1, h2, ...dataRows
     ];
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wscols = [{ wch: 5 }, { wch: 28 }];
-    subjects.forEach(() => {
-      [6, 6, 6, 7, 6].forEach((w) => wscols.push({ wch: w }));
-    });
-    [8, 6, 8, 14, 10].forEach((w) => wscols.push({ wch: w }));
-    ws["!cols"] = wscols;
+    subjects.forEach(() => { [6,6,6,7,6].forEach(w => wscols.push({ wch: w })); });
+    [8,6,8,14,10].forEach(w => wscols.push({ wch: w }));
+    ws['!cols'] = wscols;
     XLSX.utils.book_append_sheet(wb, ws, snap.className.slice(0, 31));
-    XLSX.writeFile(
-      wb,
-      `${snap.className}_Broadsheet_${snap.label.replace(/[·\s\/]/g, "_")}.xlsx`,
-    );
+    XLSX.writeFile(wb, `${snap.className}_Broadsheet_${snap.label.replace(/[·\s\/]/g,"_")}.xlsx`);
     showToast(`✅ Exported: ${snap.label}`, "success");
   };
 
@@ -1986,9 +1782,7 @@
     }
     if (!canAddClass()) {
       closeModal("addClassModal");
-      showUpgradeModal(
-        `You've reached the free plan limit of ${FREE_CLASS_LIMIT} classes.`,
-      );
+      showUpgradeModal(`You've reached the free plan limit of ${FREE_CLASS_LIMIT} classes.`);
       return;
     }
     const newId = "cls_" + Date.now();
@@ -2100,9 +1894,7 @@
     if (!cls) return;
     if (!canAddStudent()) {
       closeModal("addStudentModal");
-      showUpgradeModal(
-        `You've reached the free plan limit of ${FREE_STUDENT_LIMIT} total students.`,
-      );
+      showUpgradeModal(`You've reached the free plan limit of ${FREE_STUDENT_LIMIT} total students.`);
       return;
     }
     if (!allStudents[activeClassId]) allStudents[activeClassId] = [];
@@ -2269,15 +2061,15 @@
   //  You can also add multiple emails (comma-separated).
   //
   const ADMIN_EMAILS = [
-    "oshinayadamilola@gmail.com", // ← developer / owner (always has full access)
+    "oshinayadamilola@gmail.com",  // ← developer / owner (always has full access)
     // "colleague@email.com",       // ← add more dev/tester emails here if needed
   ];
 
-  const FREE_CLASS_LIMIT = 2; // max classes on free plan
-  const FREE_STUDENT_LIMIT = 35; // max total students on free plan
-  const FREE_PDF_LIMIT = 3; // max PDF exports per term on free plan
-  const PRO_PRICE_LABEL = "₦5,000/term";
-  const WHATSAPP_NUMBER = "2348000000000"; // ← your WhatsApp (no + sign, e.g. 2348012345678)
+  const FREE_CLASS_LIMIT   = 2;     // max classes on free plan
+  const FREE_STUDENT_LIMIT = 35;    // max total students on free plan
+  const FREE_PDF_LIMIT     = 3;     // max PDF exports per term on free plan
+  const PRO_PRICE_LABEL    = "₦5,000/term";
+  const WHATSAPP_NUMBER    = "2348000000000"; // ← your WhatsApp (no + sign, e.g. 2348012345678)
 
   function isAdmin() {
     return ADMIN_EMAILS.includes((currentUser?.email || "").toLowerCase());
@@ -2288,83 +2080,44 @@
     if (isAdmin()) return "admin";
     const key = `gf_plan_${currentUser.email}`;
     let plan = {};
-    try {
-      plan = JSON.parse(localStorage.getItem(key) || "{}");
-    } catch (e) {}
+    try { plan = JSON.parse(localStorage.getItem(key) || "{}"); } catch(e) {}
     if (!plan.tier || plan.tier !== "pro") return "free";
     if (plan.expiresAt && Date.now() > plan.expiresAt) return "free";
     return "pro";
   }
 
   // Shorthand: true for both pro AND admin
-  function isPro() {
-    const p = getPlan();
-    return p === "pro" || p === "admin";
-  }
+  function isPro() { const p = getPlan(); return p === "pro" || p === "admin"; }
 
   // PDF counter — keyed by term+session so it resets automatically each new term
   function getPdfCountKey() {
-    const t = (settings.term || "T").replace(/\s/g, "_");
-    const s = (settings.session || "S").replace(/\//g, "-");
+    const t = (settings.term || "T").replace(/\s/g,"_");
+    const s = (settings.session || "S").replace(/\//g,"-");
     return `gf_pdfcount_${currentUser?.email || "guest"}_${t}_${s}`;
   }
-  function getPdfCount() {
-    return parseInt(localStorage.getItem(getPdfCountKey()) || "0");
-  }
-  function incrementPdfCount() {
-    localStorage.setItem(getPdfCountKey(), String(getPdfCount() + 1));
-  }
+  function getPdfCount()     { return parseInt(localStorage.getItem(getPdfCountKey()) || "0"); }
+  function incrementPdfCount(){ localStorage.setItem(getPdfCountKey(), String(getPdfCount() + 1)); }
 
   // ── Feature gate functions (all funnelled through isPro()) ─────────────────
-  function canUsePDF() {
-    return isPro() || getPdfCount() < FREE_PDF_LIMIT;
-  }
-  function canUseBulkPDF() {
-    return isPro();
-  }
-  function canUseBroadsheet() {
-    return isPro();
-  }
-  function canUseCBT() {
-    return isPro();
-  }
-  function canUseMaterials() {
-    return isPro();
-  }
-  function canUseAIComment() {
-    return isPro();
-  }
-  function canUseTermHistory() {
-    return isPro();
-  }
-  function canImportExcel() {
-    return isPro();
-  }
+  function canUsePDF()         { return isPro() || getPdfCount() < FREE_PDF_LIMIT; }
+  function canUseBulkPDF()     { return isPro(); }
+  function canUseBroadsheet()  { return isPro(); }
+  function canUseCBT()         { return isPro(); }
+  function canUseMaterials()   { return isPro(); }
+  function canUseAIComment()   { return isPro(); }
+  function canUseTermHistory() { return isPro(); }
+  function canImportExcel()    { return isPro(); }
 
   window.adminGrantPro = function () {
-    if (!isAdmin()) {
-      showToast("Not authorised", "error");
-      return;
-    }
+    if (!isAdmin()) { showToast("Not authorised", "error"); return; }
     const emailEl = document.getElementById("adminGrantEmail");
     const monthsEl = document.getElementById("adminGrantMonths");
     if (!emailEl || !monthsEl) return;
     const email = emailEl.value.trim().toLowerCase();
     const months = parseInt(monthsEl.value) || 4;
-    if (!email || !email.includes("@")) {
-      showToast("Enter a valid email", "error");
-      return;
-    }
+    if (!email || !email.includes("@")) { showToast("Enter a valid email", "error"); return; }
     const expiresAt = Date.now() + months * 30 * 24 * 60 * 60 * 1000;
-    localStorage.setItem(
-      `gf_plan_${email}`,
-      JSON.stringify({
-        tier: "pro",
-        grantedAt: Date.now(),
-        expiresAt,
-        grantedBy: currentUser.email,
-      }),
-    );
+    localStorage.setItem(`gf_plan_${email}`, JSON.stringify({ tier: "pro", grantedAt: Date.now(), expiresAt, grantedBy: currentUser.email }));
     showToast(`\u2705 Pro granted to ${email} for ${months} months`, "success");
     emailEl.value = "";
     renderSubscriptionPanel();
@@ -2381,12 +2134,8 @@
     return Object.values(allStudents).reduce((sum, arr) => sum + arr.length, 0);
   }
 
-  function canAddClass() {
-    return isPro() || classes.length < FREE_CLASS_LIMIT;
-  }
-  function canAddStudent() {
-    return isPro() || getTotalStudentCount() < FREE_STUDENT_LIMIT;
-  }
+  function canAddClass()   { return isPro() || classes.length < FREE_CLASS_LIMIT; }
+  function canAddStudent() { return isPro() || getTotalStudentCount() < FREE_STUDENT_LIMIT; }
 
   function showUpgradeModal(reason) {
     const el = document.getElementById("upgradeReason");
@@ -2404,33 +2153,22 @@
           if (data && data.tier === "pro") {
             proAccounts.push({ email: k.replace("gf_plan_", ""), ...data });
           }
-        } catch (e) {}
+        } catch(e) {}
       }
     }
-    if (!proAccounts.length)
-      return `<div style="font-size:.82rem;color:var(--muted);">No Pro accounts yet.</div>`;
-    return proAccounts
-      .map((a) => {
-        const expires = a.expiresAt
-          ? new Date(a.expiresAt).toLocaleDateString("en-NG", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })
-          : "\u2014";
-        const daysLeft = a.expiresAt
-          ? Math.max(0, Math.ceil((a.expiresAt - Date.now()) / 86400000))
-          : 0;
-        const expired = daysLeft === 0;
-        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border);gap:.5rem;flex-wrap:wrap;">
+    if (!proAccounts.length) return `<div style="font-size:.82rem;color:var(--muted);">No Pro accounts yet.</div>`;
+    return proAccounts.map(a => {
+      const expires = a.expiresAt ? new Date(a.expiresAt).toLocaleDateString("en-NG", { day:"numeric", month:"short", year:"numeric" }) : "\u2014";
+      const daysLeft = a.expiresAt ? Math.max(0, Math.ceil((a.expiresAt - Date.now()) / 86400000)) : 0;
+      const expired = daysLeft === 0;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border);gap:.5rem;flex-wrap:wrap;">
         <div>
           <div style="font-size:.85rem;font-weight:600;">${a.email}</div>
-          <div style="font-size:.75rem;color:${expired ? "#ef476f" : "var(--muted)"};">${expired ? "Expired" : "Expires"} ${expires}${!expired ? " (" + daysLeft + " days)" : ""}</div>
+          <div style="font-size:.75rem;color:${expired?"#ef476f":"var(--muted)"};">${expired?"Expired":"Expires"} ${expires}${!expired?" ("+daysLeft+" days)":""}</div>
         </div>
         <button class="btn btn-sm" onclick="adminRevokePro('${a.email}')" style="font-size:.75rem;color:#ef476f;border-color:#ef476f;">Revoke</button>
       </div>`;
-      })
-      .join("");
+    }).join("");
   }
 
   function renderSubscriptionPanel() {
@@ -2466,21 +2204,9 @@
         </div>`;
     } else if (plan === "pro") {
       let planData = {};
-      try {
-        planData = JSON.parse(
-          localStorage.getItem(`gf_plan_${currentUser.email}`) || "{}",
-        );
-      } catch (e) {}
-      const expiresDate = planData.expiresAt
-        ? new Date(planData.expiresAt).toLocaleDateString("en-NG", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })
-        : "N/A";
-      const daysLeft = planData.expiresAt
-        ? Math.max(0, Math.ceil((planData.expiresAt - Date.now()) / 86400000))
-        : 0;
+      try { planData = JSON.parse(localStorage.getItem(`gf_plan_${currentUser.email}`) || "{}"); } catch(e) {}
+      const expiresDate = planData.expiresAt ? new Date(planData.expiresAt).toLocaleDateString("en-NG", { day:"numeric", month:"long", year:"numeric" }) : "N/A";
+      const daysLeft = planData.expiresAt ? Math.max(0, Math.ceil((planData.expiresAt - Date.now()) / 86400000)) : 0;
       const urgentColor = daysLeft <= 14 ? "#ef476f" : "var(--emerald)";
       panel.innerHTML = `
         <div style="background:linear-gradient(135deg,#00b894,#0984e3);border-radius:var(--r-lg);padding:1.4rem;color:white;margin-bottom:1.5rem;">
@@ -2498,14 +2224,8 @@
     } else {
       const classPct = Math.min(100, (classes.length / FREE_CLASS_LIMIT) * 100);
       const stuPct = Math.min(100, (totalStudents / FREE_STUDENT_LIMIT) * 100);
-      const classColor =
-        classPct >= 100
-          ? "#ef476f"
-          : classPct >= 80
-            ? "#f9a825"
-            : "var(--accent)";
-      const stuColor =
-        stuPct >= 100 ? "#ef476f" : stuPct >= 80 ? "#f9a825" : "var(--accent)";
+      const classColor = classPct >= 100 ? "#ef476f" : classPct >= 80 ? "#f9a825" : "var(--accent)";
+      const stuColor = stuPct >= 100 ? "#ef476f" : stuPct >= 80 ? "#f9a825" : "var(--accent)";
       panel.innerHTML = `
         <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.4rem;margin-bottom:1.5rem;">
           <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.4rem;">
@@ -2532,18 +2252,14 @@
     }
   }
 
-  window.upgradeContactWhatsApp = function () {
-    const msg = encodeURIComponent(
-      `Hello! I'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}`,
-    );
+  window.upgradeContactWhatsApp = function() {
+    const msg = encodeURIComponent(`Hello! I'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}`);
     window.open(`https://wa.me/?text=${msg}`, "_blank");
   };
 
-  window.upgradeContactEmail = function () {
+  window.upgradeContactEmail = function() {
     const subject = encodeURIComponent("GradeFlow Pro Upgrade Request");
-    const body = encodeURIComponent(
-      `Hello,\n\nI'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}\n\nPlease provide payment details. Thank you.`,
-    );
+    const body = encodeURIComponent(`Hello,\n\nI'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}\n\nPlease provide payment details. Thank you.`);
     window.location.href = `mailto:oshinayadamilola@gmail.com?subject=${subject}&body=${body}`;
   };
 
@@ -2859,12 +2575,7 @@
   let pendingMatFile = null;
 
   window.openUploadMaterialModal = function () {
-    if (!canUseMaterials()) {
-      showUpgradeModal(
-        "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources.",
-      );
-      return;
-    }
+    if (!canUseMaterials()) { showUpgradeModal("Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources."); return; }
     if (!activeClassId) {
       showToast("Select a class first", "error");
       return;
@@ -3892,12 +3603,7 @@
   let aiTargetStudentId = null;
 
   window.openAiComment = function (studentId) {
-    if (!canUseAIComment()) {
-      showUpgradeModal(
-        "AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds.",
-      );
-      return;
-    }
+    if (!canUseAIComment()) { showUpgradeModal("AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds."); return; }
     aiTargetStudentId = studentId;
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
