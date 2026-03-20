@@ -1080,13 +1080,11 @@
       pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
       pdf.save(`${student.name.replace(/\s+/g, "_")}_Report_Card.pdf`);
       incrementPdfCount();
-      const remaining = isPro()
-        ? "∞"
-        : Math.max(0, FREE_PDF_LIMIT - getPdfCount());
-      showToast(
-        `✅ PDF generated for ${student.name}${isPro() ? "" : ` (${remaining} free PDF${remaining === 1 ? "" : "s"} left this term)`}`,
-        "success",
-      );
+      const _rem = isPro() ? "∞" : Math.max(0, FREE_PDF_LIMIT - getPdfCount());
+      const _remLabel = isPro()
+        ? ""
+        : ` · ${_rem} free PDF${_rem === 1 ? "" : "s"} left this term`;
+      showToast(`✅ PDF generated for ${student.name}${_remLabel}`, "success");
     } catch (e) {
       console.error(e);
       showToast("PDF generation failed. Please try again.", "error");
@@ -1097,7 +1095,7 @@
   window.exportAllPDFs = async function () {
     if (!canUseBulkPDF()) {
       showUpgradeModal(
-        "Bulk PDF export (all students at once) is a Pro feature. Upgrade to unlock unlimited PDF generation.",
+        "Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.",
       );
       return;
     }
@@ -1177,7 +1175,7 @@
   window.handleExcelUpload = function (files) {
     if (!canImportExcel()) {
       showUpgradeModal(
-        "Excel & CSV import is a Pro feature. On the free plan, add students manually. Upgrade to import entire class lists in seconds.",
+        "Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.",
       );
       return;
     }
@@ -1421,9 +1419,7 @@
   // Export broadsheet for ALL classes into one workbook (one sheet per class)
   window.exportAllBroadsheets = function () {
     if (!canUseBroadsheet()) {
-      showUpgradeModal(
-        "Broadsheet export is a Pro feature. Upgrade to export broadsheets for all your classes.",
-      );
+      showUpgradeModal("Broadsheet export is a Pro feature.");
       return;
     }
     if (!classes.length) {
@@ -1608,7 +1604,7 @@
   window.saveTermSnapshot = function () {
     if (!canUseTermHistory()) {
       showUpgradeModal(
-        "Term History is a Pro feature. Upgrade to save term snapshots and track student progress across First, Second and Third Terms.",
+        "Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth.",
       );
       return;
     }
@@ -1787,10 +1783,6 @@
 
   // Export a historical snapshot as a broadsheet Excel
   window.exportSnapshotBroadsheet = function (classId, snapshotId) {
-    if (!canUseBroadsheet()) {
-      showUpgradeModal("Broadsheet export is a Pro feature.");
-      return;
-    }
     const snap = (termHistory[classId] || []).find((h) => h.id === snapshotId);
     if (!snap) {
       showToast("Snapshot not found", "error");
@@ -2266,12 +2258,26 @@
   // ════════════════════════════════════════════════════
   //  SUBSCRIPTION / TIER SYSTEM
   // ════════════════════════════════════════════════════
-  const ADMIN_EMAILS = ["oshinayadamilola@gmail.com"]; // ← your admin email(s)
-  const FREE_CLASS_LIMIT = 2;
-  const FREE_STUDENT_LIMIT = 35;
-  const FREE_PDF_LIMIT = 3; // PDF report cards allowed per term on free plan
+  // ════════════════════════════════════════════════════
+  //  ⚙️  DEVELOPER CONFIG — edit these values only
+  // ════════════════════════════════════════════════════
+  //
+  //  ADMIN_EMAILS: Any email in this list gets FULL PRO
+  //  access for free, permanently. No payment needed.
+  //  Add your own email here and you will NEVER see
+  //  the upgrade prompt or hit any feature limit.
+  //  You can also add multiple emails (comma-separated).
+  //
+  const ADMIN_EMAILS = [
+    "oshinayadamilola@gmail.com", // ← developer / owner (always has full access)
+    // "colleague@email.com",       // ← add more dev/tester emails here if needed
+  ];
+
+  const FREE_CLASS_LIMIT = 2; // max classes on free plan
+  const FREE_STUDENT_LIMIT = 35; // max total students on free plan
+  const FREE_PDF_LIMIT = 3; // max PDF exports per term on free plan
   const PRO_PRICE_LABEL = "₦5,000/term";
-  const WHATSAPP_NUMBER = "2348000000000"; // ← replace with your real WhatsApp number (no + sign)
+  const WHATSAPP_NUMBER = "2348000000000"; // ← your WhatsApp (no + sign, e.g. 2348012345678)
 
   function isAdmin() {
     return ADMIN_EMAILS.includes((currentUser?.email || "").toLowerCase());
@@ -2290,15 +2296,17 @@
     return "pro";
   }
 
+  // Shorthand: true for both pro AND admin
   function isPro() {
     const p = getPlan();
     return p === "pro" || p === "admin";
   }
 
-  // PDF counter — resets per term+session so free users get FREE_PDF_LIMIT fresh each term
+  // PDF counter — keyed by term+session so it resets automatically each new term
   function getPdfCountKey() {
-    const termKey = (settings.term || "T") + "_" + (settings.session || "S");
-    return `gf_pdfcount_${currentUser?.email || "guest"}_${termKey}`;
+    const t = (settings.term || "T").replace(/\s/g, "_");
+    const s = (settings.session || "S").replace(/\//g, "-");
+    return `gf_pdfcount_${currentUser?.email || "guest"}_${t}_${s}`;
   }
   function getPdfCount() {
     return parseInt(localStorage.getItem(getPdfCountKey()) || "0");
@@ -2307,7 +2315,7 @@
     localStorage.setItem(getPdfCountKey(), String(getPdfCount() + 1));
   }
 
-  // ── Feature gate functions ────────────────────────────
+  // ── Feature gate functions (all funnelled through isPro()) ─────────────────
   function canUsePDF() {
     return isPro() || getPdfCount() < FREE_PDF_LIMIT;
   }
@@ -2490,8 +2498,6 @@
     } else {
       const classPct = Math.min(100, (classes.length / FREE_CLASS_LIMIT) * 100);
       const stuPct = Math.min(100, (totalStudents / FREE_STUDENT_LIMIT) * 100);
-      const pdfUsed = getPdfCount();
-      const pdfPct = Math.min(100, (pdfUsed / FREE_PDF_LIMIT) * 100);
       const classColor =
         classPct >= 100
           ? "#ef476f"
@@ -2500,53 +2506,27 @@
             : "var(--accent)";
       const stuColor =
         stuPct >= 100 ? "#ef476f" : stuPct >= 80 ? "#f9a825" : "var(--accent)";
-      const pdfColor =
-        pdfPct >= 100 ? "#ef476f" : pdfPct >= 67 ? "#f9a825" : "var(--accent)";
-      const mkRow = (ok, label) =>
-        `<div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;padding:.18rem 0;">
-          <i class="bi bi-${ok ? "check-circle-fill" : "x-circle-fill"}" style="color:${ok ? "var(--emerald)" : "#cbd5e1"};flex-shrink:0;"></i>
-          <span style="color:${ok ? "var(--ink)" : "var(--muted)"};">${label}</span>
-        </div>`;
       panel.innerHTML = `
-        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.4rem;margin-bottom:1.2rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;">
-            <div style="display:flex;align-items:center;gap:.6rem;">
-              <i class="bi bi-lock-fill" style="font-size:1.1rem;color:var(--muted);"></i>
-              <span style="font-size:1rem;font-weight:700;">Free Plan</span>
-            </div>
-            <span style="font-size:.72rem;background:var(--border);color:var(--muted);padding:.2rem .6rem;border-radius:99px;font-weight:600;">FREE</span>
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.4rem;margin-bottom:1.5rem;">
+          <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.4rem;">
+            <i class="bi bi-lock-fill" style="font-size:1.2rem;color:var(--muted);"></i>
+            <span style="font-size:1rem;font-weight:700;">Free Plan</span>
           </div>
-          ${mkRow(true, "Grade entry & auto-computation")}
-          ${mkRow(true, "Live analytics dashboard")}
-          ${mkRow(true, "Attendance tracking")}
-          ${mkRow(true, "Up to " + FREE_CLASS_LIMIT + " classes")}
-          ${mkRow(true, "Up to " + FREE_STUDENT_LIMIT + " students total")}
-          ${mkRow(true, FREE_PDF_LIMIT + " PDF report cards per term")}
-          ${mkRow(false, "Unlimited PDFs — Pro only")}
-          ${mkRow(false, "Broadsheet export — Pro only")}
-          ${mkRow(false, "Excel / CSV import — Pro only")}
-          ${mkRow(false, "CBT Quizzes — Pro only")}
-          ${mkRow(false, "AI Teacher Comments — Pro only")}
-          ${mkRow(false, "Class Materials upload — Pro only")}
-          ${mkRow(false, "Term History & Progress — Pro only")}
+          <div style="font-size:.82rem;color:var(--muted);">Limited to ${FREE_CLASS_LIMIT} classes and ${FREE_STUDENT_LIMIT} total students.</div>
         </div>
-        <div style="margin-bottom:.85rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>Classes</span><span style="font-weight:700;color:${classColor};">${classes.length} / ${FREE_CLASS_LIMIT}</span></div>
-          <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${classPct}%;background:${classColor};border-radius:99px;transition:width .4s;"></div></div>
+        <div style="margin-bottom:1.2rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;font-size:.82rem;"><span>Classes used</span><span style="font-weight:700;color:${classColor};">${classes.length} / ${FREE_CLASS_LIMIT}</span></div>
+          <div style="height:7px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${classPct}%;background:${classColor};border-radius:99px;transition:width .4s;"></div></div>
         </div>
-        <div style="margin-bottom:.85rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>Students</span><span style="font-weight:700;color:${stuColor};">${totalStudents} / ${FREE_STUDENT_LIMIT}</span></div>
-          <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${stuPct}%;background:${stuColor};border-radius:99px;transition:width .4s;"></div></div>
+        <div style="margin-bottom:1.5rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;font-size:.82rem;"><span>Students used</span><span style="font-weight:700;color:${stuColor};">${totalStudents} / ${FREE_STUDENT_LIMIT}</span></div>
+          <div style="height:7px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${stuPct}%;background:${stuColor};border-radius:99px;transition:width .4s;"></div></div>
         </div>
-        <div style="margin-bottom:1.4rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>PDFs this term</span><span style="font-weight:700;color:${pdfColor};">${pdfUsed} / ${FREE_PDF_LIMIT}</span></div>
-          <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${pdfPct}%;background:${pdfColor};border-radius:99px;transition:width .4s;"></div></div>
-        </div>
-        <div style="background:linear-gradient(135deg,#4361ee18,#7209b718);border:1.5px solid var(--accent);border-radius:var(--r-lg);padding:1.4rem;">
-          <div style="font-weight:800;font-size:1rem;margin-bottom:.25rem;">&#x1F680; Upgrade to Pro</div>
-          <div style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">Everything unlocked — unlimited classes, students, PDFs, and all Pro features. Just ${PRO_PRICE_LABEL}.</div>
-          <button class="btn btn-primary" onclick="document.getElementById('upgradeModal').classList.add('active')" style="width:100%;justify-content:center;font-weight:700;">
-            <i class="bi bi-stars"></i> Upgrade Now — ${PRO_PRICE_LABEL}
+        <div style="background:linear-gradient(135deg,#4361ee15,#7209b715);border:1.5px solid var(--accent);border-radius:var(--r-lg);padding:1.4rem;">
+          <div style="font-weight:800;font-size:1rem;margin-bottom:.3rem;">Upgrade to Pro \uD83D\uDE80</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">Unlimited classes & students, all features. Just ${PRO_PRICE_LABEL}.</div>
+          <button class="btn btn-primary" onclick="document.getElementById('upgradeModal').classList.add('active')" style="width:100%;justify-content:center;">
+            <i class="bi bi-stars"></i> Upgrade Now \u2014 ${PRO_PRICE_LABEL}
           </button>
         </div>`;
     }
@@ -2554,9 +2534,9 @@
 
   window.upgradeContactWhatsApp = function () {
     const msg = encodeURIComponent(
-      `Hello! I'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}\n\nPlease send payment details. Thank you!`,
+      `Hello! I'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}`,
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/?text=${msg}`, "_blank");
   };
 
   window.upgradeContactEmail = function () {
@@ -2613,44 +2593,10 @@
   function updateSidebarUser() {
     if (!currentUser) return;
     const ini = initials(currentUser.name);
-    const plan = getPlan();
-    // Avatar with plan colour ring
-    const avatarEl = document.getElementById("userAvatar");
-    avatarEl.textContent = ini;
-    avatarEl.style.background =
-      plan === "admin"
-        ? "linear-gradient(135deg,#7209b7,#4361ee)"
-        : plan === "pro"
-          ? "linear-gradient(135deg,#00b894,#0984e3)"
-          : "linear-gradient(135deg,var(--accent),var(--accent-2))";
+    document.getElementById("userAvatar").textContent = ini;
     document.getElementById("userName").textContent = currentUser.name;
-    // Show plan badge next to org name
-    const planBadge =
-      plan === "admin"
-        ? ' <span style="font-size:.65rem;background:#7209b7;color:white;border-radius:99px;padding:.1rem .45rem;font-weight:700;vertical-align:middle;">ADMIN</span>'
-        : plan === "pro"
-          ? ' <span style="font-size:.65rem;background:linear-gradient(90deg,#00b894,#0984e3);color:white;border-radius:99px;padding:.1rem .45rem;font-weight:700;vertical-align:middle;">PRO</span>'
-          : ' <span style="font-size:.65rem;background:var(--border);color:var(--muted);border-radius:99px;padding:.1rem .45rem;font-weight:600;vertical-align:middle;">FREE</span>';
-    document.getElementById("userRole").innerHTML =
-      (currentUser.org || "Teacher") + planBadge;
-    // Lock/unlock sidebar nav items based on plan
-    const proNavItems = ["nav-cbt", "nav-materials", "nav-history"];
-    proNavItems.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const lockIcon = el.querySelector(".pro-lock-icon");
-      if (isPro()) {
-        if (lockIcon) lockIcon.remove();
-      } else {
-        if (!lockIcon) {
-          const lock = document.createElement("i");
-          lock.className = "bi bi-lock-fill pro-lock-icon";
-          lock.style.cssText =
-            "font-size:.65rem;color:var(--muted);margin-left:auto;opacity:.6;";
-          el.appendChild(lock);
-        }
-      }
-    });
+    document.getElementById("userRole").textContent =
+      currentUser.org || "Teacher";
   }
 
   // ════════════════════════════════════════════════════
@@ -2915,7 +2861,7 @@
   window.openUploadMaterialModal = function () {
     if (!canUseMaterials()) {
       showUpgradeModal(
-        "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs, and resources with your students.",
+        "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources.",
       );
       return;
     }
@@ -3948,7 +3894,7 @@
   window.openAiComment = function (studentId) {
     if (!canUseAIComment()) {
       showUpgradeModal(
-        "AI teacher comments are a Pro feature. Upgrade to generate personalised, professional comments for every student in seconds.",
+        "AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds.",
       );
       return;
     }

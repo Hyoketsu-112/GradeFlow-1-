@@ -85,7 +85,7 @@
 
     <!-- ============================================================ LANDING PAGE -->
     <div id="page-landing" class="page active">
-      <!-- Nav -->
+      <!-- ═══ NAV ═══ -->
       <nav class="land-nav">
         <div class="land-nav-brand">
           <svg
@@ -125,8 +125,9 @@
         </div>
         <ul class="land-nav-links">
           <li><a href="#features">Features</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
           <li><a href="#how">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
         </ul>
         <div class="land-nav-actions">
           <button
@@ -139,144 +140,283 @@
             class="btn btn-sm btn-primary"
             onclick="openAuthModal('signup')"
           >
-            <i class="bi bi-person-plus"></i> Sign up free
+            <i class="bi bi-person-plus"></i> Start free
           </button>
         </div>
       </nav>
 
-      <!-- Hero -->
+      <!-- ═══ HERO ═══ -->
       <section class="land-hero">
         <div class="hero-glow"></div>
         <div class="hero-grid"></div>
         <div class="hero-content">
           <div class="hero-badge">
             <span class="dot"></span>
-            Completely free · Built for Nigerian teachers
+            Free to start &nbsp;·&nbsp; Built for Nigerian teachers
+            &nbsp;·&nbsp; 100% offline
           </div>
           <h1 class="hero-title">
-            The Grade<br /><span class="accent">Compiler</span> of the Future
+            Grade smarter.<br /><span class="accent">Not harder.</span>
           </h1>
           <p class="hero-sub">
-            Transform hours of manual grade computation into minutes. The most
-            powerful, beautiful academic management platform ever built for
-            Nigerian schools.
+            GradeFlow turns hours of manual grade computation into minutes.
+            Auto-calculate totals, generate beautiful PDF report cards, export
+            broadsheets, track attendance — all offline, all on your phone or
+            laptop.
           </p>
           <div class="hero-cta">
             <button
               class="btn btn-primary btn-lg"
               onclick="openAuthModal('signup')"
             >
-              <i class="bi bi-rocket-takeoff-fill"></i> Get started free
+              <i class="bi bi-rocket-takeoff-fill"></i> Start for free
             </button>
-            <button class="btn btn-lg" onclick="openAuthModal('login')">
-              <i class="bi bi-box-arrow-in-right"></i> Log in
+            <button
+              class="btn btn-lg"
+              onclick="
+                document
+                  .getElementById('pricing')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              <i class="bi bi-stars"></i> See pricing
             </button>
           </div>
           <div class="hero-stats">
             <div class="hero-stat">
-              <div class="hero-stat-num">3hrs</div>
-              <div class="hero-stat-label">→ 10 minutes</div>
-            </div>
-            <div class="hero-divider"></div>
-            <div class="hero-stat">
-              <div class="hero-stat-num">∞</div>
-              <div class="hero-stat-label">Classes & students</div>
+              <div class="hero-stat-num">3 hrs</div>
+              <div class="hero-stat-label">reduced to 10 min</div>
             </div>
             <div class="hero-divider"></div>
             <div class="hero-stat">
               <div class="hero-stat-num">100%</div>
-              <div class="hero-stat-label">Offline capable</div>
+              <div class="hero-stat-label">Works offline</div>
             </div>
             <div class="hero-divider"></div>
             <div class="hero-stat">
-              <div class="hero-stat-num">0₦</div>
-              <div class="hero-stat-label">Forever free</div>
+              <div class="hero-stat-num">₦5k</div>
+              <div class="hero-stat-label">Full Pro / term</div>
+            </div>
+            <div class="hero-divider"></div>
+            <div class="hero-stat">
+              <div class="hero-stat-num">0 data</div>
+              <div class="hero-stat-label">Sent to any server</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Features -->
+      <!-- ═══ FEATURES ═══ -->
       <section class="land-section" id="features">
         <div class="section-label">Features</div>
         <h2 class="section-title">
-          Everything you need.<br />Nothing you don't.
+          Everything a Nigerian<br />teacher actually needs.
         </h2>
         <p class="section-sub">
-          Built ground-up for the way Nigerian teachers actually work — from
-          primary to secondary, single class to whole school.
+          Built from scratch for the Nigerian school system — WAEC/NECO grading,
+          termly sessions, primary and secondary levels. No bloat. No
+          unnecessary complexity.
         </p>
         <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">📚</div>
-            <h3>Unlimited Classes & Subjects</h3>
-            <p>
-              Manage every class you teach with unlimited subjects per class.
-              PRY 1–6, JSS, SSS — all in one place.
-            </p>
-          </div>
           <div class="feature-card">
             <div class="feature-icon">⚡</div>
             <h3>Auto Grade Computation</h3>
             <p>
-              Enter Test (20), Practical (20) and Exam (60) scores — totals,
-              grades and remarks calculated instantly.
+              Enter Test /20, Practical /20, and Exam /60 — totals, grades and
+              remarks compute instantly. No formulas, no errors.
             </p>
           </div>
           <div class="feature-card">
+            <div class="feature-icon">📄</div>
+            <h3>Professional PDF Report Cards</h3>
+            <p>
+              Generate print-ready A4 report cards with your school name, crest,
+              term, session and teacher's comment. Looks like it was designed by
+              a studio.
+            </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: var(--accent-l);
+                color: var(--accent);
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >3 free / term · Unlimited on Pro</span
+            >
+          </div>
+          <div class="feature-card">
             <div class="feature-icon">📊</div>
+            <h3>Broadsheet Export</h3>
+            <p>
+              One click generates the full master collation sheet — every
+              student × every subject — in a formatted Excel file. Exactly what
+              your principal wants.
+            </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >⭐ Pro feature</span
+            >
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📈</div>
             <h3>Live Analytics Dashboard</h3>
             <p>
-              See class averages, pass rates, grade distribution charts, and top
-              performers update in real-time as you type.
+              Class averages, pass rates, grade distribution charts, subject
+              averages, and top performers — all updating in real-time as you
+              type scores.
             </p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">🏆</div>
             <h3>Smart Ranking & Positions</h3>
             <p>
-              Students are automatically ranked by overall average across all
-              subjects. Ties are handled correctly.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📄</div>
-            <h3>Beautiful PDF Report Cards</h3>
-            <p>
-              Generate professional, print-ready A4 report cards for individual
-              students or the entire class in one click.
+              Students ranked by overall average across all subjects. Ties
+              handled correctly. 1st, 2nd, 3rd highlighted with medals
+              automatically.
             </p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">📥</div>
             <h3>Excel & CSV Import</h3>
             <p>
-              Already have student names in a spreadsheet? Import them directly
-              — GradeFlow reads any format.
+              Already have student names in a spreadsheet? Import any Excel or
+              CSV file directly. GradeFlow reads any format and creates the
+              class instantly.
+            </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >⭐ Pro feature</span
+            >
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🗓️</div>
+            <h3>Attendance Tracking</h3>
+            <p>
+              Take daily attendance with Present / Absent / Late. View monthly
+              summaries and export attendance records to Excel. Included in free
+              plan.
             </p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">📤</div>
-            <h3>Export to Excel</h3>
+            <div class="feature-icon">🕐</div>
+            <h3>Term History & Progress</h3>
             <p>
-              Export the full grade sheet to Excel for sharing with your HOD,
-              principal, or school management.
+              Save a snapshot of each term's results. Compare First, Second and
+              Third Terms side-by-side. See exactly who improved (▲) or declined
+              (▼).
             </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >⭐ Pro feature</span
+            >
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🌙</div>
-            <h3>Dark Mode</h3>
+            <div class="feature-icon">✨</div>
+            <h3>AI Teacher Comments</h3>
             <p>
-              Easy on the eyes during late-night grading sessions. Switch
-              between light and dark mode with one click.
+              Generate personalised, professional teacher's comments for every
+              student in seconds. Choose tone: encouraging, formal, or detailed.
+              Powered by AI.
             </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >⭐ Pro feature</span
+            >
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>CBT Quizzes</h3>
+            <p>
+              Build multiple-choice quizzes with a timer. Students take the quiz
+              on-device and GradeFlow auto-marks instantly. Great for revision
+              and tests.
+            </p>
+            <span
+              style="
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.72rem;
+                background: #fef3c7;
+                color: #92400e;
+                padding: 0.15rem 0.6rem;
+                border-radius: 99px;
+                font-weight: 700;
+              "
+              >⭐ Pro feature</span
+            >
           </div>
           <div class="feature-card">
             <div class="feature-icon">📡</div>
-            <h3>100% Offline — No Internet Needed</h3>
+            <h3>100% Offline — Always</h3>
             <p>
-              All your data lives securely on your device. Works in areas with
-              no internet. No subscriptions, no cloud.
+              Install once and it works forever without internet. Your data
+              stays on your device. No cloud, no subscription server, no data
+              leaks. Ever.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📲</div>
+            <h3>WhatsApp Report Sharing</h3>
+            <p>
+              Generate a formatted result summary and send it directly to a
+              parent's WhatsApp number — with or without the PDF — in two taps.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h3>WAEC / NECO Grade Scales</h3>
+            <p>
+              Default grading follows standard Nigerian WAEC/NECO scales. Fully
+              customisable — set your own minimum scores for A, B, C, D, E, F.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🏫</div>
+            <h3>School Branding on Every PDF</h3>
+            <p>
+              Upload your school crest. Add school name, motto, term and
+              session. Every PDF report card reflects your school's professional
+              identity.
             </p>
           </div>
           <div class="feature-card">
@@ -284,35 +424,21 @@
             <h3>Multiple Teacher Accounts</h3>
             <p>
               Different teachers can create separate accounts on the same
-              device. Each sees only their own data.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🔎</div>
-            <h3>Instant Search & Filter</h3>
-            <p>
-              Find any student in milliseconds. Filter by name, grade, or
-              subject from any view.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🎨</div>
-            <h3>Customisable School Branding</h3>
-            <p>
-              Add your school name, term, session, and school motto. Every PDF
-              reflects your school's identity.
+              device. Each teacher sees only their own classes and data. Fully
+              private.
             </p>
           </div>
         </div>
       </section>
 
-      <!-- How it works -->
+      <!-- ═══ HOW IT WORKS ═══ -->
       <section id="how" style="background: var(--surface); padding: 7rem 0">
         <div class="land-section" style="padding-top: 0; padding-bottom: 0">
           <div class="section-label">How it works</div>
-          <h2 class="section-title">Up and running in minutes</h2>
+          <h2 class="section-title">Up and running in under 3 minutes</h2>
           <p class="section-sub">
-            No training needed. If you can type, you can use GradeFlow.
+            No training, no tutorials, no IT setup. If you can type, you can use
+            GradeFlow.
           </p>
           <div
             style="
@@ -323,7 +449,15 @@
             "
           >
             <div style="text-align: center; padding: 1.5rem">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem">1️⃣</div>
+              <div
+                style="
+                  font-size: 2.8rem;
+                  margin-bottom: 1rem;
+                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
+                "
+              >
+                1️⃣
+              </div>
               <h3
                 style="
                   font-family: var(--font-display);
@@ -333,12 +467,27 @@
               >
                 Create your account
               </h3>
-              <p style="color: var(--muted); font-size: 0.9rem">
-                Sign up with your name, school and email. Takes 30 seconds.
+              <p
+                style="
+                  color: var(--muted);
+                  font-size: 0.88rem;
+                  line-height: 1.6;
+                "
+              >
+                Sign up with your name, school and email. No credit card needed.
+                Takes 30 seconds.
               </p>
             </div>
             <div style="text-align: center; padding: 1.5rem">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem">2️⃣</div>
+              <div
+                style="
+                  font-size: 2.8rem;
+                  margin-bottom: 1rem;
+                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
+                "
+              >
+                2️⃣
+              </div>
               <h3
                 style="
                   font-family: var(--font-display);
@@ -346,14 +495,29 @@
                   margin-bottom: 0.5rem;
                 "
               >
-                Add your classes
+                Add your class
               </h3>
-              <p style="color: var(--muted); font-size: 0.9rem">
-                Create classes and add subjects. Or import from Excel instantly.
+              <p
+                style="
+                  color: var(--muted);
+                  font-size: 0.88rem;
+                  line-height: 1.6;
+                "
+              >
+                Create a class, add subjects, and enter student names manually —
+                or import from Excel in one click (Pro).
               </p>
             </div>
             <div style="text-align: center; padding: 1.5rem">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem">3️⃣</div>
+              <div
+                style="
+                  font-size: 2.8rem;
+                  margin-bottom: 1rem;
+                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
+                "
+              >
+                3️⃣
+              </div>
               <h3
                 style="
                   font-family: var(--font-display);
@@ -363,13 +527,27 @@
               >
                 Enter scores
               </h3>
-              <p style="color: var(--muted); font-size: 0.9rem">
-                Type in test, practical and exam scores. Grades compute
-                automatically.
+              <p
+                style="
+                  color: var(--muted);
+                  font-size: 0.88rem;
+                  line-height: 1.6;
+                "
+              >
+                Type in Test, Practical and Exam scores. Totals, grades, remarks
+                and class rankings update live as you type.
               </p>
             </div>
             <div style="text-align: center; padding: 1.5rem">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem">4️⃣</div>
+              <div
+                style="
+                  font-size: 2.8rem;
+                  margin-bottom: 1rem;
+                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
+                "
+              >
+                4️⃣
+              </div>
               <h3
                 style="
                   font-family: var(--font-display);
@@ -379,65 +557,699 @@
               >
                 Export & share
               </h3>
-              <p style="color: var(--muted); font-size: 0.9rem">
-                Download beautiful PDF report cards or share the Excel sheet.
+              <p
+                style="
+                  color: var(--muted);
+                  font-size: 0.88rem;
+                  line-height: 1.6;
+                "
+              >
+                Download PDF report cards, export the broadsheet to Excel, or
+                share results directly to parents via WhatsApp.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Testimonials -->
+      <!-- ═══ PRICING ═══ -->
+      <section class="land-section" id="pricing">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">Simple, honest pricing.</h2>
+        <p class="section-sub">
+          Start free and upgrade when you're ready. No hidden fees, no
+          auto-renewals, no credit card required to sign up.
+        </p>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1.5rem;
+            max-width: 780px;
+            margin: 3rem auto 0;
+          "
+        >
+          <!-- Free plan -->
+          <div
+            style="
+              background: var(--surface);
+              border: 2px solid var(--border);
+              border-radius: var(--r-xl);
+              padding: 2rem;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            "
+          >
+            <div>
+              <div
+                style="
+                  font-size: 0.75rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  color: var(--muted);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                Free Plan
+              </div>
+              <div
+                style="
+                  font-size: 2.4rem;
+                  font-weight: 800;
+                  font-family: var(--font-display);
+                  color: var(--ink);
+                "
+              >
+                ₦0
+                <span
+                  style="
+                    font-size: 0.9rem;
+                    font-weight: 400;
+                    color: var(--muted);
+                  "
+                  >forever</span
+                >
+              </div>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--muted);
+                  margin-top: 0.4rem;
+                "
+              >
+                Perfect for getting started. No card needed.
+              </p>
+            </div>
+            <hr style="border: none; border-top: 1px solid var(--border)" />
+            <ul
+              style="
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.6rem;
+                flex: 1;
+              "
+            >
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>Up to <strong>2 classes</strong></span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>Up to <strong>35 students</strong> total</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span><strong>3 PDF</strong> report cards per term</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>Auto grade computation</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>Live analytics dashboard</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>Attendance tracking</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="
+                    color: var(--emerald);
+                    flex-shrink: 0;
+                    margin-top: 0.1rem;
+                  "
+                ></i
+                ><span>WhatsApp result sharing</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                  color: var(--muted);
+                "
+              >
+                <i
+                  class="bi bi-x-circle"
+                  style="flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Broadsheet export</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                  color: var(--muted);
+                "
+              >
+                <i
+                  class="bi bi-x-circle"
+                  style="flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Excel / CSV import</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                  color: var(--muted);
+                "
+              >
+                <i
+                  class="bi bi-x-circle"
+                  style="flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>AI teacher comments</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                  color: var(--muted);
+                "
+              >
+                <i
+                  class="bi bi-x-circle"
+                  style="flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>CBT Quizzes</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                  color: var(--muted);
+                "
+              >
+                <i
+                  class="bi bi-x-circle"
+                  style="flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Term History &amp; Progress</span>
+              </li>
+            </ul>
+            <button
+              class="btn"
+              style="width: 100%; justify-content: center; margin-top: 0.5rem"
+              onclick="openAuthModal('signup')"
+            >
+              <i class="bi bi-person-plus"></i> Start for free
+            </button>
+          </div>
+
+          <!-- Pro plan -->
+          <div
+            style="
+              background: linear-gradient(160deg, #4361ee, #7209b7);
+              border: 2px solid transparent;
+              border-radius: var(--r-xl);
+              padding: 2rem;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+              color: white;
+              position: relative;
+              overflow: hidden;
+              box-shadow: 0 20px 60px -10px rgba(67, 97, 238, 0.5);
+            "
+          >
+            <div
+              style="
+                position: absolute;
+                top: 1.2rem;
+                right: 1.2rem;
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(4px);
+                border-radius: 99px;
+                padding: 0.25rem 0.8rem;
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+              "
+            >
+              MOST POPULAR
+            </div>
+            <div
+              style="
+                position: absolute;
+                bottom: -40px;
+                right: -40px;
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                pointer-events: none;
+              "
+            ></div>
+            <div>
+              <div
+                style="
+                  font-size: 0.75rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  opacity: 0.7;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                Pro Plan
+              </div>
+              <div
+                style="
+                  font-size: 2.4rem;
+                  font-weight: 800;
+                  font-family: var(--font-display);
+                "
+              >
+                ₦5,000
+                <span style="font-size: 0.9rem; font-weight: 400; opacity: 0.7"
+                  >/ term</span
+                >
+              </div>
+              <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.4rem">
+                Everything unlimited. All features. One fixed price per term.
+              </p>
+            </div>
+            <hr
+              style="
+                border: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+              "
+            />
+            <ul
+              style="
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.6rem;
+                flex: 1;
+              "
+            >
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span><strong>Unlimited</strong> classes &amp; subjects</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span><strong>Unlimited</strong> students</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span><strong>Unlimited</strong> PDF report cards</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Broadsheet export (Excel)</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Excel / CSV student import</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>AI-generated teacher comments</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>CBT Quizzes with auto-marking</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Term History &amp; Progress tracking</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>Class Materials storage</span>
+              </li>
+              <li
+                style="
+                  display: flex;
+                  gap: 0.6rem;
+                  align-items: flex-start;
+                  font-size: 0.88rem;
+                "
+              >
+                <i
+                  class="bi bi-check-circle-fill"
+                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
+                ></i
+                ><span>All future features</span>
+              </li>
+            </ul>
+            <button
+              class="btn"
+              style="
+                width: 100%;
+                justify-content: center;
+                margin-top: 0.5rem;
+                background: white;
+                color: #4361ee;
+                font-weight: 700;
+                border: none;
+              "
+              onclick="openAuthModal('signup')"
+            >
+              <i class="bi bi-stars"></i> Get Pro — ₦5,000/term
+            </button>
+            <p
+              style="
+                text-align: center;
+                font-size: 0.75rem;
+                opacity: 0.65;
+                margin-top: -0.2rem;
+              "
+            >
+              Pay via WhatsApp or email after signing up.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ-style note -->
+        <div
+          style="
+            max-width: 600px;
+            margin: 2.5rem auto 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1.4rem 1.6rem;
+          "
+        >
+          <div
+            style="font-weight: 700; margin-bottom: 0.8rem; font-size: 0.9rem"
+          >
+            <i
+              class="bi bi-question-circle-fill"
+              style="color: var(--accent)"
+            ></i>
+            &nbsp;How does payment work?
+          </div>
+          <p style="font-size: 0.83rem; color: var(--muted); line-height: 1.7">
+            After signing up, go to
+            <strong>Settings → Plan &amp; Subscription</strong> and tap
+            <strong>Upgrade Now</strong>. You'll be connected to us via WhatsApp
+            or email to send ₦5,000 by bank transfer or mobile money. Your
+            account is activated within minutes of payment confirmation. No
+            card, no PayStack, no middleman.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══ TESTIMONIALS ═══ -->
       <section class="land-section" id="testimonials">
         <div class="section-label">Testimonials</div>
-        <h2 class="section-title">Loved by teachers nationwide</h2>
+        <h2 class="section-title">Teachers love it.</h2>
         <p class="section-sub">
-          Real feedback from real teachers across Nigeria.
+          Real feedback from Nigerian teachers who switched to GradeFlow.
         </p>
         <div class="testimonials-grid">
           <div class="testimonial-card">
             <p>
-              "I used to spend my entire Saturday computing grades. Now I finish
-              in less than an hour. GradeFlow is a miracle for teachers."
+              "I used to spend every Saturday computing grades manually. Now I'm
+              done in under an hour. GradeFlow is a miracle for class teachers."
             </p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">A</div>
               <div>
                 <div class="testimonial-name">Mrs. Adaeze Okonkwo</div>
                 <div class="testimonial-role">
-                  Class Teacher, Greenfield Academy Lagos
+                  Class Teacher · Greenfield Academy, Lagos
                 </div>
               </div>
             </div>
           </div>
           <div class="testimonial-card">
             <p>
-              "The PDF report cards look so professional. Parents actually
-              compliment the school's reports now. Best tool I've used in 15
-              years of teaching."
+              "The PDF report cards are so professional that parents actually
+              compliment the school now. I've been teaching 15 years and this is
+              the best tool I've ever used."
             </p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">K</div>
               <div>
                 <div class="testimonial-name">Mr. Kunle Adesoye</div>
                 <div class="testimonial-role">
-                  Head of Department, Victory College Ibadan
+                  Head of Department · Victory College, Ibadan
                 </div>
               </div>
             </div>
           </div>
           <div class="testimonial-card">
             <p>
-              "I love that it works without internet. I can grade in the staff
-              room where there's no wifi. The offline feature alone is worth
-              everything."
+              "The broadsheet feature alone saved me 4 hours of work this term.
+              I exported the whole school's results to Excel in one click and
+              sent it to the principal."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">C</div>
+              <div>
+                <div class="testimonial-name">Mr. Chukwuemeka Eze</div>
+                <div class="testimonial-role">
+                  Form Master · Hillcrest Secondary School, Enugu
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "I work in a school with poor internet. The fact that GradeFlow
+              works completely offline is a game-changer. I can grade anywhere —
+              even in the classroom."
             </p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">F</div>
               <div>
                 <div class="testimonial-name">Miss Fatima Ibrahim</div>
                 <div class="testimonial-role">
-                  Mathematics Teacher, Al-Noor Academy Abuja
+                  Mathematics Teacher · Al-Noor Academy, Abuja
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "The AI teacher comment feature is incredible. I used to spend
+              hours writing the same comments over and over. Now it generates
+              personalised ones for every student in seconds."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">B</div>
+              <div>
+                <div class="testimonial-name">Mrs. Blessing Okafor</div>
+                <div class="testimonial-role">
+                  Junior Secondary Teacher · Harmony School, Port Harcourt
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "₦5,000 per term is honestly nothing compared to the hours I save.
+              I use it for 3 classes and 120+ students. Worth every naira."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">T</div>
+              <div>
+                <div class="testimonial-name">Mr. Taiwo Adesanya</div>
+                <div class="testimonial-role">
+                  Senior Teacher · Crown Heights School, Ogun
                 </div>
               </div>
             </div>
@@ -445,30 +1257,107 @@
         </div>
       </section>
 
-      <!-- CTA -->
+      <!-- ═══ CTA ═══ -->
       <div class="land-cta-section">
-        <h2>Ready to transform how you grade?</h2>
+        <h2>Stop computing grades manually.</h2>
         <p>
-          Join thousands of Nigerian teachers already using GradeFlow. Free
-          forever.
+          Join Nigerian teachers already using GradeFlow to reclaim their
+          weekends. Start free — no card, no commitment.
         </p>
-        <button
-          class="btn btn-lg"
-          style="background: white; color: var(--accent); font-weight: 700"
-          onclick="openAuthModal('signup')"
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+          "
         >
-          <i class="bi bi-rocket-takeoff-fill"></i> Create free account
-        </button>
+          <button
+            class="btn btn-lg"
+            style="background: white; color: var(--accent); font-weight: 700"
+            onclick="openAuthModal('signup')"
+          >
+            <i class="bi bi-rocket-takeoff-fill"></i> Start free today
+          </button>
+          <button
+            class="btn btn-lg"
+            style="
+              background: rgba(255, 255, 255, 0.15);
+              color: white;
+              border-color: rgba(255, 255, 255, 0.35);
+            "
+            onclick="
+              document
+                .getElementById('pricing')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            <i class="bi bi-stars"></i> See Pro pricing
+          </button>
+        </div>
       </div>
 
-      <!-- Footer -->
+      <!-- ═══ FOOTER ═══ -->
       <footer class="land-footer">
-        <strong>GradeFlow</strong> · The World-Class Academic Grade Compiler for
-        Nigerian Teachers<br />
-        <span style="margin-top: 0.5rem; display: block"
-          >Built with ❤️ by Oshinaya Damilola · Free forever · 100%
-          offline</span
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            font-family: var(--font-display);
+            margin-bottom: 0.8rem;
+          "
         >
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="opacity: 0.8"
+          >
+            <rect width="24" height="24" rx="6" fill="#4361ee" />
+            <path
+              d="M6 17 L12 7 L18 17"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.5 13.5 H15.5"
+              stroke="white"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          GradeFlow
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.83rem;
+            margin-bottom: 0.8rem;
+          "
+        >
+          <a href="#features" style="color: var(--muted)">Features</a>
+          <a href="#pricing" style="color: var(--muted)">Pricing</a>
+          <a href="#testimonials" style="color: var(--muted)">Testimonials</a>
+          <a href="#how" style="color: var(--muted)">How it works</a>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--muted)">
+          Built with ❤️ by
+          <strong style="color: var(--ink)">Oshinaya Damilola</strong>
+          &nbsp;·&nbsp; Your data never leaves your device &nbsp;·&nbsp; 100%
+          offline PWA
+        </div>
       </footer>
     </div>
 
@@ -3015,141 +3904,105 @@
     </div>
 
     <!-- ============================================================ UPGRADE MODAL -->
-    <!-- ============================================================ UPGRADE MODAL -->
     <div class="modal-overlay" id="upgradeModal">
-      <div class="modal-box" style="max-width: 480px">
+      <div class="modal-box" style="max-width: 460px; text-align: center">
         <button class="modal-close" onclick="closeModal('upgradeModal')">
           <i class="bi bi-x-lg"></i>
         </button>
-
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 1.4rem">
-          <div style="font-size: 2.8rem; margin-bottom: 0.4rem">🚀</div>
-          <div class="modal-title">Upgrade to GradeFlow Pro</div>
-          <div class="modal-sub" id="upgradeReason">
-            Unlock unlimited access and all Pro features.
-          </div>
+        <div style="font-size: 3rem; margin-bottom: 0.5rem">🚀</div>
+        <div class="modal-title">Upgrade to Pro</div>
+        <div class="modal-sub" id="upgradeReason">
+          Unlock unlimited classes and students.
         </div>
-
-        <!-- Price pill -->
-        <div style="text-align: center; margin-bottom: 1.2rem">
-          <span
+        <div
+          style="
+            background: linear-gradient(135deg, #4361ee18, #7209b718);
+            border: 1.5px solid var(--accent);
+            border-radius: var(--r-lg);
+            padding: 1.4rem;
+            margin: 1.4rem 0;
+            text-align: left;
+          "
+        >
+          <div
             style="
-              display: inline-block;
-              background: linear-gradient(135deg, #4361ee, #7209b7);
-              color: white;
-              font-size: 1.5rem;
               font-weight: 800;
-              padding: 0.5rem 1.6rem;
-              border-radius: 99px;
-              letter-spacing: 0.5px;
+              font-size: 1.4rem;
+              color: var(--accent);
+              text-align: center;
+              margin-bottom: 1rem;
             "
           >
             ₦5,000
-            <span style="font-size: 0.75rem; font-weight: 500; opacity: 0.85"
+            <span
+              style="font-size: 0.85rem; font-weight: 500; color: var(--muted)"
               >/ term</span
             >
-          </span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-size: 0.88rem;
+              "
+            >
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--emerald)"
+              ></i>
+              Unlimited classes
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-size: 0.88rem;
+              "
+            >
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--emerald)"
+              ></i>
+              Unlimited students
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-size: 0.88rem;
+              "
+            >
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--emerald)"
+              ></i>
+              All features (PDF, Excel, CBT, Analytics…)
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-size: 0.88rem;
+              "
+            >
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--emerald)"
+              ></i>
+              Priority support
+            </div>
+          </div>
         </div>
-
-        <!-- Feature comparison -->
         <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem 1rem;
-            background: var(--surface-2);
-            border-radius: var(--r-lg);
-            padding: 1.1rem 1.2rem;
-            margin-bottom: 1.4rem;
-            font-size: 0.82rem;
-          "
+          style="font-size: 0.82rem; color: var(--muted); margin-bottom: 1.2rem"
         >
-          <div
-            style="
-              font-weight: 700;
-              color: var(--muted);
-              font-size: 0.72rem;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              padding-bottom: 0.4rem;
-              border-bottom: 1px solid var(--border);
-              grid-column: 1;
-            "
-          >
-            Free
-          </div>
-          <div
-            style="
-              font-weight: 700;
-              color: var(--accent);
-              font-size: 0.72rem;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              padding-bottom: 0.4rem;
-              border-bottom: 1px solid var(--border);
-              grid-column: 2;
-            "
-          >
-            Pro ⭐
-          </div>
-          <!-- row -->
-          <div style="color: var(--muted)">2 classes</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            Unlimited classes
-          </div>
-          <div style="color: var(--muted)">35 students</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            Unlimited students
-          </div>
-          <div style="color: var(--muted)">3 PDFs / term</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            Unlimited PDFs
-          </div>
-          <div style="color: #cbd5e1">No broadsheet</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ Broadsheet export
-          </div>
-          <div style="color: #cbd5e1">No Excel import</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ Excel / CSV import
-          </div>
-          <div style="color: #cbd5e1">No CBT quizzes</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ CBT Quizzes
-          </div>
-          <div style="color: #cbd5e1">No AI comments</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ AI Teacher Comments
-          </div>
-          <div style="color: #cbd5e1">No materials</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ Class Materials
-          </div>
-          <div style="color: #cbd5e1">No term history</div>
-          <div style="color: var(--emerald); font-weight: 600">
-            ✓ Term History
-          </div>
+          Contact us to pay and get your account activated instantly.
         </div>
-
-        <!-- How to pay -->
-        <div
-          style="
-            background: var(--accent-l);
-            border: 1px solid rgba(67, 97, 238, 0.2);
-            border-radius: var(--r-md);
-            padding: 0.9rem 1rem;
-            margin-bottom: 1.2rem;
-            font-size: 0.82rem;
-            color: var(--ink);
-          "
-        >
-          <strong>How to pay:</strong> Contact us on WhatsApp or email below.
-          Send ₦5,000 via bank transfer or mobile money and your account will be
-          activated within minutes.
-        </div>
-
-        <!-- CTA buttons -->
         <div style="display: flex; flex-direction: column; gap: 0.7rem">
           <button
             class="btn btn-primary"
@@ -3158,26 +4011,23 @@
               justify-content: center;
               background: #25d366;
               border-color: #1ebe5d;
-              font-weight: 700;
-              font-size: 0.95rem;
-              padding: 0.8rem;
             "
           >
-            <i class="bi bi-whatsapp"></i> Pay via WhatsApp
+            <i class="bi bi-whatsapp"></i> Contact us on WhatsApp
           </button>
           <button
             class="btn"
             onclick="upgradeContactEmail()"
             style="justify-content: center"
           >
-            <i class="bi bi-envelope-fill"></i> Pay via Email
+            <i class="bi bi-envelope-fill"></i> Send upgrade request by email
           </button>
           <button
             class="btn btn-sm"
             onclick="closeModal('upgradeModal')"
-            style="color: var(--muted); text-align: center"
+            style="color: var(--muted)"
           >
-            Not now — stay on Free
+            Stay on Free Plan
           </button>
         </div>
       </div>
