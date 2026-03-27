@@ -28,33 +28,108 @@
   // ════════════════════════════════════════════════════
   //  STORAGE KEYS (per user)
   // ════════════════════════════════════════════════════
+  // ── HTML escape helper — use on ALL user-supplied data in innerHTML ──
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
   function userKey(k) {
     const email = currentUser?.email || "guest";
     return `gf_${email}_${k}`;
   }
+  // ── Safe localStorage write — catches QuotaExceededError ──────────────
+  function safeSave(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      if (e instanceof DOMException && (
+        e.code === 22 || e.code === 1014 ||
+        e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED"
+      )) {
+        // Storage full — try freeing space then retry once
+        _freeStorageSpace();
+        try {
+          localStorage.setItem(key, value);
+        } catch (e2) {
+          showToast(
+            "⚠️ Storage full! Please export a backup and delete old data to continue.",
+            "error"
+          );
+        }
+      }
+    }
+  }
+  // Frees space by trimming the heaviest optional data first
+  function _freeStorageSpace() {
+    // 1. Strip logo dataUrl (often 50–200 KB)
+    if (settings && settings.logoDataUrl) {
+      settings.logoDataUrl = "";
+      try { localStorage.setItem(userKey("settings"), JSON.stringify(settings)); } catch(e) {}
+    }
+    // 2. Trim oldest term history snapshots down to 2 most recent per class
+    let freed = false;
+    Object.keys(termHistory || {}).forEach(cid => {
+      if ((termHistory[cid] || []).length > 2) {
+        termHistory[cid] = termHistory[cid].slice(0, 2);
+        freed = true;
+      }
+    });
+    if (freed) {
+      try { localStorage.setItem(userKey("termHistory"), JSON.stringify(termHistory)); } catch(e) {}
+    }
+    // 3. Strip base64 dataUrls from materials (largest items) — keep metadata only
+    let matFreed = false;
+    Object.keys(allMaterials || {}).forEach(cid => {
+      (allMaterials[cid] || []).forEach(m => {
+        if (m.dataUrl && m.dataUrl.length > 5000) {
+          m.dataUrl = "";
+          m._stripped = true;
+          matFreed = true;
+        }
+      });
+    });
+    if (matFreed) {
+      try { localStorage.setItem(userKey("materials"), JSON.stringify(allMaterials)); } catch(e) {}
+      showToast("⚠️ Storage was nearly full — some material previews were cleared. Export a backup.", "warning");
+    }
+  }
+
   function saveData() {
     if (!currentUser) return;
-    localStorage.setItem(userKey("classes"), JSON.stringify(classes));
-    localStorage.setItem(userKey("students"), JSON.stringify(allStudents));
-    localStorage.setItem(userKey("settings"), JSON.stringify(settings));
+    safeSave(userKey("classes"), JSON.stringify(classes));
+    safeSave(userKey("students"), JSON.stringify(allStudents));
+    safeSave(userKey("settings"), JSON.stringify(settings));
   }
   function saveTermHistory() {
     if (!currentUser) return;
-    localStorage.setItem(userKey("termHistory"), JSON.stringify(termHistory));
+    safeSave(userKey("termHistory"), JSON.stringify(termHistory));
   }
   function saveMaterials() {
     if (!currentUser) return;
-    localStorage.setItem(userKey("materials"), JSON.stringify(allMaterials));
+    safeSave(userKey("materials"), JSON.stringify(allMaterials));
+  }
+  function saveAttendance() {
+    if (!currentUser) return;
+    safeSave(userKey("attendance"), JSON.stringify(allAttendance));
+  }
+  function saveQuizzes() {
+    if (!currentUser) return;
+    safeSave(userKey("quizzes"), JSON.stringify(allQuizzes));
   }
   function loadUserData() {
     const savedClasses = localStorage.getItem(userKey("classes"));
     const savedStudents = localStorage.getItem(userKey("students"));
     const savedSettings = localStorage.getItem(userKey("settings"));
     const savedMaterials = localStorage.getItem(userKey("materials"));
-    classes = savedClasses ? JSON.parse(savedClasses) : getDefaultClasses();
-    allStudents = savedStudents
-      ? JSON.parse(savedStudents)
-      : getDefaultStudents(classes);
+    // New accounts start with empty state; demo data only loads for demo mode
+    const isNewAccount = !savedClasses;
+    classes = savedClasses ? JSON.parse(savedClasses) : [];
+    allStudents = savedStudents ? JSON.parse(savedStudents) : {};
     settings = savedSettings ? JSON.parse(savedSettings) : getDefaultSettings();
     allMaterials = savedMaterials ? JSON.parse(savedMaterials) : {};
     classes.forEach((c) => {
@@ -262,12 +337,26 @@
   //  PAGE SWITCHING
   // ════════════════════════════════════════════════════
   function showPage(page) {
-    document
-      .querySelectorAll(".page")
-      .forEach((p) => p.classList.remove("active"));
-    document.getElementById(`page-${page}`).classList.add("active");
-    if (page === "dashboard") {
-      document.getElementById("page-dashboard").style.display = "flex";
+    // Clear active class AND any inline display styles on every page
+    // so CSS display rules always win (inline styles override CSS otherwise)
+    document.querySelectorAll(".page").forEach(function(p) {
+      p.classList.remove("active");
+      p.style.removeProperty("display");
+    });
+    document.getElementById("page-" + page).classList.add("active");
+
+    if (page === "landing") {
+      // Lock body scroll so dashboard DOM cannot bleed through landing
+      document.body.classList.add("on-landing");
+      // Scroll the landing page container back to top on every visit
+      var landingEl = document.getElementById("page-landing");
+      if (landingEl) landingEl.scrollTop = 0;
+      // Fix anchor links: since landing is its own scroll container,
+      // native href="#section" scrolls body not the container — intercept
+      _fixLandingNavLinks();
+      updateOnlineStatus();
+    } else {
+      document.body.classList.remove("on-landing");
     }
   }
 
@@ -342,7 +431,7 @@
         const count = (allStudents[c.id] || []).length;
         return `<div class="class-item ${c.id === activeClassId ? "active" : ""}" onclick="selectClass('${c.id}')">
         <span class="class-emoji">${c.emoji || "📚"}</span>
-        <span class="class-item-name">${c.name}</span>
+        <span class="class-item-name">${esc(c.name)}</span>
         <span class="class-item-count">${count}</span>
         <button class="class-delete-btn" onclick="event.stopPropagation(); openDeleteClassModal('${c.id}')" title="Delete class"><i class="bi bi-trash3"></i></button>
       </div>`;
@@ -369,7 +458,7 @@
     if (activeView === "attendance") renderAttendance();
     if (activeView === "cbt") renderCBT();
     document.getElementById("activeClassName").innerHTML =
-      `<i class="bi bi-folder2-open"></i> ${cls?.name || ""}`;
+      `<i class="bi bi-folder2-open"></i> ${esc(cls?.name || "")}`;
     const attEl2 = document.getElementById("attendanceClassName");
     const cbtEl2 = document.getElementById("cbtClassName");
     if (attEl2) attEl2.textContent = cls?.name || "";
@@ -476,8 +565,8 @@
         <td><input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px;" ${checked ? "checked" : ""} onchange="handleCheck('${s.id}',this.checked)"/></td>
         <td>
           <div class="student-name-cell">
-            <div class="student-mini-avatar">${ini}</div>
-            <span class="student-name td-name">${s.name}</span>
+            <div class="student-mini-avatar">${esc(ini)}</div>
+            <span class="student-name td-name">${esc(s.name)}</span>
           </div>
         </td>
         <td><input type="number" min="0" max="20" value="${sub.test ?? 0}" class="score-input" onchange="updateScore('${s.id}','${activeSubjectId}','test',this)" title="Test score (max 20)"/></td>
@@ -806,7 +895,7 @@
         <div class="top-performer-row">
           <div class="top-rank ${i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : ""}">${i === 0 ? "🏆" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}</div>
           <div class="student-mini-avatar" style="width:28px;height:28px;font-size:.7rem;border-radius:8px;">${initials(s.name)}</div>
-          <div class="top-name">${s.name}</div>
+          <div class="top-name">${esc(s.name)}</div>
           <div class="top-score">${s.overall}%</div>
           <span class="grade-pill ${gradeResult(s.overall).cls}" style="font-size:.72rem;">${gradeResult(s.overall).g}</span>
         </div>`,
@@ -932,9 +1021,9 @@
         const ini = initials(s.name);
         return `<div class="student-card" onclick="viewStudentDetail('${s.id}')">
         <div class="student-card-head">
-          <div class="student-card-avatar">${ini}</div>
+          <div class="student-card-avatar">${esc(ini)}</div>
           <div>
-            <div class="student-card-name">${s.name}</div>
+            <div class="student-card-name">${esc(s.name)}</div>
             <div class="student-card-pos">${s.pos ? ordinal(s.pos) + " position" : "Not yet graded"}</div>
           </div>
           <span class="grade-pill ${grade.cls}" style="margin-left:auto;">${grade.g}</span>
@@ -1575,11 +1664,8 @@
         saveData();
         saveMaterials();
         saveTermHistory();
-        localStorage.setItem(
-          userKey("attendance"),
-          JSON.stringify(allAttendance),
-        );
-        localStorage.setItem(userKey("quizzes"), JSON.stringify(allQuizzes));
+        saveAttendance();
+        saveQuizzes();
         renderSidebarClasses();
         renderSubjectTabs();
         renderTable();
@@ -2198,39 +2284,45 @@
       showToast("Please enter your name", "error");
       return;
     }
-    if (!email || !email.includes("@")) {
-      showToast("Please enter a valid email", "error");
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!email || !emailRe.test(email)) {
+      showToast("Please enter a valid email address", "error");
       return;
     }
     if (!pass || pass.length < 8) {
       showToast("Password must be at least 8 characters", "error");
       return;
     }
+    const normalizedEmail = email.toLowerCase();
     const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
-    if (accounts[email]) {
+    if (accounts[normalizedEmail]) {
       showToast(
         "An account with this email already exists. Please log in.",
         "error",
       );
       return;
     }
-    currentUser = { name, org: org || "My School", email };
+    currentUser = { name, org: org || "My School", email: normalizedEmail };
     saveUserToStorage(currentUser);
-    localStorage.setItem(`gf_pass_${email}`, simpleHash(pass));
+    localStorage.setItem(`gf_pass_${normalizedEmail}`, simpleHash(pass));
+    // Mark as brand-new account so enterDashboard shows onboarding
+    localStorage.setItem(`gf_new_account_${normalizedEmail}`, "1");
     loadUserData();
     closeModal("authModal");
     enterDashboard();
     showToast(
-      `🎉 Welcome, ${name.split(" ")[0]}! Your account is ready.`,
+      `🎉 Welcome, ${name.split(" ")[0]}! Let's set up your first class.`,
       "success",
     );
   };
 
   window.handleLogin = function () {
-    const email = document.getElementById("li-email").value.trim();
+    const rawEmail = document.getElementById("li-email").value.trim();
+    const email = rawEmail.toLowerCase();
     const pass = document.getElementById("li-pass").value;
-    if (!email || !email.includes("@")) {
-      showToast("Please enter a valid email", "error");
+    const emailReL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!email || !emailReL.test(email)) {
+      showToast("Please enter a valid email address", "error");
       return;
     }
     if (!pass) {
@@ -2284,6 +2376,11 @@
     return ADMIN_EMAILS.includes((currentUser?.email || "").toLowerCase());
   }
 
+  // Generate a tamper-detection signature for plan objects
+  function _planSig(email, tier, expiresAt) {
+    return simpleHash("gf_integrity_" + email + tier + String(expiresAt));
+  }
+
   function getPlan() {
     if (!currentUser) return "free";
     if (isAdmin()) return "admin";
@@ -2294,6 +2391,9 @@
       plan = JSON.parse(localStorage.getItem(key) || "{}");
     } catch (e) {}
     if (plan.tier === "pro") {
+      // Verify integrity signature — rejects manually crafted entries
+      const expectedSig = _planSig(currentUser.email, "pro", plan.expiresAt);
+      if (plan._sig !== expectedSig) return "free"; // tampered — ignore
       if (!plan.expiresAt || Date.now() <= plan.expiresAt) return "pro";
     }
     // Check school access code
@@ -2397,6 +2497,7 @@
         grantedAt: Date.now(),
         expiresAt,
         grantedBy: currentUser.email,
+        _sig: _planSig(email, "pro", expiresAt),
       }),
     );
     showToast(`\u2705 Pro granted to ${email} for ${months} months`, "success");
@@ -2782,7 +2883,8 @@ Please send payment and setup details. Thank you.`);
           <div><div style="font-size:.78rem;color:var(--muted);margin-bottom:.2rem;">Expires</div><div style="font-weight:700;font-size:.95rem;">${expiresDate}</div></div>
           <div style="text-align:right;"><div style="font-size:.78rem;color:var(--muted);margin-bottom:.2rem;">Time left</div><div style="font-weight:800;font-size:1.1rem;color:${urgentColor};">${daysLeft} days</div></div>
         </div>
-        ${daysLeft <= 14 ? `<div style="margin-top:1rem;padding:.8rem 1rem;background:#fff0f3;border:1px solid #ef476f;border-radius:var(--r-md);color:#ef476f;font-size:.82rem;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Your Pro plan expires soon. Contact your GradeFlow admin to renew.</div>` : ""}`;
+        ${daysLeft <= 14 ? `<div style="margin-top:1rem;padding:.8rem 1rem;background:#fff0f3;border:1px solid #ef476f;border-radius:var(--r-md);color:#ef476f;font-size:.82rem;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Your Pro plan expires soon. Contact your GradeFlow admin to renew.</div>` : ""}
+        ${renderStorageMeter()}`;
     } else {
       const classPct = Math.min(100, (classes.length / FREE_CLASS_LIMIT) * 100);
       const stuPct = Math.min(100, (totalStudents / FREE_STUDENT_LIMIT) * 100);
@@ -2827,8 +2929,45 @@ Please send payment and setup details. Thank you.`);
             <input type="text" class="form-input" id="schoolCodeInput" placeholder="e.g. GREENF-2026-AB12" style="flex:1;font-family:var(--font-mono);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;"/>
             <button class="btn btn-primary btn-sm" onclick="redeemSchoolCode()"><i class="bi bi-building-fill-check"></i> Activate</button>
           </div>
-        </div>`;
+        </div>
+        ${renderStorageMeter()}`;
     }
+  }
+
+  // ── Storage usage meter ────────────────────────────────────────
+  function getStorageUsageKB() {
+    var total = 0;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (!k) continue;
+        var v = localStorage.getItem(k) || "";
+        total += (k.length + v.length) * 2; // UTF-16 = 2 bytes per char
+      }
+    } catch(e) {}
+    return Math.round(total / 1024);
+  }
+  function renderStorageMeter() {
+    var usedKB = getStorageUsageKB();
+    var maxKB = 5120; // 5 MB localStorage typical cap
+    var pct = Math.min(100, Math.round((usedKB / maxKB) * 100));
+    var color = pct >= 90 ? "#ef476f" : pct >= 70 ? "#f9a825" : "var(--accent)";
+    var warningHtml = pct >= 70
+      ? `<div style="margin-top:.6rem;font-size:.78rem;color:${color};font-weight:600;">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          ${pct >= 90 ? "Storage almost full! Export a backup now." : "Storage getting full — consider exporting a backup."}
+         </div>`
+      : "";
+    return `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.78rem;color:var(--muted);">
+        <span><i class="bi bi-hdd-fill"></i> Local storage</span>
+        <span style="font-weight:700;color:${color};">${usedKB < 1024 ? usedKB + " KB" : (usedKB/1024).toFixed(1) + " MB"} / 5 MB</span>
+      </div>
+      <div style="height:5px;background:var(--border);border-radius:99px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:99px;transition:width .4s;"></div>
+      </div>
+      ${warningHtml}
+    </div>`;
   }
 
   window.upgradeContactWhatsApp = function () {
@@ -2850,10 +2989,14 @@ Please send payment and setup details. Thank you.`);
     if (!confirm("Log out of your account?")) return;
     saveData();
     saveMaterials();
+    // Destroy chart to avoid canvas reuse errors on next login
+    if (scoreChart) { try { scoreChart.destroy(); } catch(e){} scoreChart = null; }
     currentUser = null;
+    activeClassId = null;
+    activeSubjectId = null;
     localStorage.removeItem("gf_current_user");
     showPage("landing");
-    showToast("Logged out", "info");
+    showToast("Logged out successfully", "info");
   };
 
   function enterDashboard() {
@@ -2862,6 +3005,12 @@ Please send payment and setup details. Thank you.`);
     updateSidebarUser();
     ensureSidebarOverlay();
     handleResponsive();
+    // Show onboarding for brand-new accounts with no classes
+    const isNew = localStorage.getItem(`gf_new_account_${currentUser?.email}`);
+    if (isNew && classes.length === 0) {
+      localStorage.removeItem(`gf_new_account_${currentUser?.email}`);
+      setTimeout(() => showOnboardingModal(), 400);
+    }
     activeClassId = classes.length ? classes[0].id : null;
     activeSubjectId = activeClassId
       ? classes.find((c) => c.id === activeClassId)?.subjects?.[0]?.id
@@ -2872,7 +3021,7 @@ Please send payment and setup details. Thank you.`);
     updateStats();
     if (activeClassId) {
       document.getElementById("activeClassName").innerHTML =
-        `<i class="bi bi-folder2-open"></i> ${classes[0].name}`;
+        `<i class="bi bi-folder2-open"></i> ${esc(classes[0].name)}`;
       document.getElementById("analyticsClassName").textContent =
         classes[0].name;
       document.getElementById("materialsClassName").textContent =
@@ -2888,6 +3037,54 @@ Please send payment and setup details. Thank you.`);
       document.getElementById("themeLabel").textContent = "Light mode";
     }
   }
+
+  // ════════════════════════════════════════════════════
+  //  ONBOARDING MODAL — shown to brand-new accounts
+  // ════════════════════════════════════════════════════
+  function showOnboardingModal() {
+    var firstName = currentUser ? currentUser.name.split(" ")[0] : "Teacher";
+    var modal = document.getElementById("onboardingModal");
+    if (!modal) return;
+    document.getElementById("onboardingUserName").textContent = firstName;
+    modal.classList.add("active");
+  }
+
+  window.closeOnboarding = function () {
+    document.getElementById("onboardingModal").classList.remove("active");
+  };
+
+  window.onboardingCreateClass = function () {
+    document.getElementById("onboardingModal").classList.remove("active");
+    openAddClassModal();
+  };
+
+  window.loadDemoData = function () {
+    if (!confirm("Load sample data with 3 demo classes and students? You can delete them any time.")) return;
+    // Inject the default demo classes and students
+    classes = [
+      { id: "cls1", name: "PRY 5 RED",   emoji: "🔴", subjects: [{ id: "sub1", name: "Mathematics" }, { id: "sub2", name: "English" }] },
+      { id: "cls2", name: "PRY 5 BLUE",  emoji: "🔵", subjects: [{ id: "sub3", name: "Mathematics" }] },
+      { id: "cls3", name: "PRY 5 WHITE", emoji: "⚪", subjects: [{ id: "sub4", name: "Mathematics" }] },
+    ];
+    allStudents = {
+      cls1: [
+        { id: "s1", name: "Abakpa Fortune", subjects: [{ id: "sub1", name: "Mathematics", test: 15, prac: 18, exam: "" }, { id: "sub2", name: "English", test: 12, prac: 14, exam: "" }] },
+        { id: "s2", name: "John Psalms",    subjects: [{ id: "sub1", name: "Mathematics", test: 18, prac: 19, exam: 50 }, { id: "sub2", name: "English", test: 17, prac: 18, exam: 45 }] },
+        { id: "s3", name: "Amaka Chukwu",  subjects: [{ id: "sub1", name: "Mathematics", test: 14, prac: 12, exam: 40 }, { id: "sub2", name: "English", test: 16, prac: 15, exam: 38 }] },
+      ],
+      cls2: [], cls3: [],
+    };
+    saveData();
+    document.getElementById("onboardingModal").classList.remove("active");
+    activeClassId = "cls1";
+    activeSubjectId = "sub1";
+    renderSidebarClasses();
+    renderSubjectTabs();
+    renderTable();
+    updateStats();
+    document.getElementById("activeClassName").innerHTML = '<i class="bi bi-folder2-open"></i> PRY 5 RED';
+    showToast("✅ Demo data loaded — explore away!", "success");
+  };
 
   function updateSidebarUser() {
     if (!currentUser) return;
@@ -2986,11 +3183,29 @@ Please send payment and setup details. Thank you.`);
     if (overlay) overlay.classList.remove("active");
   }
 
+  // Fix landing page nav anchor links to scroll within #page-landing container
+  function _fixLandingNavLinks() {
+    var landing = document.getElementById("page-landing");
+    if (!landing) return;
+    landing.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      // Remove any previously attached listener to avoid double-fires
+      var clone = a.cloneNode(true);
+      a.parentNode.replaceChild(clone, a);
+      clone.addEventListener("click", function(e) {
+        var target = document.getElementById(this.getAttribute("href").slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  }
+
   function handleResponsive() {
     const mobileBtn = document.getElementById("mobileMenuBtn");
     const isMobile = window.innerWidth <= 768;
     if (mobileBtn) mobileBtn.style.display = isMobile ? "flex" : "none";
-    if (!isMobile) {
+    if (!isMobile && document.getElementById("appSidebar")) {
       closeMobileSidebar();
     }
     updateBatchBarPosition();
@@ -3602,7 +3817,7 @@ Please send payment and setup details. Thank you.`);
     "Commerce",
     "Accounting",
     "Business Studies",
-    "Office Practice",
+    "DSP",
     "Store Management",
     "Yoruba",
     "Igbo",
@@ -4250,7 +4465,7 @@ Please send payment and setup details. Thank you.`);
   window.saveAiKey = function () {
     const key = document.getElementById("aiApiKeyInput").value.trim();
     if (!key || key.length < 20) {
-      showToast("AIzaSyCWekjn3wQpr7H_4xS2X_Q-nOFO7Zc9rTc", "error");
+      showToast("Please enter a valid Gemini API key (starts with AIzaSy...)", "error");
       return;
     }
     localStorage.setItem("gf_ai_key", key);
@@ -4491,7 +4706,6 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
     }
 
     showPage("landing");
-    updateOnlineStatus();
     handleResponsive();
     ensureSidebarOverlay();
   }

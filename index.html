@@ -1581,7 +1581,7 @@
         </div>
         <div style="font-size: 0.78rem; color: var(--muted)">
           Built with ❤️ by
-          <strong style="color: var(--ink)">Oshinaya Damilola</strong>
+          <strong style="color: var(--bg)">Oshinaya Damilola</strong>
           &nbsp;·&nbsp; Your data never leaves your device &nbsp;·&nbsp; 100%
           offline PWA
         </div>
@@ -3608,7 +3608,7 @@
           style="
             text-align: center;
             margin-top: 1.5rem;
-            color: #94a3b8;
+            color: #fafafa;
             font-size: 10px;
             border-top: 1px solid #e2e8f0;
             padding-top: 0.8rem;
@@ -4130,7 +4130,34 @@
       </div>
     </div>
 
-    <!-- ============================================================ UPGRADE MODAL -->
+    <!-- ============================================================ ONBOARDING MODAL -->
+    <div class="modal-overlay" id="onboardingModal">
+      <div class="modal-box" style="max-width:500px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:.5rem;">👋</div>
+        <div class="modal-title">Welcome, <span id="onboardingUserName">Teacher</span>!</div>
+        <div class="modal-sub" style="margin-bottom:1.5rem;">
+          GradeFlow is ready. How would you like to start?
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.8rem;">
+          <button class="btn btn-primary" onclick="onboardingCreateClass()" style="justify-content:center;padding:1rem;">
+            <i class="bi bi-plus-circle-fill"></i>&nbsp; Create my first class
+          </button>
+          <button class="btn" onclick="loadDemoData()" style="justify-content:center;padding:1rem;">
+            <i class="bi bi-eye"></i>&nbsp; Load sample data to explore first
+          </button>
+          <button class="btn btn-sm" onclick="closeOnboarding()" style="color:var(--muted);margin-top:.3rem;">
+            I'll set up later
+          </button>
+        </div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:center;gap:2rem;font-size:.8rem;color:var(--muted);">
+          <span><i class="bi bi-wifi-off"></i> 100% offline</span>
+          <span><i class="bi bi-shield-lock"></i> Data stays on your device</span>
+          <span><i class="bi bi-phone"></i> Works on phone too</span>
+        </div>
+      </div>
+    </div>
+
+        <!-- ============================================================ UPGRADE MODAL -->
     <div class="modal-overlay" id="upgradeModal">
       <div class="modal-box" style="max-width: 460px; text-align: center">
         <button class="modal-close" onclick="closeModal('upgradeModal')">
