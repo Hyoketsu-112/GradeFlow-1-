@@ -24,6 +24,9 @@
   let sidebarCollapsed = false;
   let viewingMaterialId = null;
   let currentMaterialFilter = "all";
+  let sessionCheckTimer = null;
+  let sessionActivityBound = false;
+  let lastSessionActivityWrite = 0;
 
   // ════════════════════════════════════════════════════
   //  STORAGE KEYS (per user)
@@ -42,15 +45,315 @@
     const email = currentUser?.email || "guest";
     return `gf_${email}_${k}`;
   }
+
+  // ── Security helpers (Web Crypto with graceful fallback) ───────────────
+  function _toHex(bytes) {
+    return Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+  function _fromHex(hex) {
+    const arr = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return arr;
+  }
+  async function _sha256Hex(str) {
+    try {
+      if (!window.crypto?.subtle) return "legacy-" + simpleHash(str);
+      const bytes = new TextEncoder().encode(str);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return _toHex(new Uint8Array(digest));
+    } catch {
+      return "legacy-" + simpleHash(str);
+    }
+  }
+  function _bytesToB64(bytes) {
+    let bin = "";
+    bytes.forEach((b) => {
+      bin += String.fromCharCode(b);
+    });
+    return btoa(bin);
+  }
+  function _b64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  async function _deriveBackupKey(passphrase, salt, iterations) {
+    const base = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(passphrase),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"],
+    );
+    return crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations,
+        hash: "SHA-256",
+      },
+      base,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"],
+    );
+  }
+  async function _encryptBackupObject(obj, passphrase) {
+    const iterations = 150000;
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await _deriveBackupKey(passphrase, salt, iterations);
+    const plain = new TextEncoder().encode(JSON.stringify(obj));
+    const cipherBuf = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      plain,
+    );
+    const cipherB64 = _bytesToB64(new Uint8Array(cipherBuf));
+    return {
+      version: 3,
+      encrypted: true,
+      algorithm: "AES-GCM",
+      kdf: "PBKDF2-SHA256",
+      iterations,
+      salt: _bytesToB64(salt),
+      iv: _bytesToB64(iv),
+      ciphertext: cipherB64,
+      checksum: await _sha256Hex(cipherB64),
+      checksumAlg: "SHA-256",
+      date: new Date().toISOString(),
+      exportedBy: currentUser?.name || "",
+      school: settings.pdfSchool || currentUser?.org || "",
+    };
+  }
+  async function _decryptBackupEnvelope(envelope, passphrase) {
+    const iv = _b64ToBytes(envelope.iv || "");
+    const salt = _b64ToBytes(envelope.salt || "");
+    const cipher = _b64ToBytes(envelope.ciphertext || "");
+    const key = await _deriveBackupKey(
+      passphrase,
+      salt,
+      parseInt(String(envelope.iterations || "150000"), 10) || 150000,
+    );
+    const plain = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv },
+      key,
+      cipher,
+    );
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  async function _createPasswordRecord(password) {
+    const iterations = 120000;
+    try {
+      if (!window.crypto?.subtle) {
+        return `legacy$${simpleHash(password)}`;
+      }
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const key = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"],
+      );
+      const bits = await crypto.subtle.deriveBits(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations,
+          hash: "SHA-256",
+        },
+        key,
+        256,
+      );
+      return `pbkdf2$${iterations}$${_toHex(salt)}$${_toHex(new Uint8Array(bits))}`;
+    } catch {
+      return `legacy$${simpleHash(password)}`;
+    }
+  }
+  async function _verifyPassword(email, password) {
+    const key = `gf_pass_${email}`;
+    const stored = localStorage.getItem(key);
+
+    // Very old accounts may not have any password hash yet.
+    if (!stored) {
+      const migrated = await _createPasswordRecord(password);
+      safeSave(key, migrated);
+      return true;
+    }
+
+    // New PBKDF2 format
+    if (stored.startsWith("pbkdf2$")) {
+      try {
+        const [, iterStr, saltHex, hashHex] = stored.split("$");
+        const iterations = parseInt(iterStr, 10) || 120000;
+        const keyMat = await crypto.subtle.importKey(
+          "raw",
+          new TextEncoder().encode(password),
+          { name: "PBKDF2" },
+          false,
+          ["deriveBits"],
+        );
+        const bits = await crypto.subtle.deriveBits(
+          {
+            name: "PBKDF2",
+            salt: _fromHex(saltHex),
+            iterations,
+            hash: "SHA-256",
+          },
+          keyMat,
+          256,
+        );
+        return _toHex(new Uint8Array(bits)) === hashHex;
+      } catch {
+        return false;
+      }
+    }
+
+    // Mid format fallback
+    if (stored.startsWith("legacy$")) {
+      const ok = stored.slice(7) === simpleHash(password);
+      if (ok) {
+        const upgraded = await _createPasswordRecord(password);
+        safeSave(key, upgraded);
+      }
+      return ok;
+    }
+
+    // Original plain simpleHash format fallback and migration
+    const okLegacy = stored === simpleHash(password);
+    if (okLegacy) {
+      const upgraded = await _createPasswordRecord(password);
+      safeSave(key, upgraded);
+    }
+    return okLegacy;
+  }
+
+  // ── Session management (idle + max age) ─────────────────────────────────
+  const SESSION_IDLE_MS = 30 * 60 * 1000;
+  const SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000;
+  const SESSION_CHECK_MS = 60 * 1000;
+  const SESSION_EVENTS = [
+    "click",
+    "keydown",
+    "mousemove",
+    "touchstart",
+    "scroll",
+  ];
+  function _sessionKey(kind) {
+    const email = currentUser?.email || "guest";
+    return `gf_session_${kind}_${email}`;
+  }
+  function _recordSessionActivity() {
+    if (!currentUser) return;
+    const now = Date.now();
+    // Avoid excessive storage writes from high-frequency events.
+    if (now - lastSessionActivityWrite < 15000) return;
+    safeSave(_sessionKey("lastActivity"), String(now));
+    lastSessionActivityWrite = now;
+  }
+  function _clearSessionMeta() {
+    if (!currentUser) return;
+    localStorage.removeItem(_sessionKey("lastActivity"));
+    localStorage.removeItem(_sessionKey("expiresAt"));
+  }
+  function _forceSessionLogout(reason) {
+    saveData();
+    saveMaterials();
+    if (scoreChart) {
+      try {
+        scoreChart.destroy();
+      } catch (e) {}
+      scoreChart = null;
+    }
+    _stopSessionMonitor();
+    _clearSessionMeta();
+    currentUser = null;
+    activeClassId = null;
+    activeSubjectId = null;
+    localStorage.removeItem("gf_current_user");
+    showPage("landing");
+    showToast(reason || "Session ended. Please log in again.", "info");
+  }
+  function _validateSession() {
+    if (!currentUser) return;
+    const now = Date.now();
+    const last = parseInt(
+      localStorage.getItem(_sessionKey("lastActivity")) || "0",
+      10,
+    );
+    const expiresAt = parseInt(
+      localStorage.getItem(_sessionKey("expiresAt")) || "0",
+      10,
+    );
+
+    if (expiresAt && now >= expiresAt) {
+      _forceSessionLogout("Session expired for security. Please log in again.");
+      return;
+    }
+    if (last && now - last >= SESSION_IDLE_MS) {
+      _forceSessionLogout("Logged out after inactivity for security.");
+    }
+  }
+  function _onSessionActivity() {
+    _recordSessionActivity();
+  }
+  function _startSessionMonitor() {
+    if (!currentUser) return;
+    const now = Date.now();
+    safeSave(_sessionKey("lastActivity"), String(now));
+    safeSave(_sessionKey("expiresAt"), String(now + SESSION_MAX_AGE_MS));
+
+    if (!sessionActivityBound) {
+      SESSION_EVENTS.forEach((ev) =>
+        window.addEventListener(ev, _onSessionActivity, { passive: true }),
+      );
+      sessionActivityBound = true;
+    }
+    if (sessionCheckTimer) clearInterval(sessionCheckTimer);
+    sessionCheckTimer = setInterval(_validateSession, SESSION_CHECK_MS);
+  }
+  function _stopSessionMonitor() {
+    if (sessionCheckTimer) {
+      clearInterval(sessionCheckTimer);
+      sessionCheckTimer = null;
+    }
+    if (sessionActivityBound) {
+      SESSION_EVENTS.forEach((ev) =>
+        window.removeEventListener(ev, _onSessionActivity),
+      );
+      sessionActivityBound = false;
+    }
+  }
+  function _consentKey(email) {
+    return `gf_consent_${email}`;
+  }
+  function _hasConsent(email) {
+    if (!email) return false;
+    return localStorage.getItem(_consentKey(email)) === "accepted";
+  }
+  function _setConsentAccepted(email) {
+    if (!email) return;
+    safeSave(_consentKey(email), "accepted");
+    safeSave(`gf_consent_at_${email}`, new Date().toISOString());
+  }
   // ── Safe localStorage write — catches QuotaExceededError ──────────────
   function safeSave(key, value) {
     try {
       localStorage.setItem(key, value);
     } catch (e) {
-      if (e instanceof DOMException && (
-        e.code === 22 || e.code === 1014 ||
-        e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED"
-      )) {
+      if (
+        e instanceof DOMException &&
+        (e.code === 22 ||
+          e.code === 1014 ||
+          e.name === "QuotaExceededError" ||
+          e.name === "NS_ERROR_DOM_QUOTA_REACHED")
+      ) {
         // Storage full — try freeing space then retry once
         _freeStorageSpace();
         try {
@@ -58,7 +361,7 @@
         } catch (e2) {
           showToast(
             "⚠️ Storage full! Please export a backup and delete old data to continue.",
-            "error"
+            "error",
           );
         }
       }
@@ -69,23 +372,30 @@
     // 1. Strip logo dataUrl (often 50–200 KB)
     if (settings && settings.logoDataUrl) {
       settings.logoDataUrl = "";
-      try { localStorage.setItem(userKey("settings"), JSON.stringify(settings)); } catch(e) {}
+      try {
+        localStorage.setItem(userKey("settings"), JSON.stringify(settings));
+      } catch (e) {}
     }
     // 2. Trim oldest term history snapshots down to 2 most recent per class
     let freed = false;
-    Object.keys(termHistory || {}).forEach(cid => {
+    Object.keys(termHistory || {}).forEach((cid) => {
       if ((termHistory[cid] || []).length > 2) {
         termHistory[cid] = termHistory[cid].slice(0, 2);
         freed = true;
       }
     });
     if (freed) {
-      try { localStorage.setItem(userKey("termHistory"), JSON.stringify(termHistory)); } catch(e) {}
+      try {
+        localStorage.setItem(
+          userKey("termHistory"),
+          JSON.stringify(termHistory),
+        );
+      } catch (e) {}
     }
     // 3. Strip base64 dataUrls from materials (largest items) — keep metadata only
     let matFreed = false;
-    Object.keys(allMaterials || {}).forEach(cid => {
-      (allMaterials[cid] || []).forEach(m => {
+    Object.keys(allMaterials || {}).forEach((cid) => {
+      (allMaterials[cid] || []).forEach((m) => {
         if (m.dataUrl && m.dataUrl.length > 5000) {
           m.dataUrl = "";
           m._stripped = true;
@@ -94,8 +404,16 @@
       });
     });
     if (matFreed) {
-      try { localStorage.setItem(userKey("materials"), JSON.stringify(allMaterials)); } catch(e) {}
-      showToast("⚠️ Storage was nearly full — some material previews were cleared. Export a backup.", "warning");
+      try {
+        localStorage.setItem(
+          userKey("materials"),
+          JSON.stringify(allMaterials),
+        );
+      } catch (e) {}
+      showToast(
+        "⚠️ Storage was nearly full — some material previews were cleared. Export a backup.",
+        "warning",
+      );
     }
   }
 
@@ -104,6 +422,14 @@
     safeSave(userKey("classes"), JSON.stringify(classes));
     safeSave(userKey("students"), JSON.stringify(allStudents));
     safeSave(userKey("settings"), JSON.stringify(settings));
+    if (window.GradeFlowAPI) {
+      window.GradeFlowAPI.saveUserData({
+        email: currentUser.email,
+        classes,
+        allStudents,
+        settings,
+      }).catch(() => {});
+    }
   }
   function saveTermHistory() {
     if (!currentUser) return;
@@ -339,7 +665,7 @@
   function showPage(page) {
     // Clear active class AND any inline display styles on every page
     // so CSS display rules always win (inline styles override CSS otherwise)
-    document.querySelectorAll(".page").forEach(function(p) {
+    document.querySelectorAll(".page").forEach(function (p) {
       p.classList.remove("active");
       p.style.removeProperty("display");
     });
@@ -1604,8 +1930,54 @@
   // ════════════════════════════════════════════════════
   //  BACKUP / RESTORE  (enhanced — includes termHistory)
   // ════════════════════════════════════════════════════
-  window.exportBackup = function () {
-    const backup = {
+  function _noteBackupCompleted() {
+    if (!currentUser) return;
+    safeSave(userKey("lastBackupAt"), String(Date.now()));
+    safeSave(userKey("lastBackupReminderAt"), String(Date.now()));
+  }
+  function _maybeRemindBackup() {
+    if (!currentUser) return;
+    const hasData =
+      classes.length > 0 || Object.values(allStudents).flat().length > 0;
+    if (!hasData) return;
+    const now = Date.now();
+    const lastBackup = parseInt(
+      localStorage.getItem(userKey("lastBackupAt")) || "0",
+      10,
+    );
+    const lastReminder = parseInt(
+      localStorage.getItem(userKey("lastBackupReminderAt")) || "0",
+      10,
+    );
+    const noRecentBackup =
+      !lastBackup || now - lastBackup > 14 * 24 * 60 * 60 * 1000;
+    const canRemind = !lastReminder || now - lastReminder > 24 * 60 * 60 * 1000;
+    if (noRecentBackup && canRemind) {
+      safeSave(userKey("lastBackupReminderAt"), String(now));
+      showToast("Reminder: export a backup to protect your data.", "warning");
+    }
+  }
+
+  window.exportBackup = async function () {
+    if (!window.crypto?.subtle) {
+      showToast("Secure encrypted backup requires a modern browser.", "error");
+      return;
+    }
+    const passphrase = prompt(
+      "Enter a backup passphrase (min 8 characters). You will need it to restore.",
+    );
+    if (passphrase === null) return;
+    if (!passphrase || passphrase.length < 8) {
+      showToast("Passphrase must be at least 8 characters.", "error");
+      return;
+    }
+    const passphrase2 = prompt("Confirm your backup passphrase.");
+    if (passphrase2 === null) return;
+    if (passphrase !== passphrase2) {
+      showToast("Passphrase confirmation did not match.", "error");
+      return;
+    }
+    const payload = {
       version: 2,
       date: new Date().toISOString(),
       exportedBy: currentUser?.name || "",
@@ -1619,6 +1991,7 @@
       settings,
       currentUser,
     };
+    const backup = await _encryptBackupObject(payload, passphrase);
     const blob = new Blob([JSON.stringify(backup, null, 2)], {
       type: "application/json",
     });
@@ -1627,19 +2000,57 @@
     const dateStr = new Date().toLocaleDateString("en-GB").replace(/\//g, "-");
     a.download = `GradeFlow_Backup_${dateStr}_v2.json`;
     a.click();
-    showToast("✅ Full backup downloaded (includes term history)", "success");
+    _noteBackupCompleted();
+    showToast("✅ Encrypted backup downloaded", "success");
   };
 
   window.importBackup = function (input) {
     const file = input.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const data = JSON.parse(e.target.result);
+        let data = JSON.parse(e.target.result);
+        if (data.encrypted === true) {
+          if (!data.ciphertext || !data.iv || !data.salt) {
+            showToast("Invalid encrypted backup envelope", "error");
+            return;
+          }
+          if (data.checksum) {
+            const cipherCheck = await _sha256Hex(data.ciphertext);
+            if (cipherCheck !== data.checksum) {
+              showToast("Encrypted backup integrity check failed", "error");
+              return;
+            }
+          }
+          const passphrase = prompt(
+            "Enter backup passphrase to decrypt and restore:",
+          );
+          if (passphrase === null) return;
+          try {
+            data = await _decryptBackupEnvelope(data, passphrase);
+          } catch {
+            showToast(
+              "Could not decrypt backup. Wrong passphrase or corrupted file.",
+              "error",
+            );
+            return;
+          }
+        }
         if (!data.classes || !data.allStudents) {
           showToast("Invalid backup file", "error");
           return;
+        }
+        if (data.checksum) {
+          const { checksum, checksumAlg, ...withoutSig } = data;
+          const expected = await _sha256Hex(JSON.stringify(withoutSig));
+          if (expected !== checksum) {
+            showToast(
+              "Backup integrity check failed. File may be tampered or corrupted.",
+              "error",
+            );
+            return;
+          }
         }
         const classCount = data.classes.length;
         const studentCount = Object.values(data.allStudents).reduce(
@@ -1666,6 +2077,7 @@
         saveTermHistory();
         saveAttendance();
         saveQuizzes();
+        _noteBackupCompleted();
         renderSidebarClasses();
         renderSubjectTabs();
         renderTable();
@@ -2003,15 +2415,120 @@
       prev.style.display = logo ? "block" : "none";
     }
     if (rmBtn) rmBtn.style.display = logo ? "inline-flex" : "none";
+    updateApiConfigSummary();
   }
+  function updateApiConfigSummary() {
+    const el = document.getElementById("apiConfigSummary");
+    if (!el) return;
+    if (!window.GradeFlowAPI) {
+      el.textContent = "API layer unavailable";
+      return;
+    }
+    const cfg = window.GradeFlowAPI.getConfig();
+    if (cfg.provider === "nextjs") {
+      el.textContent = cfg.baseUrl
+        ? `Provider: ${cfg.provider} · Base: ${cfg.baseUrl}`
+        : `Provider: ${cfg.provider} · Base not set`;
+      return;
+    }
+    if (cfg.provider === "supabase") {
+      el.textContent = cfg.supabaseConfigured
+        ? "Provider: supabase · Credentials configured"
+        : "Provider: supabase · Credentials missing";
+      return;
+    }
+    el.textContent = `Provider: ${cfg.provider}`;
+  }
+  window.openApiConfig = function () {
+    if (!window.GradeFlowAPI) {
+      showToast("API layer unavailable", "error");
+      return;
+    }
+    const providerRaw = prompt(
+      "Choose provider: local, supabase, or nextjs",
+      window.GradeFlowAPI.getConfig().provider || "local",
+    );
+    if (providerRaw === null) return;
+    const firstInput = providerRaw.trim();
+    let provider = firstInput.toLowerCase();
+    // UX guard: many users paste URL first. Auto-detect common provider URLs.
+    if (provider.includes("supabase.co")) provider = "supabase";
+    if (provider.startsWith("http://") || provider.startsWith("https://")) {
+      if (provider.includes("supabase.co")) {
+        provider = "supabase";
+      } else {
+        provider = "nextjs";
+      }
+    }
+    if (!["local", "supabase", "nextjs"].includes(provider)) {
+      showToast("Invalid provider. Use: local, supabase, nextjs", "error");
+      return;
+    }
+    window.GradeFlowAPI.setProvider(provider);
+    if (provider === "nextjs") {
+      const base = prompt(
+        "Enter Next.js API base URL (e.g. https://your-app.com)",
+        firstInput.startsWith("http://") || firstInput.startsWith("https://")
+          ? firstInput
+          : window.GradeFlowAPI.getConfig().baseUrl || "",
+      );
+      if (base !== null) window.GradeFlowAPI.setBaseUrl(base);
+    }
+    if (provider === "supabase") {
+      const url = prompt(
+        "Enter Supabase project URL (e.g. https://your-project-id.supabase.co)",
+        firstInput.includes("supabase.co")
+          ? firstInput
+          : localStorage.getItem("gf_supabase_url") || "",
+      );
+      if (url === null) {
+        updateApiConfigSummary();
+        return;
+      }
+      const key = prompt(
+        "Enter Supabase anon public key",
+        localStorage.getItem("gf_supabase_key") || "",
+      );
+      if (key === null) {
+        updateApiConfigSummary();
+        return;
+      }
+      if (window.GradeFlowAPI.setSupabaseConfig) {
+        window.GradeFlowAPI.setSupabaseConfig(url, key);
+      } else {
+        localStorage.setItem("gf_supabase_url", (url || "").trim());
+        localStorage.setItem("gf_supabase_key", (key || "").trim());
+      }
+    }
+    if (provider !== "nextjs") {
+      window.GradeFlowAPI.setBaseUrl("");
+    }
+    updateApiConfigSummary();
+    showToast("API connector updated", "success");
+  };
   window.saveProfile = function () {
     if (!currentUser) return;
-    currentUser.name =
-      document.getElementById("settingName").value.trim() || currentUser.name;
-    currentUser.org =
-      document.getElementById("settingSchool").value.trim() || currentUser.org;
-    currentUser.email =
-      document.getElementById("settingEmail").value.trim() || currentUser.email;
+    const oldEmail = currentUser.email;
+    const newName = document.getElementById("settingName").value.trim();
+    const newOrg = document.getElementById("settingSchool").value.trim();
+    const newEmailRaw = document.getElementById("settingEmail").value.trim();
+    const newEmail = newEmailRaw.toLowerCase();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!newEmail || !emailRe.test(newEmail)) {
+      showToast("Please enter a valid email address", "error");
+      return;
+    }
+    const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
+    if (newEmail !== oldEmail && accounts[newEmail]) {
+      showToast("That email is already in use by another account", "error");
+      return;
+    }
+    currentUser.name = newName || currentUser.name;
+    currentUser.org = newOrg || currentUser.org;
+    currentUser.email = newEmail;
+    if (oldEmail !== newEmail) {
+      _migrateUserEmailData(oldEmail, newEmail);
+    }
     saveUserToStorage(currentUser);
     updateSidebarUser();
     showToast("✅ Profile saved", "success");
@@ -2215,9 +2732,12 @@
   // ════════════════════════════════════════════════════
   //  AUTH — MULTI-ACCOUNT LOCAL STORAGE
   // ════════════════════════════════════════════════════
-  function saveUserToStorage(user) {
+  function saveUserToStorage(user, oldEmail) {
     localStorage.setItem("gf_current_user", user.email);
     let accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
+    if (oldEmail && oldEmail !== user.email) {
+      delete accounts[oldEmail];
+    }
     const existing = accounts[user.email] || {};
     accounts[user.email] = {
       ...existing,
@@ -2227,13 +2747,70 @@
     };
     localStorage.setItem("gf_accounts", JSON.stringify(accounts));
   }
-  function verifyLogin(email, password) {
-    const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
-    const account = accounts[email];
-    if (!account) return null;
-    const storedHash = localStorage.getItem(`gf_pass_${email}`);
-    if (storedHash && storedHash !== simpleHash(password)) return null;
-    return account;
+  function _loginAttemptKey(email) {
+    return `gf_login_attempts_${email}`;
+  }
+  function _getLoginAttemptState(email) {
+    try {
+      return (
+        JSON.parse(localStorage.getItem(_loginAttemptKey(email)) || "null") || {
+          count: 0,
+          blockedUntil: 0,
+        }
+      );
+    } catch {
+      return { count: 0, blockedUntil: 0 };
+    }
+  }
+  function _recordLoginFailure(email) {
+    const state = _getLoginAttemptState(email);
+    const now = Date.now();
+    state.count = (state.count || 0) + 1;
+    if (state.count >= 5) {
+      state.blockedUntil = now + 5 * 60 * 1000;
+      state.count = 0;
+    }
+    safeSave(_loginAttemptKey(email), JSON.stringify(state));
+  }
+  function _clearLoginAttempts(email) {
+    localStorage.removeItem(_loginAttemptKey(email));
+  }
+  function _isLoginBlocked(email) {
+    const state = _getLoginAttemptState(email);
+    const now = Date.now();
+    if (state.blockedUntil && state.blockedUntil > now) {
+      const mins = Math.max(1, Math.ceil((state.blockedUntil - now) / 60000));
+      return { blocked: true, mins };
+    }
+    return { blocked: false, mins: 0 };
+  }
+  function _migrateUserEmailData(oldEmail, newEmail) {
+    if (!oldEmail || !newEmail || oldEmail === newEmail) return;
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k) keys.push(k);
+    }
+    const oldPrefix = `gf_${oldEmail}_`;
+    const newPrefix = `gf_${newEmail}_`;
+    keys.forEach((k) => {
+      if (!k.startsWith(oldPrefix)) return;
+      const v = localStorage.getItem(k);
+      if (v == null) return;
+      const nk = newPrefix + k.slice(oldPrefix.length);
+      safeSave(nk, v);
+      localStorage.removeItem(k);
+    });
+    const oldPass = localStorage.getItem(`gf_pass_${oldEmail}`);
+    if (oldPass != null) {
+      safeSave(`gf_pass_${newEmail}`, oldPass);
+      localStorage.removeItem(`gf_pass_${oldEmail}`);
+    }
+    const oldPlan = localStorage.getItem(`gf_plan_${oldEmail}`);
+    if (oldPlan != null) {
+      safeSave(`gf_plan_${newEmail}`, oldPlan);
+      localStorage.removeItem(`gf_plan_${oldEmail}`);
+    }
   }
   function simpleHash(str) {
     let h = 0;
@@ -2275,7 +2852,7 @@
       : '<i class="bi bi-eye"></i>';
   };
 
-  window.handleSignup = function () {
+  window.handleSignup = async function () {
     const name = document.getElementById("su-name").value.trim();
     const org = document.getElementById("su-org").value.trim();
     const email = document.getElementById("su-email").value.trim();
@@ -2293,6 +2870,10 @@
       showToast("Password must be at least 8 characters", "error");
       return;
     }
+    if (!document.getElementById("su-consent")?.checked) {
+      showToast("Please accept Terms and Privacy Policy to continue", "error");
+      return;
+    }
     const normalizedEmail = email.toLowerCase();
     const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
     if (accounts[normalizedEmail]) {
@@ -2304,7 +2885,26 @@
     }
     currentUser = { name, org: org || "My School", email: normalizedEmail };
     saveUserToStorage(currentUser);
-    localStorage.setItem(`gf_pass_${normalizedEmail}`, simpleHash(pass));
+    const passRecord = await _createPasswordRecord(pass);
+    safeSave(`gf_pass_${normalizedEmail}`, passRecord);
+    _setConsentAccepted(normalizedEmail);
+    _clearLoginAttempts(normalizedEmail);
+    if (window.GradeFlowAPI) {
+      const cloudSignUp = await window.GradeFlowAPI.signUp({
+        name,
+        org: org || "My School",
+        email: normalizedEmail,
+      }).catch((e) => ({
+        ok: false,
+        message: e?.message || "Cloud signup failed",
+      }));
+      if (cloudSignUp && cloudSignUp.ok === false) {
+        showToast(
+          `Cloud sync warning: ${cloudSignUp.message || "Supabase signup failed"}`,
+          "warning",
+        );
+      }
+    }
     // Mark as brand-new account so enterDashboard shows onboarding
     localStorage.setItem(`gf_new_account_${normalizedEmail}`, "1");
     loadUserData();
@@ -2316,7 +2916,7 @@
     );
   };
 
-  window.handleLogin = function () {
+  window.handleLogin = async function () {
     const rawEmail = document.getElementById("li-email").value.trim();
     const email = rawEmail.toLowerCase();
     const pass = document.getElementById("li-pass").value;
@@ -2329,20 +2929,50 @@
       showToast("Please enter your password", "error");
       return;
     }
+    const blocked = _isLoginBlocked(email);
+    if (blocked.blocked) {
+      showToast(
+        `Too many attempts. Try again in ${blocked.mins} minute(s).`,
+        "error",
+      );
+      return;
+    }
     const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
     if (!accounts[email]) {
+      _recordLoginFailure(email);
       showToast("No account found with this email. Please sign up.", "error");
       return;
     }
-    const storedHash = localStorage.getItem(`gf_pass_${email}`);
-    if (storedHash && storedHash !== simpleHash(pass)) {
+    const passwordOk = await _verifyPassword(email, pass);
+    if (!passwordOk) {
+      _recordLoginFailure(email);
       showToast("Incorrect password. Please try again.", "error");
       return;
     }
+    _clearLoginAttempts(email);
     currentUser = accounts[email];
     localStorage.setItem("gf_current_user", email);
+    if (window.GradeFlowAPI) {
+      const cloudLogin = await window.GradeFlowAPI.login({ email }).catch(
+        (e) => ({ ok: false, message: e?.message || "Cloud login failed" }),
+      );
+      if (cloudLogin && cloudLogin.ok === false) {
+        showToast(
+          `Cloud sync warning: ${cloudLogin.message || "Supabase login failed"}`,
+          "warning",
+        );
+      }
+    }
     loadUserData();
     closeModal("authModal");
+    if (!_hasConsent(email)) {
+      openConsentModal(true);
+      showToast(
+        "Please review and accept Terms/Privacy to continue.",
+        "warning",
+      );
+      return;
+    }
     enterDashboard();
     showToast(`✅ Welcome back, ${currentUser.name.split(" ")[0]}!`, "success");
   };
@@ -2944,7 +3574,7 @@ Please send payment and setup details. Thank you.`);
         var v = localStorage.getItem(k) || "";
         total += (k.length + v.length) * 2; // UTF-16 = 2 bytes per char
       }
-    } catch(e) {}
+    } catch (e) {}
     return Math.round(total / 1024);
   }
   function renderStorageMeter() {
@@ -2952,16 +3582,17 @@ Please send payment and setup details. Thank you.`);
     var maxKB = 5120; // 5 MB localStorage typical cap
     var pct = Math.min(100, Math.round((usedKB / maxKB) * 100));
     var color = pct >= 90 ? "#ef476f" : pct >= 70 ? "#f9a825" : "var(--accent)";
-    var warningHtml = pct >= 70
-      ? `<div style="margin-top:.6rem;font-size:.78rem;color:${color};font-weight:600;">
+    var warningHtml =
+      pct >= 70
+        ? `<div style="margin-top:.6rem;font-size:.78rem;color:${color};font-weight:600;">
           <i class="bi bi-exclamation-triangle-fill"></i>
           ${pct >= 90 ? "Storage almost full! Export a backup now." : "Storage getting full — consider exporting a backup."}
          </div>`
-      : "";
+        : "";
     return `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
       <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.78rem;color:var(--muted);">
         <span><i class="bi bi-hdd-fill"></i> Local storage</span>
-        <span style="font-weight:700;color:${color};">${usedKB < 1024 ? usedKB + " KB" : (usedKB/1024).toFixed(1) + " MB"} / 5 MB</span>
+        <span style="font-weight:700;color:${color};">${usedKB < 1024 ? usedKB + " KB" : (usedKB / 1024).toFixed(1) + " MB"} / 5 MB</span>
       </div>
       <div style="height:5px;background:var(--border);border-radius:99px;overflow:hidden;">
         <div style="height:100%;width:${pct}%;background:${color};border-radius:99px;transition:width .4s;"></div>
@@ -2990,7 +3621,14 @@ Please send payment and setup details. Thank you.`);
     saveData();
     saveMaterials();
     // Destroy chart to avoid canvas reuse errors on next login
-    if (scoreChart) { try { scoreChart.destroy(); } catch(e){} scoreChart = null; }
+    if (scoreChart) {
+      try {
+        scoreChart.destroy();
+      } catch (e) {}
+      scoreChart = null;
+    }
+    _stopSessionMonitor();
+    _clearSessionMeta();
     currentUser = null;
     activeClassId = null;
     activeSubjectId = null;
@@ -3036,6 +3674,8 @@ Please send payment and setup details. Thank you.`);
       document.getElementById("themeIcon").className = "bi bi-sun-fill";
       document.getElementById("themeLabel").textContent = "Light mode";
     }
+    _startSessionMonitor();
+    _maybeRemindBackup();
   }
 
   // ════════════════════════════════════════════════════
@@ -3059,20 +3699,65 @@ Please send payment and setup details. Thank you.`);
   };
 
   window.loadDemoData = function () {
-    if (!confirm("Load sample data with 3 demo classes and students? You can delete them any time.")) return;
+    if (
+      !confirm(
+        "Load sample data with 3 demo classes and students? You can delete them any time.",
+      )
+    )
+      return;
     // Inject the default demo classes and students
     classes = [
-      { id: "cls1", name: "PRY 5 RED",   emoji: "🔴", subjects: [{ id: "sub1", name: "Mathematics" }, { id: "sub2", name: "English" }] },
-      { id: "cls2", name: "PRY 5 BLUE",  emoji: "🔵", subjects: [{ id: "sub3", name: "Mathematics" }] },
-      { id: "cls3", name: "PRY 5 WHITE", emoji: "⚪", subjects: [{ id: "sub4", name: "Mathematics" }] },
+      {
+        id: "cls1",
+        name: "PRY 5 RED",
+        emoji: "🔴",
+        subjects: [
+          { id: "sub1", name: "Mathematics" },
+          { id: "sub2", name: "English" },
+        ],
+      },
+      {
+        id: "cls2",
+        name: "PRY 5 BLUE",
+        emoji: "🔵",
+        subjects: [{ id: "sub3", name: "Mathematics" }],
+      },
+      {
+        id: "cls3",
+        name: "PRY 5 WHITE",
+        emoji: "⚪",
+        subjects: [{ id: "sub4", name: "Mathematics" }],
+      },
     ];
     allStudents = {
       cls1: [
-        { id: "s1", name: "Abakpa Fortune", subjects: [{ id: "sub1", name: "Mathematics", test: 15, prac: 18, exam: "" }, { id: "sub2", name: "English", test: 12, prac: 14, exam: "" }] },
-        { id: "s2", name: "John Psalms",    subjects: [{ id: "sub1", name: "Mathematics", test: 18, prac: 19, exam: 50 }, { id: "sub2", name: "English", test: 17, prac: 18, exam: 45 }] },
-        { id: "s3", name: "Amaka Chukwu",  subjects: [{ id: "sub1", name: "Mathematics", test: 14, prac: 12, exam: 40 }, { id: "sub2", name: "English", test: 16, prac: 15, exam: 38 }] },
+        {
+          id: "s1",
+          name: "Abakpa Fortune",
+          subjects: [
+            { id: "sub1", name: "Mathematics", test: 15, prac: 18, exam: "" },
+            { id: "sub2", name: "English", test: 12, prac: 14, exam: "" },
+          ],
+        },
+        {
+          id: "s2",
+          name: "John Psalms",
+          subjects: [
+            { id: "sub1", name: "Mathematics", test: 18, prac: 19, exam: 50 },
+            { id: "sub2", name: "English", test: 17, prac: 18, exam: 45 },
+          ],
+        },
+        {
+          id: "s3",
+          name: "Amaka Chukwu",
+          subjects: [
+            { id: "sub1", name: "Mathematics", test: 14, prac: 12, exam: 40 },
+            { id: "sub2", name: "English", test: 16, prac: 15, exam: 38 },
+          ],
+        },
       ],
-      cls2: [], cls3: [],
+      cls2: [],
+      cls3: [],
     };
     saveData();
     document.getElementById("onboardingModal").classList.remove("active");
@@ -3082,7 +3767,8 @@ Please send payment and setup details. Thank you.`);
     renderSubjectTabs();
     renderTable();
     updateStats();
-    document.getElementById("activeClassName").innerHTML = '<i class="bi bi-folder2-open"></i> PRY 5 RED';
+    document.getElementById("activeClassName").innerHTML =
+      '<i class="bi bi-folder2-open"></i> PRY 5 RED';
     showToast("✅ Demo data loaded — explore away!", "success");
   };
 
@@ -3132,20 +3818,69 @@ Please send payment and setup details. Thank you.`);
   //  MODAL HELPERS
   // ════════════════════════════════════════════════════
   window.closeModal = function (id) {
-    document.getElementById(id).classList.remove("active");
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.dataset.locked === "true") return;
+    el.classList.remove("active");
   };
   document.querySelectorAll(".modal-overlay").forEach((overlay) => {
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.classList.remove("active");
+      if (e.target === overlay) {
+        if (overlay.dataset.locked === "true") return;
+        overlay.classList.remove("active");
+      }
     });
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      if (document.getElementById("consentModal")?.dataset.locked === "true") {
+        return;
+      }
       document
         .querySelectorAll(".modal-overlay.active")
         .forEach((m) => m.classList.remove("active"));
     }
   });
+
+  window.openConsentModal = function (force = false) {
+    const modal = document.getElementById("consentModal");
+    if (!modal) return;
+    modal.dataset.locked = force ? "true" : "false";
+    const chk = document.getElementById("consentAgreeCheck");
+    if (chk) chk.checked = false;
+    modal.classList.add("active");
+  };
+  window.acceptConsent = function () {
+    if (!currentUser) {
+      showToast("No signed-in account found for consent", "error");
+      return;
+    }
+    const chk = document.getElementById("consentAgreeCheck");
+    if (!chk || !chk.checked) {
+      showToast("Please check the agreement box to continue", "error");
+      return;
+    }
+    _setConsentAccepted(currentUser.email);
+    const modal = document.getElementById("consentModal");
+    if (modal) {
+      modal.dataset.locked = "false";
+      modal.classList.remove("active");
+    }
+    if (
+      !document.getElementById("page-dashboard")?.classList.contains("active")
+    ) {
+      enterDashboard();
+    }
+    showToast("Consent saved", "success");
+  };
+  window.declineConsent = function () {
+    const modal = document.getElementById("consentModal");
+    if (modal) {
+      modal.dataset.locked = "false";
+      modal.classList.remove("active");
+    }
+    _forceSessionLogout("You must accept Terms and Privacy to use GradeFlow.");
+  };
 
   // ════════════════════════════════════════════════════
   //  TABLE VIEW TOGGLE (table ↔ cards shortcut)
@@ -3187,12 +3922,14 @@ Please send payment and setup details. Thank you.`);
   function _fixLandingNavLinks() {
     var landing = document.getElementById("page-landing");
     if (!landing) return;
-    landing.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    landing.querySelectorAll('a[href^="#"]').forEach(function (a) {
       // Remove any previously attached listener to avoid double-fires
       var clone = a.cloneNode(true);
       a.parentNode.replaceChild(clone, a);
-      clone.addEventListener("click", function(e) {
-        var target = document.getElementById(this.getAttribute("href").slice(1));
+      clone.addEventListener("click", function (e) {
+        var target = document.getElementById(
+          this.getAttribute("href").slice(1),
+        );
         if (target) {
           e.preventDefault();
           target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -4465,7 +5202,10 @@ Please send payment and setup details. Thank you.`);
   window.saveAiKey = function () {
     const key = document.getElementById("aiApiKeyInput").value.trim();
     if (!key || key.length < 20) {
-      showToast("Please enter a valid Gemini API key (starts with AIzaSy...)", "error");
+      showToast(
+        "Please enter a valid Gemini API key (starts with AIzaSy...)",
+        "error",
+      );
       return;
     }
     localStorage.setItem("gf_ai_key", key);
@@ -4686,6 +5426,14 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
   // ════════════════════════════════════════════════════
   function init() {
     // Service worker registered in index.html <head> for earlier activation
+    if (window.GradeFlowAPI) {
+      try {
+        console.info(
+          "GradeFlow API layer ready:",
+          window.GradeFlowAPI.getConfig(),
+        );
+      } catch {}
+    }
 
     const savedTheme = localStorage.getItem("gf_theme");
     if (savedTheme === "dark") {
@@ -4699,9 +5447,32 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
       if (accounts[savedEmail]) {
         currentUser = accounts[savedEmail];
-        loadUserData();
-        enterDashboard();
-        return;
+        // Validate persisted session before auto-entering dashboard.
+        const exp = parseInt(
+          localStorage.getItem(`gf_session_expiresAt_${savedEmail}`) || "0",
+          10,
+        );
+        const last = parseInt(
+          localStorage.getItem(`gf_session_lastActivity_${savedEmail}`) || "0",
+          10,
+        );
+        const now = Date.now();
+        const sessionExpired =
+          (exp && now >= exp) || (last && now - last >= SESSION_IDLE_MS);
+        if (sessionExpired) {
+          localStorage.removeItem("gf_current_user");
+          localStorage.removeItem(`gf_session_expiresAt_${savedEmail}`);
+          localStorage.removeItem(`gf_session_lastActivity_${savedEmail}`);
+        } else {
+          loadUserData();
+          if (!_hasConsent(savedEmail)) {
+            showPage("landing");
+            openConsentModal(true);
+            return;
+          }
+          enterDashboard();
+          return;
+        }
       }
     }
 

@@ -2445,7 +2445,8 @@
                 Your data lives only on this device. Regular backups protect you
                 if your browser storage is cleared. The backup file includes all
                 classes, students, scores, attendance, quizzes,
-                <strong>and term history</strong>.
+                <strong>and term history</strong>. You can export encrypted
+                backups with your own passphrase.
               </p>
               <div class="settings-row">
                 <div>
@@ -2504,6 +2505,46 @@
                   >Backups are stored only on your device. GradeFlow never sends
                   your data to any server.</span
                 >
+              </div>
+              <div class="settings-row" style="margin-top: 0.8rem">
+                <div>
+                  <div class="settings-row-label">Legal & Consent</div>
+                  <div class="settings-row-desc">
+                    Review your Privacy Policy, Terms, and consent choices
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap">
+                  <a
+                    href="privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-sm"
+                  >
+                    <i class="bi bi-shield-lock"></i> Privacy
+                  </a>
+                  <a
+                    href="terms.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-sm"
+                  >
+                    <i class="bi bi-file-earmark-text"></i> Terms
+                  </a>
+                  <button class="btn btn-sm" onclick="openConsentModal()">
+                    <i class="bi bi-check2-square"></i> Consent
+                  </button>
+                </div>
+              </div>
+              <div class="settings-row" style="margin-top: 0.6rem">
+                <div>
+                  <div class="settings-row-label">Backend API Connector</div>
+                  <div class="settings-row-desc" id="apiConfigSummary">
+                    Provider: local
+                  </div>
+                </div>
+                <button class="btn btn-sm" onclick="openApiConfig()">
+                  <i class="bi bi-plug-fill"></i> Configure
+                </button>
               </div>
             </div>
           </div>
@@ -2939,6 +2980,40 @@
               </button>
             </div>
           </div>
+          <label
+            style="
+              display: flex;
+              gap: 0.55rem;
+              align-items: flex-start;
+              font-size: 0.78rem;
+              color: var(--muted);
+              margin-bottom: 0.9rem;
+            "
+          >
+            <input
+              type="checkbox"
+              id="su-consent"
+              style="margin-top: 0.15rem; accent-color: var(--accent)"
+            />
+            <span>
+              I agree to the
+              <a
+                href="terms.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: var(--accent); font-weight: 600"
+                >Terms</a
+              >
+              and
+              <a
+                href="privacy-policy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: var(--accent); font-weight: 600"
+                >Privacy Policy</a
+              >.
+            </span>
+          </label>
           <button
             class="btn btn-primary w-full"
             style="justify-content: center"
@@ -4132,32 +4207,137 @@
 
     <!-- ============================================================ ONBOARDING MODAL -->
     <div class="modal-overlay" id="onboardingModal">
-      <div class="modal-box" style="max-width:500px;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:.5rem;">👋</div>
-        <div class="modal-title">Welcome, <span id="onboardingUserName">Teacher</span>!</div>
-        <div class="modal-sub" style="margin-bottom:1.5rem;">
+      <div class="modal-box" style="max-width: 500px; text-align: center">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem">👋</div>
+        <div class="modal-title">
+          Welcome, <span id="onboardingUserName">Teacher</span>!
+        </div>
+        <div class="modal-sub" style="margin-bottom: 1.5rem">
           GradeFlow is ready. How would you like to start?
         </div>
-        <div style="display:flex;flex-direction:column;gap:.8rem;">
-          <button class="btn btn-primary" onclick="onboardingCreateClass()" style="justify-content:center;padding:1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.8rem">
+          <button
+            class="btn btn-primary"
+            onclick="onboardingCreateClass()"
+            style="justify-content: center; padding: 1rem"
+          >
             <i class="bi bi-plus-circle-fill"></i>&nbsp; Create my first class
           </button>
-          <button class="btn" onclick="loadDemoData()" style="justify-content:center;padding:1rem;">
+          <button
+            class="btn"
+            onclick="loadDemoData()"
+            style="justify-content: center; padding: 1rem"
+          >
             <i class="bi bi-eye"></i>&nbsp; Load sample data to explore first
           </button>
-          <button class="btn btn-sm" onclick="closeOnboarding()" style="color:var(--muted);margin-top:.3rem;">
+          <button
+            class="btn btn-sm"
+            onclick="closeOnboarding()"
+            style="color: var(--muted); margin-top: 0.3rem"
+          >
             I'll set up later
           </button>
         </div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:center;gap:2rem;font-size:.8rem;color:var(--muted);">
+        <div
+          style="
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+          "
+        >
           <span><i class="bi bi-wifi-off"></i> 100% offline</span>
-          <span><i class="bi bi-shield-lock"></i> Data stays on your device</span>
+          <span
+            ><i class="bi bi-shield-lock"></i> Data stays on your device</span
+          >
           <span><i class="bi bi-phone"></i> Works on phone too</span>
         </div>
       </div>
     </div>
 
-        <!-- ============================================================ UPGRADE MODAL -->
+    <!-- CONSENT MODAL -->
+    <div class="modal-overlay" id="consentModal" data-locked="true">
+      <div class="modal-box" style="max-width: 560px">
+        <div class="modal-title">Privacy & Terms Consent</div>
+        <div class="modal-sub" style="margin-bottom: 1rem">
+          To use GradeFlow, you must accept the Privacy Policy and Terms.
+        </div>
+        <div
+          style="
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 0.9rem 1rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 0.9rem;
+          "
+        >
+          GradeFlow stores your records on your device by default. You can
+          export encrypted backups using a passphrase that only you know.
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+          "
+        >
+          <a
+            href="privacy-policy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm"
+          >
+            <i class="bi bi-shield-lock"></i> Read Privacy Policy
+          </a>
+          <a
+            href="terms.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm"
+          >
+            <i class="bi bi-file-earmark-text"></i> Read Terms
+          </a>
+        </div>
+        <label
+          style="
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+            font-size: 0.82rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+          "
+        >
+          <input
+            type="checkbox"
+            id="consentAgreeCheck"
+            style="margin-top: 0.15rem; accent-color: var(--accent)"
+          />
+          <span>
+            I have read and agree to the GradeFlow Privacy Policy and Terms of
+            Service.
+          </span>
+        </label>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="acceptConsent()">
+            <i class="bi bi-check2-circle"></i> I Agree
+          </button>
+          <button class="btn" onclick="declineConsent()">
+            Decline and Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ UPGRADE MODAL -->
     <div class="modal-overlay" id="upgradeModal">
       <div class="modal-box" style="max-width: 460px; text-align: center">
         <button class="modal-close" onclick="closeModal('upgradeModal')">
@@ -4287,6 +4467,7 @@
       </div>
     </div>
 
+    <script src="api-client.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
