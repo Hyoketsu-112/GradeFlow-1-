@@ -97,6 +97,9 @@ body {
   transition:
     background 0.3s,
     color 0.3s;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 img {
   display: block;
@@ -574,6 +577,10 @@ body.on-landing {
 .btn:active {
   transform: translateY(0);
 }
+.btn:focus-visible {
+  outline: 3px solid rgba(47, 109, 246, 0.22);
+  outline-offset: 2px;
+}
 
 .btn-primary {
   background: var(--accent);
@@ -584,6 +591,15 @@ body.on-landing {
 .btn-primary:hover {
   background: var(--accent-d);
   box-shadow: 0 16px 40px -10px rgba(67, 97, 238, 0.55);
+}
+.btn-outline {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(122, 140, 182, 0.28);
+}
+.btn-outline:hover {
+  background: var(--surface);
+  border-color: rgba(47, 109, 246, 0.3);
+  color: var(--accent);
 }
 .btn-ghost {
   background: transparent;
@@ -627,6 +643,19 @@ body.on-landing {
   padding: 0.6rem;
   border-radius: var(--r-md);
   aspect-ratio: 1;
+}
+.btn-icon i,
+.sidebar-nav-item i,
+.sidebar-footer-item i,
+.stat-card-icon i,
+.page-header-title i,
+.topbar-title i {
+  transform: translateY(0.5px);
+}
+.btn-sm,
+.btn-xs,
+.btn-icon {
+  min-height: 38px;
 }
 .btn-outline {
   background: transparent;
@@ -4144,6 +4173,20 @@ body {
   letter-spacing: 0;
 }
 
+.topbar-breadcrumb,
+.settings-row-desc,
+.stat-card-sub,
+.user-role,
+.class-item-count,
+.score-val,
+.pos-badge,
+.toast,
+.modal-sub,
+.feature-card p,
+.testimonial-card p {
+  color: var(--muted);
+}
+
 .topbar-search input,
 .table-toolbar-search input,
 .form-input,
@@ -4158,6 +4201,11 @@ body {
 .score-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(47, 109, 246, 0.13);
+}
+
+::placeholder {
+  color: #8a96b4;
+  opacity: 1;
 }
 
 .btn {
@@ -4209,9 +4257,37 @@ body {
   box-shadow: 0 18px 34px -30px rgba(16, 43, 99, 0.6);
 }
 
+.analytics-card,
+.settings-section,
+.student-card,
+.material-card,
+.modal-box,
+.table-wrapper,
+.feature-card,
+.testimonial-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(249, 251, 255, 0.96)
+  );
+}
+
 .grade-table thead,
 .table-toolbar {
   background: linear-gradient(180deg, #f7f9ff 0%, #eef3ff 100%);
+}
+
+.grade-table th {
+  letter-spacing: 0.04em;
+}
+
+.grade-table td {
+  color: #1f2937;
+}
+
+.grade-table tbody tr:hover td,
+.grade-table tbody tr.selected td {
+  background: rgba(47, 109, 246, 0.045);
 }
 
 .grade-table tbody tr:hover td {
@@ -4247,6 +4323,93 @@ body {
 
 .view.active .stats-grid .stat-card:nth-child(4) {
   animation-delay: 0.15s;
+}
+
+.page-header-title,
+.section-title,
+.land-cta-section h2,
+.hero-title,
+.modal-title {
+  overflow-wrap: anywhere;
+}
+
+.page-header-title,
+.section-title,
+.hero-title,
+.topbar-title {
+  color: #10203d;
+}
+
+.settings-section h3,
+.analytics-card h3,
+.feature-card h3,
+.testimonial-name,
+.top-performer-row,
+.student-card-name {
+  color: #10203d;
+}
+
+.feature-card,
+.testimonial-card,
+.analytics-card,
+.settings-section,
+.student-card,
+.material-card,
+.modal-box {
+  border-radius: 24px;
+}
+
+.feature-icon,
+.sidebar-logo,
+.user-avatar,
+.student-card-avatar,
+.student-mini-avatar {
+  box-shadow: 0 12px 28px -18px rgba(47, 109, 246, 0.55);
+}
+
+.feature-card:hover,
+.testimonial-card:hover,
+.analytics-card:hover,
+.student-card:hover,
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px -28px rgba(16, 43, 99, 0.62);
+}
+
+.settings-row {
+  padding: 1rem 0;
+}
+
+.settings-row-label,
+.form-label,
+.modal-title,
+.page-header-title,
+.section-label,
+.stat-card-label {
+  font-weight: 700;
+}
+
+.table-toolbar-search input,
+.topbar-search input,
+.form-input,
+.score-input {
+  border-radius: 16px;
+}
+
+.toast {
+  background: rgba(16, 32, 61, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.grade-pill {
+  box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.05);
+}
+
+.hero-badge,
+.subject-tab,
+.class-item-count,
+.nav-badge {
+  box-shadow: 0 8px 20px -18px rgba(47, 109, 246, 0.45);
 }
 
 @keyframes premiumRise {

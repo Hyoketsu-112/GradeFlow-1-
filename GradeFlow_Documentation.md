@@ -260,6 +260,32 @@ Impact: difficult to troubleshoot production incidents and support paying school
 - Permissions and collaboration are still single-user in practice.
 - There is no true multi-device merge/conflict system yet.
 
+### 3.8 Secret handling and exposed API keys
+
+GradeFlow uses one user-supplied Google Gemini API key for AI-assisted comments. That key must not be treated as a permanent stored secret in the app.
+
+Current safer handling rules:
+
+1. the key should be entered only when needed
+2. the key should live in memory or session scope, not persistent browser storage
+3. the key should be cleared when the browser session ends or the modal closes
+4. if a key has been published publicly, it must be revoked and replaced
+
+If GitHub reports a public leak, the remediation steps are:
+
+1. Open Google Cloud Console and go to APIs & Services > Credentials.
+2. Find the leaked Gemini / Google API key.
+3. Delete or restrict the leaked key immediately.
+4. Create a replacement key with the minimum required API restrictions.
+5. Update the app or local session with the new key only after rotation.
+6. Re-check the GitHub secret scanning alert and close it only after confirming the old key is invalid.
+
+Important:
+
+- Do not keep the leaked key in code, documentation, commit messages, screenshots, or localStorage.
+- If the repo history contains the leaked key, rewrite history only if the repository is public or otherwise shared and the leak is still exposed.
+- The safest pattern for this app is session-only entry via a modal prompt.
+
 ---
 
 ## 4. Production Readiness Requirements (Must-Have)
@@ -551,3 +577,110 @@ With the roadmap above, it can become:
 3. a regional-first edtech product that institutions can confidently adopt
 
 In short: the product already proves usefulness; the next step is to productize reliability, trust, and institutional controls so it is not only useful, but business-critical.
+
+---
+
+## 11. Next Branch: Premium UI/UX Refresh
+
+Branch name: `ui-polish-v2`
+
+This branch is focused on visual and interaction quality, not new academic features. The goal is to make GradeFlow feel like a polished product a school would actually pay for, while keeping the existing workflows fast and familiar.
+
+### 11.1 Branch Goal
+
+Build a cleaner, more professional, and more visible user experience with stronger hierarchy, better icon usage, more deliberate typography, and a more trustworthy color system.
+
+The user should immediately feel that:
+
+1. the product is stable
+2. the interface is modern
+3. the main actions are easy to find
+4. the app is built for daily school use, not just a demo
+
+### 11.2 What This Branch Should Improve
+
+1. Typography
+   - Use one expressive display font for headings and one highly readable body font.
+   - Make numbers, stats, and table values easier to scan.
+   - Improve spacing and line-height so dense areas do not feel cramped.
+
+2. Colors
+   - Use a calmer, more premium palette with one clear primary color.
+   - Reserve bright accent colors for status, emphasis, and interactive feedback.
+   - Improve contrast for important text, badges, buttons, and disabled states.
+
+3. Icons
+   - Keep one consistent icon family across sidebar, actions, cards, and settings.
+   - Standardize icon size and alignment so controls look deliberate.
+   - Use icons to support meaning, not decorate every line.
+
+4. Visibility and hierarchy
+   - Make the dashboard summary easier to read at a glance.
+   - Improve active states, hover states, empty states, and selected states.
+   - Make important actions visually stronger than secondary ones.
+
+5. Layout and density
+   - Reduce visual noise in cards and tables.
+   - Improve whitespace around sections so the interface breathes.
+   - Make mobile behavior feel intentional, not just compressed.
+
+6. Professional feel
+   - Add subtle motion where it helps understanding.
+   - Use consistent elevation, border radius, and surface treatment.
+   - Make the app feel closer to a finished SaaS product.
+
+### 11.3 What This Branch Should Not Change
+
+1. Core grading logic should remain stable.
+2. Backup, consent, and auth behavior should remain intact.
+3. Existing routes, modals, and workflows should not be broken.
+4. Any redesign should preserve the speed of the current app.
+
+### 11.4 UI Areas To Prioritize
+
+1. Landing page hero and pricing section
+2. Sidebar and topbar
+3. Dashboard stat cards
+4. Grade table readability
+5. Students and analytics cards
+6. Settings section layout
+7. Auth and consent modals
+8. Toasts, badges, and empty states
+
+### 11.5 Design Principles For This Branch
+
+1. Clarity first
+   - Users should know where to click and what each section means within a second.
+
+2. Consistency first
+   - Reuse the same radius, spacing, icon style, and button treatment across the app.
+
+3. Trust first
+   - Use restrained color choices and strong contrast to make the product feel dependable.
+
+4. Readability first
+   - Tables, forms, and summaries should remain easy to scan under real classroom pressure.
+
+5. Premium without clutter
+   - The design should feel expensive and polished without becoming busy or decorative.
+
+### 11.6 Success Criteria For This Branch
+
+This branch is successful if:
+
+1. the app looks noticeably more polished on first open
+2. teachers can understand the dashboard faster
+3. buttons, cards, and tables feel easier to read and use
+4. mobile layout remains clear and usable
+5. the product feels credible enough for a paid plan conversation
+
+### 11.7 Recommended Build Order
+
+1. Establish final color and typography tokens.
+2. Refine the dashboard shell, sidebar, and topbar.
+3. Improve card, table, and form readability.
+4. Polish settings, modals, and feedback states.
+5. Review mobile layouts and accessibility contrast.
+6. Validate that nothing in core grading behavior regressed.
+
+This branch should be treated as the visual foundation for later premium work, including multi-device sync, billing, and school admin features.
