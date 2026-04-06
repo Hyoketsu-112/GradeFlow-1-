@@ -27,6 +27,7 @@
   let sessionCheckTimer = null;
   let sessionActivityBound = false;
   let lastSessionActivityWrite = 0;
+  let aiSessionKey = "";
 
   // ════════════════════════════════════════════════════
   //  STORAGE KEYS (per user)
@@ -5192,11 +5193,38 @@ Please send payment and setup details. Thank you.`);
     document.getElementById("aiCommentLoading").style.display = "none";
     document.getElementById("aiCommentError").style.display = "none";
     document.getElementById("aiCommentActions").style.display = "flex";
-    const hasKey = !!localStorage.getItem("gf_ai_key");
+    const hasKey = !!aiSessionKey;
     document.getElementById("aiKeySection").style.display = hasKey
       ? "none"
       : "block";
+    if (!hasKey) window.openAiKeyModal();
     document.getElementById("aiCommentModal").classList.add("active");
+  };
+
+  function _hydrateAiKey() {
+    if (aiSessionKey) return aiSessionKey;
+    const legacyKey = sessionStorage.getItem("gf_ai_key") || "";
+    if (legacyKey) {
+      aiSessionKey = legacyKey;
+      sessionStorage.removeItem("gf_ai_key");
+      localStorage.removeItem("gf_ai_key");
+      return aiSessionKey;
+    }
+    const legacyLocalKey = localStorage.getItem("gf_ai_key") || "";
+    if (legacyLocalKey) {
+      aiSessionKey = legacyLocalKey;
+      sessionStorage.setItem("gf_ai_key", legacyLocalKey);
+      localStorage.removeItem("gf_ai_key");
+      return aiSessionKey;
+    }
+    return "";
+  }
+
+  window.openAiKeyModal = function () {
+    const input = document.getElementById("aiApiKeyInput");
+    if (input) input.value = "";
+    const modal = document.getElementById("aiKeyModal");
+    if (modal) modal.classList.add("active");
   };
 
   window.saveAiKey = function () {
@@ -5208,9 +5236,12 @@ Please send payment and setup details. Thank you.`);
       );
       return;
     }
-    localStorage.setItem("gf_ai_key", key);
+    aiSessionKey = key;
+    sessionStorage.setItem("gf_ai_key", key);
+    localStorage.removeItem("gf_ai_key");
     document.getElementById("aiKeySection").style.display = "none";
-    showToast("✅ API key saved", "success");
+    closeModal("aiKeyModal");
+    showToast("✅ API key saved for this session", "success");
   };
 
   window.selectTone = function (btn) {
@@ -5221,9 +5252,10 @@ Please send payment and setup details. Thank you.`);
   };
 
   window.generateAiComment = async function () {
-    const apiKey = localStorage.getItem("gf_ai_key");
+    const apiKey = _hydrateAiKey();
     if (!apiKey) {
       document.getElementById("aiKeySection").style.display = "block";
+      window.openAiKeyModal();
       return;
     }
 
