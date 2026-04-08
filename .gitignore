@@ -1,0 +1,252 @@
+# GradeFlow .gitignore
+# Prevent accidental commits of sensitive and unnecessary files
+
+═══════════════════════════════════════════════════════════════
+# ENVIRONMENT & SECRETS (CRITICAL - NEVER COMMIT)
+═══════════════════════════════════════════════════════════════
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.key
+*.pem
+*.p8
+.aws/
+.ssh/
+
+# API Keys & Credentials
+google-credentials.json
+firebase-config.json
+supabase-config.json
+config/secrets.json
+secrets.json
+
+═══════════════════════════════════════════════════════════════
+# NODE & DEPENDENCIES
+═══════════════════════════════════════════════════════════════
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+package-lock.json
+yarn.lock
+
+═══════════════════════════════════════════════════════════════
+# IDE & EDITOR
+═══════════════════════════════════════════════════════════════
+.vscode/
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.Spotlight-V100
+.Trashes
+*.sublime-project
+*.sublime-workspace
+.atom/
+.project
+.pydevproject
+.c9/
+*.launch
+.settings/
+*.sublime-project
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+═══════════════════════════════════════════════════════════════
+# BUILD & DIST
+═══════════════════════════════════════════════════════════════
+dist/
+build/
+*.tsbuildinfo
+.next/
+.nuxt/
+out/
+coverage/
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+
+═══════════════════════════════════════════════════════════════
+# TESTING & COVERAGE
+═══════════════════════════════════════════════════════════════
+coverage/
+.nyc_output/
+.pytest_cache/
+.coverage
+*.prof
+junit.xml
+test-results/
+htmlcov/
+
+═══════════════════════════════════════════════════════════════
+# OS SPECIFIC
+═══════════════════════════════════════════════════════════════
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+═══════════════════════════════════════════════════════════════
+# BACKUPS & TEMPORARY
+═══════════════════════════════════════════════════════════════
+*.bak
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+*.backup
+.bkp/
+.backup/
+*.sb
+*.sql.bak
+
+═══════════════════════════════════════════════════════════════
+# LOCAL DEVELOPMENT
+═══════════════════════════════════════════════════════════════
+.local/
+local.conf
+dev.local
+*.local.json
+todo.md
+notes.md
+scratch/
+.tmp/
+
+═══════════════════════════════════════════════════════════════
+# LOGS
+═══════════════════════════════════════════════════════════════
+logs/
+*.log
+*.log.*
+lerna-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+═══════════════════════════════════════════════════════════════
+# VIRTUAL ENVIRONMENTS
+═══════════════════════════════════════════════════════════════
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv
+.env
+
+═══════════════════════════════════════════════════════════════
+# DATABASES
+═══════════════════════════════════════════════════════════════
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db-shm
+*.db-wal
+dump.sql
+data.sql
+
+═══════════════════════════════════════════════════════════════
+# CACHE
+═══════════════════════════════════════════════════════════════
+.cache/
+*.cache
+.eslintcache
+.stylelintcache
+tsconfig.tsbuildinfo
+.parcel-cache
+dist/
+
+═══════════════════════════════════════════════════════════════
+# DOCKER
+═══════════════════════════════════════════════════════════════
+docker-compose.override.yml
+Dockerfile.dev
+.dockerignore.*
+
+═══════════════════════════════════════════════════════════════
+# RESERVED FILE PATTERNS (Privacy Protection)
+═══════════════════════════════════════════════════════════════
+*.secret
+*.private
+*.confidential
+SECRET_*
+PRIVATE_*
+
+# Personal/temporary test files
+test.*.js
+*-test.local.js
+test-user-*.json
+temp-*.json
+
+# Export/backup files (user data)
+export/*.json
+backup/*.json
+user-*.json
+school-*.csv
+grades-backup-*.xlsx
+
+═══════════════════════════════════════════════════════════════
+# PRODUCTION BUILDS (if applicable)
+═══════════════════════════════════════════════════════════════
+.vercel/
+.netlify/
+
+═══════════════════════════════════════════════════════════════
+# ALLOW SPECIFIC FILES (override .gitignore)
+═══════════════════════════════════════════════════════════════
+# Uncomment to commit specific files despite .gitignore rules
+# !.env.example
+# !dist/
+# !build/
+
+═══════════════════════════════════════════════════════════════
+# IP PROTECTION (Do NOT commit these to avoid theft)
+═══════════════════════════════════════════════════════════════
+
+# Core algorithms (proprietary)
+# Do not commit analysis of grading logic
+# Protect competitive advantages
+
+# Data models
+# Schema variations, optimization tricks
+
+# Performance tuning
+# Caching strategies, benchmarks
+
+# Security implementations
+# Password hashing methodology
+# Token generation patterns
+
+# Sync algorithms
+# Offline reconciliation logic
+# Conflict resolution strategies
+
+# Export templates
+# Report generation methodology
+# Custom branding techniques
+
+═══════════════════════════════════════════════════════════════
+
+# Last Updated: April 8, 2026
+# Purpose: Protect secrets, optimize repo, and safeguard IP

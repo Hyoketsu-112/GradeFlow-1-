@@ -1,0 +1,212 @@
+# GradeFlow Proprietary Software License Agreement
+
+Version 1.0
+Effective Date: April 8, 2026
+
+LICENSOR: GradeFlow (Development Team)
+SUBJECT: GradeFlow Software and Documentation
+
+═══════════════════════════════════════════════════════════════
+
+1. GRANT OF LICENSE
+
+This software is confidential and proprietary to GradeFlow. You are granted a limited,
+non-exclusive, non-transferable license to use GradeFlow only as follows:
+
+- Teachers/Staff: Personal use within one school (subject to subscription)
+- School Administrators: Use on behalf of school (subject to subscription)
+- Developers: Development/testing only (with written permission)
+
+This license is personal to you and may not be shared, sold, or transferred.
+
+═══════════════════════════════════════════════════════════════
+
+2. RESTRICTIONS
+
+You agree NOT to:
+
+(a) Copy, reproduce, or distribute this software without written permission
+(b) Modify, reverse-engineer, disassemble, or decompile the software
+(c) Remove or obscure copyright notices, license headers, or attribution
+(d) Use the software to develop competing products or services
+(e) Host this software on public servers without authorization
+(f) Resell, sublicense, or lease the software
+(g) Extract or use code, algorithms, or data models for other purposes
+(h) Use the software for purposes other than grade management in schools
+(i) Circumvent licensing, subscription, or access controls
+(j) Share access credentials with unauthorized users
+
+═══════════════════════════════════════════════════════════════
+
+3. INTELLECTUAL PROPERTY RIGHTS
+
+All code, design, algorithms, and documentation are the exclusive intellectual
+property of GradeFlow, including but not limited to:
+
+- Core grading algorithms and ranking logic
+- Data model and database schema
+- UI/UX design and visual assets
+- Offline-first sync methodology
+- Performance optimization techniques
+- Security and encryption implementations
+- Export and reporting templates
+
+You retain NO intellectual property rights in this software.
+
+═══════════════════════════════════════════════════════════════
+
+4. TRADE SECRETS
+
+This software contains proprietary trade secrets. You agree to:
+
+(a) Keep all code and documentation strictly confidential
+(b) Use reasonable security measures to protect access
+(c) Not disclose any part of the software to third parties
+(d) Return or destroy all copies upon license termination
+(e) Not reverse-engineer or analyze the software
+
+Unauthorized disclosure may result in legal action and damages.
+
+═══════════════════════════════════════════════════════════════
+
+5. TERM AND TERMINATION
+
+This license is effective until terminated. Your license terminates:
+
+(a) Automatically if you violate any term of this license
+(b) When your subscription expires or is not renewed
+(c) Upon written notice from GradeFlow
+(d) Upon your bankruptcy or insolvency
+
+Upon termination:
+
+- All license rights cease immediately
+- You must stop using the software
+- You must delete all copies in your possession
+- Provisions 2, 3, 4, 6, and 7 survive termination
+
+═══════════════════════════════════════════════════════════════
+
+6. DISCLAIMER OF WARRANTIES
+
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT.
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, GRADEFLOW DISCLAIMS ALL WARRANTIES AND
+CONDITIONS, EXPRESS OR IMPLIED, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+═══════════════════════════════════════════════════════════════
+
+7. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL GRADEFLOW BE LIABLE FOR:
+
+- Direct or indirect damages (including data loss)
+- Lost profits, revenue, or business opportunity
+- Consequential, incidental, or punitive damages
+- Any damages arising from use or inability to use the software
+
+YOUR EXCLUSIVE REMEDY IS LIMITED TO SUBSCRIPTION REFUND OR SOFTWARE REPLACEMENT.
+
+═══════════════════════════════════════════════════════════════
+
+8. PAYMENT AND SUBSCRIPTION
+
+Continued use of GradeFlow requires active subscription:
+
+- Free Trial: 14 days (no payment required)
+- Pro Teacher: ₦5,000/month (auto-renew)
+- School Plan: ₦15,000/month per teacher (auto-renew)
+
+Failure to pay may result in:
+
+- Loss of cloud sync access
+- Loss of premium features
+- Account suspension
+- Legal collection action
+
+═══════════════════════════════════════════════════════════════
+
+9. DATA PRIVACY
+
+GradeFlow collects and stores:
+
+- User email, account credentials
+- School data (classes, students, grades, attendance)
+- Usage analytics and error logs
+
+Your data is:
+
+- Encrypted in transit (SSL/TLS)
+- Encrypted at rest (AES-256)
+- Never sold or shared outside the school
+- Deleted upon account termination
+
+→ See Privacy Policy for details: privacy-policy.html
+
+═══════════════════════════════════════════════════════════════
+
+10. SECURITY VULNERABILITIES
+
+If you discover a security issue:
+
+1. Do NOT disclose publicly
+2. Email: oshinayadamilola3@gmail.com
+3. Include proof of concept (without exploiting)
+4. Allow 48 hours for response
+
+Responsible disclosure may be eligible for recognition or reward.
+
+═══════════════════════════════════════════════════════════════
+
+11. INDEMNIFICATION
+
+You agree to indemnify GradeFlow against:
+
+- Claims arising from your use or misuse of the software
+- Breach of this license agreement
+- Violation of applicable laws
+- Unauthorized access to your account
+
+═══════════════════════════════════════════════════════════════
+
+12. GOVERNING LAW
+
+This license is governed by the laws of Nigeria and applicable international law.
+
+Any dispute shall be resolved through:
+
+1. Negotiation in good faith
+2. Mediation
+3. Arbitration or court proceedings
+
+═══════════════════════════════════════════════════════════════
+
+13. ENTIRE AGREEMENT
+
+This license constitutes the entire agreement between you and GradeFlow regarding
+this software and supersedes all prior agreements.
+
+Any modifications to this license must be in writing and signed by both parties.
+
+═══════════════════════════════════════════════════════════════
+
+14. CONTACT & ENFORCEMENT
+
+For license inquiries or violations:
+
+Email: oshinayadamilola3@gmail.com
+Address: [Your Company Address]
+Phone: [Your Company Phone]
+
+Unauthorized use will be prosecuted to the fullest extent of the law.
+
+═══════════════════════════════════════════════════════════════
+
+By using this software, you acknowledge that you have read, understood, and
+agree to be bound by all terms and conditions of this license.
+
+Last Updated: April 8, 2026
+Version: 1.0 (Proprietary)
