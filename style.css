@@ -3136,6 +3136,89 @@ body.on-landing {
   justify-content: center;
   margin-top: 0.5rem;
 }
+
+/* How-it-works grid container */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+/* Steps emoji icon */
+.step-emoji {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
+}
+
+/* Steps heading */
+.step-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Steps description */
+.step-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Pricing cards grid */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.5rem;
+  max-width: 1060px;
+  margin: 3rem auto 0;
+}
+
+/* Pricing card */
+.pricing-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.pricing-card-highlight {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: var(--r-xl);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transform: scale(1.02);
+  box-shadow: var(--sh-md);
+}
+
+/* Pricing features list */
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.pricing-features li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.88rem;
+}
+
+.pricing-features i {
+  color: var(--emerald);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
 .mat-viewer-body pre,
 .mat-viewer-body code {
   font-family: var(--font-mono);
