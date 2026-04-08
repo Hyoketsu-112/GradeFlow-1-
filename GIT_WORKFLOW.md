@@ -11,7 +11,7 @@
 main (production)
   ├─ v2.0.0                    ← Current release (Phase 2 Complete)
   └─ [Phase 3 releases]
-  
+
 develop (integration)
   └─ Base for all Phase 3 + future work
 
@@ -27,6 +27,7 @@ ui-polish-v2                 ← Merged into main (Phase 2 completion)
 ## 🔄 Workflow Rules
 
 ### Main Branch Policy (`main`)
+
 - **Purpose**: Production-ready, stable code only
 - **Protection**:
   - Require PR reviews before merge
@@ -38,6 +39,7 @@ ui-polish-v2                 ← Merged into main (Phase 2 completion)
 - **Frequency**: Release every 4-6 weeks (Phase boundaries)
 
 ### Develop Branch (`develop`)
+
 - **Purpose**: Integration branch for Phase 3+ work
 - **Base for**: All feature/bugfix branches
 - **Updates**: Daily from feature branches via PR
@@ -48,6 +50,7 @@ ui-polish-v2                 ← Merged into main (Phase 2 completion)
   - No force push
 
 ### Feature Branches (`phase3/*`)
+
 - **Naming**: `phase3/{feature-name}` or `feature/{ticket-id}`
 - **Base**: Created from `develop`
 - **Updates**: Rebase on `develop` before PR
@@ -56,11 +59,13 @@ ui-polish-v2                 ← Merged into main (Phase 2 completion)
 - **Lifetime**: 2-4 weeks (one feature arc)
 
 Current Phase 3 features:
+
 - `phase3/cloud-sync` - Supabase + sync engine (Weeks 17-20)
 - `phase3/payments` - Payment integration (Weeks 23-24)
 - `phase3/school-admin` - Admin workspace (Weeks 25-26)
 
 ### Hotfix Branches (`hotfix/*`)
+
 - **Base**: Created from `main` (if critical production bug)
 - **Naming**: `hotfix/{bug-id}`
 - **PR Target**: `main` AND `develop`
@@ -80,6 +85,7 @@ Closes #issue-id
 ```
 
 ### Types
+
 - `feat`: New feature (Phase 3 work)
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -90,6 +96,7 @@ Closes #issue-id
 - `chore`: Build/dependency updates
 
 ### Examples
+
 ```
 feat(cloud-sync): Add offline-first sync engine with conflict resolution
 
@@ -184,11 +191,13 @@ git push origin main --tags
 ## 📅 Phase Timeline & Branches
 
 ### Phase 2 ✅ (Complete - v2.0.0)
+
 - **Main State**: Merged to main with v2.0.0 tag
 - **Features**: Offline-first, role-based dashboards, exports
 - **Branch**: `ui-polish-v2` (archived, keep for reference)
 
 ### Phase 3 🔄 (Active - Weeks 17-28)
+
 - **Base Branch**: `develop`
 - **Feature Branches**:
   - `phase3/cloud-sync` - Weeks 17-20 (Supabase + sync)
@@ -198,6 +207,7 @@ git push origin main --tags
 - **Target Release**: v3.0.0 (Mid-Q3 2026)
 
 ### Phase 4 📅 (Planned)
+
 - **Target**: Q4 2026 onwards
 - **Features**: Advanced CBT, parent portal, analytics, integrations
 - **Branch Strategy**: Same as Phase 3 (develop + feature branches)
@@ -207,6 +217,7 @@ git push origin main --tags
 ## 🛡️ Best Practices
 
 ### DO ✅
+
 - [ ] Create feature branch from `develop`
 - [ ] Write descriptive commit messages
 - [ ] Keep PRs focused (1 feature per PR)
@@ -219,6 +230,7 @@ git push origin main --tags
 - [ ] Delete merged branches
 
 ### DON'T ❌
+
 - [ ] Commit directly to `main` or `develop`
 - [ ] Force push to shared branches
 - [ ] Merge feature branches to `main` directly
@@ -287,6 +299,7 @@ Local Repository:
 ```
 
 **Next Steps**:
+
 1. Push `main` to origin (once network is available)
 2. Start Phase 3 work on `phase3/cloud-sync` first
 3. Create PRs from feature branches → `develop`
