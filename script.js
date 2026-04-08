@@ -1480,12 +1480,13 @@
   //  PDF EXPORT
   // ════════════════════════════════════════════════════
   window.exportStudentPDF = async function (studentId, aiComment) {
-    if (!canUsePDF()) {
-      showUpgradeModal(
-        `Free plan allows ${FREE_PDF_LIMIT} PDF report cards per term. Upgrade to Pro for unlimited PDFs.`,
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUsePDF()) {
+    //   showUpgradeModal(
+    //     `Free plan allows ${FREE_PDF_LIMIT} PDF report cards per term. Upgrade to Pro for unlimited PDFs.`,
+    //   );
+    //   return;
+    // }
     const cls = classes.find((c) => c.id === activeClassId);
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
@@ -1616,12 +1617,13 @@
   };
 
   window.exportAllPDFs = async function () {
-    if (!canUseBulkPDF()) {
-      showUpgradeModal(
-        "Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.",
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseBulkPDF()) {
+    //   showUpgradeModal(
+    //     "Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.",
+    //   );
+    //   return;
+    // }
     const students = allStudents[activeClassId] || [];
     if (!students.length) {
       showToast("No students in this class", "info");
@@ -1696,12 +1698,13 @@
   //  EXCEL IMPORT
   // ════════════════════════════════════════════════════
   window.handleExcelUpload = function (files) {
-    if (!canImportExcel()) {
-      showUpgradeModal(
-        "Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.",
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canImportExcel()) {
+    //   showUpgradeModal(
+    //     "Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.",
+    //   );
+    //   return;
+    // }
     if (!files.length) return;
     showLoading("Parsing spreadsheet...");
     const reader = new FileReader();
@@ -1805,12 +1808,13 @@
   //  Master collation sheet: all students × all subjects
   // ════════════════════════════════════════════════════
   window.exportBroadsheet = function () {
-    if (!canUseBroadsheet()) {
-      showUpgradeModal(
-        "Broadsheet export is a Pro feature. Upgrade to export the full master collation sheet.",
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseBroadsheet()) {
+    //   showUpgradeModal(
+    //     "Broadsheet export is a Pro feature. Upgrade to export the full master collation sheet.",
+    //   );
+    //   return;
+    // }
     const cls = classes.find((c) => c.id === activeClassId);
     if (!cls) {
       showToast("Select a class first", "error");
@@ -1941,10 +1945,11 @@
 
   // Export broadsheet for ALL classes into one workbook (one sheet per class)
   window.exportAllBroadsheets = function () {
-    if (!canUseBroadsheet()) {
-      showUpgradeModal("Broadsheet export is a Pro feature.");
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseBroadsheet()) {
+    //   showUpgradeModal("Broadsheet export is a Pro feature.");
+    //   return;
+    // }
     if (!classes.length) {
       showToast("No classes to export", "info");
       return;
@@ -2208,11 +2213,13 @@
 
   // Save current term's results as a snapshot
   window.saveTermSnapshot = function () {
-    if (!canUseTermHistory()) {
-      showUpgradeModal(
-        "Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth.",
-      );
-      return;
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseTermHistory()) {
+    //   showUpgradeModal(
+    //     "Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth.",
+    //   );
+    //   return;
+    // }
     }
     if (!activeClassId) {
       showToast("Select a class first", "error");
@@ -2695,13 +2702,14 @@
       showToast("Enter a class name", "error");
       return;
     }
-    if (!canAddClass()) {
-      closeModal("addClassModal");
-      showUpgradeModal(
-        `You've reached the free plan limit of ${FREE_CLASS_LIMIT} classes.`,
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canAddClass()) {
+    //   closeModal("addClassModal");
+    //   showUpgradeModal(
+    //     `You've reached the free plan limit of ${FREE_CLASS_LIMIT} classes.`,
+    //   );
+    //   return;
+    // }
     const newId = "cls_" + Date.now();
     const subjId = "subj_" + Date.now();
     classes.push({
@@ -2809,13 +2817,14 @@
     }
     const cls = classes.find((c) => c.id === activeClassId);
     if (!cls) return;
-    if (!canAddStudent()) {
-      closeModal("addStudentModal");
-      showUpgradeModal(
-        `You've reached the free plan limit of ${FREE_STUDENT_LIMIT} total students.`,
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canAddStudent()) {
+    //   closeModal("addStudentModal");
+    //   showUpgradeModal(
+    //     `You've reached the free plan limit of ${FREE_STUDENT_LIMIT} total students.`,
+    //   );
+    //   return;
+    // }
     if (!allStudents[activeClassId]) allStudents[activeClassId] = [];
     allStudents[activeClassId].push({
       id: "s_" + Date.now(),
@@ -3782,7 +3791,8 @@ Please send payment and setup details. Thank you.`);
           <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>Students</span><span style="font-weight:700;color:${stuColor};">${totalStudents} / ${FREE_STUDENT_LIMIT}</span></div>
           <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${stuPct}%;background:${stuColor};border-radius:99px;transition:width .4s;"></div></div>
         </div>
-        <div style="background:linear-gradient(135deg,#4361ee18,#7209b718);border:1.5px solid var(--accent);border-radius:var(--r-lg);padding:1.2rem;margin-bottom:1rem;">
+        <!-- PHASE 3: Upgrade section hidden for Phase 2 (pricing coming TODO Phase 3) -->
+        <!-- <div style="background:linear-gradient(135deg,#4361ee18,#7209b718);border:1.5px solid var(--accent);border-radius:var(--r-lg);padding:1.2rem;margin-bottom:1rem;">
           <div style="font-weight:800;font-size:.95rem;margin-bottom:.25rem;">⭐ Upgrade to Pro — ${PRO_PRICE_LABEL}</div>
           <div style="font-size:.8rem;color:var(--muted);margin-bottom:.9rem;">Unlimited everything. All Pro features unlocked.</div>
           <button class="btn btn-primary" onclick="document.getElementById('upgradeModal').classList.add('active')" style="width:100%;justify-content:center;font-weight:700;">
@@ -3796,7 +3806,8 @@ Please send payment and setup details. Thank you.`);
             <input type="text" class="form-input" id="schoolCodeInput" placeholder="e.g. GREENF-2026-AB12" style="flex:1;font-family:var(--font-mono);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;"/>
             <button class="btn btn-primary btn-sm" onclick="redeemSchoolCode()"><i class="bi bi-building-fill-check"></i> Activate</button>
           </div>
-        </div>
+        </div> --iv>
+        </div> -->
         ${renderStorageMeter()}`;
     }
   }
@@ -4866,12 +4877,13 @@ Please send payment and setup details. Thank you.`);
   let pendingMatFile = null;
 
   window.openUploadMaterialModal = function () {
-    if (!canUseMaterials()) {
-      showUpgradeModal(
-        "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources.",
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseMaterials()) {
+    //   showUpgradeModal(
+    //     "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources.",
+    //   );
+    //   return;
+    // }
     if (!activeClassId) {
       showToast("Select a class first", "error");
       return;
@@ -5899,12 +5911,13 @@ Please send payment and setup details. Thank you.`);
   let aiTargetStudentId = null;
 
   window.openAiComment = function (studentId) {
-    if (!canUseAIComment()) {
-      showUpgradeModal(
-        "AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds.",
-      );
-      return;
-    }
+    // PHASE 2: All features enabled (no upgrades until Phase 3)
+    // if (!canUseAIComment()) {
+    //   showUpgradeModal(
+    //     "AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds.",
+    //   );
+    //   return;
+    // }
     aiTargetStudentId = studentId;
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
