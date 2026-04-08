@@ -96,7 +96,8 @@
   function gateNavigation() {
     if (!currentUser) return;
     const role = normalizeRole(currentUser.role);
-    const isTeacher = role === "teacher" || role === "staff" || role === "admin";
+    const isTeacher =
+      role === "teacher" || role === "staff" || role === "admin";
 
     // Teacher/staff/admin get full access; others get restricted view
     const restrictedItems = [
@@ -3227,7 +3228,7 @@
   //  You can also add multiple emails (comma-separated).
   //
   const ADMIN_EMAILS = [
-    "oshinayadamilola@gmail.com", // ← developer / owner (always has full access)
+    "oshinayadamilola3@gmail.com", // ← developer / owner (always has full access)
     // "colleague@email.com",       // ← add more dev/tester emails here if needed
   ];
 
@@ -3849,7 +3850,7 @@ Please send payment and setup details. Thank you.`);
     const body = encodeURIComponent(
       `Hello,\n\nI'd like to upgrade my GradeFlow account to Pro (${PRO_PRICE_LABEL}).\n\nName: ${currentUser?.name || ""}\nEmail: ${currentUser?.email || ""}\n\nPlease provide payment details. Thank you.`,
     );
-    window.location.href = `mailto:oshinayadamilola@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:oshinayadamilola3@gmail.com?subject=${subject}&body=${body}`;
   };
 
   window.logOut = function () {
@@ -4251,7 +4252,7 @@ Please send payment and setup details. Thank you.`);
     )
       return;
 
-    // Placeholder: Use first student from first class as "child" 
+    // Placeholder: Use first student from first class as "child"
     // TODO: Replace with real parent→child enrollment linkage in v3
     let child = null;
     let childRanking = null;
