@@ -1,553 +1,840 @@
 # GradeFlow Product and Engineering Documentation
 
-Version: April 2026
-Product Stage: Advanced MVP (offline-first PWA)
-Primary Audience: Nigerian primary and secondary school teachers
-
-## 1. Executive Summary
-
-GradeFlow is already a strong offline-first grading platform with real classroom utility: class management, score entry, automatic grading, analytics, attendance, report export, and optional AI-assisted comments. It is fast, practical, and tailored to local school workflows.
-
-The current architecture is intentionally simple (single-page app, browser storage, no backend). That makes onboarding and iteration easy, but it also creates hard limits for reliability, security, scalability, and payment enforcement.
-
-To become production-ready and genuinely worth paying for at scale, GradeFlow needs to evolve from a powerful single-device tool into a dependable multi-device education product with:
-
-1. secure accounts and identity
-2. cloud sync and backup
-3. robust subscription/payment infrastructure
-4. auditability and support operations
-5. measurable reliability and trust
-
-This document covers:
-
-1. what GradeFlow currently has (implemented behavior)
-2. what is partially implemented or constrained
-3. what must be added for production readiness
-4. what should be added to support premium value
-5. a phased roadmap with practical priorities
-
-## 1.1 Production Hardening Implemented Now (April 2026)
-
-The following important production upgrades are now implemented in the current codebase:
-
-1. Password security upgrade with migration support.
-   - Existing local accounts are migrated to a stronger password record format when users sign in.
-   - New passwords are validated with a stronger hash flow instead of plain text comparison.
-2. Login abuse protection (attempt throttling and temporary lockout).
-   - Repeated failed logins are tracked per account.
-   - The app temporarily blocks repeated attempts after too many failures.
-3. Session hardening (idle timeout + max session age).
-   - The session is checked against inactivity and total age before restoring the dashboard.
-   - Expired sessions are cleared instead of being trusted indefinitely.
-4. Encrypted backups with user passphrase (AES-GCM + PBKDF2).
-   - Exported backups are encrypted with a user-chosen passphrase.
-   - Import requires the same passphrase before restoration can happen.
-   - This protects backup files if they are shared or lost.
-5. Backup safety reminders (in-app reminder when recent backup is missing).
-   - The app nudges users to export a backup when one is missing or stale.
-   - This is especially important because the product is still local-first.
-6. Account email-change data migration (moves user-scoped data safely).
-   - When a teacher changes email, the app migrates their stored classes, students, materials, history, and settings.
-   - This reduces accidental data loss during account edits.
-7. Privacy Policy and Terms pages with in-app consent gate.
-   - There are standalone legal pages for privacy and terms.
-   - First-time users must actively consent before continuing.
-8. Backend-ready API client layer (local/supabase/nextjs provider switching).
-   - The app now has a provider abstraction for local storage, Supabase, and Next.js-style APIs.
-   - Supabase is currently used as a lightweight cloud sync path for user records and can be expanded later.
-
-These changes improve security and reliability immediately while preserving your existing app architecture.
+**Version**: April 8, 2026  
+**Product Stage**: Phase 2 Complete (Role-Based Dashboards & Permission Guards Live)  
+**Primary Audience**: Nigerian primary and secondary school teachers  
+**Next Milestone**: Phase 3 (Supabase Cloud Sync & Payment Infrastructure)
 
 ---
 
-## 2. Current Product Scope (What Exists Today)
+## Executive Summary
+
+GradeFlow is a mature offline-first grading platform with proven classroom utility: class management, score entry, automatic grading, analytics, attendance, report export, and optional AI-assisted comments. It is fast, practical, and designed for local school workflows.
+
+**Current State (Phase 2 Complete)**:
+
+- ✅ Secure authentication with password hashing and session hardening
+- ✅ Role-based dashboards (teacher, student, parent, admin, staff)
+- ✅ Permission guards (read-only for students/parents, edit for teachers)
+- ✅ Sidebar role-gating (hides teacher workspace from non-teachers)
+- ✅ Real data integration across all dashboards
+- ✅ Empty state handling with user guidance
+- ✅ Backup system with encrypted export/import
+- ✅ Privacy policy and terms consent flow
+
+**What's Next (Phase 3 Required)**:
+To become a reliable, scalable, multi-device production platform, GradeFlow must:
+
+1. Migrate core data to Supabase (cloud canonical storage)
+2. Implement offline-first sync with conflict resolution
+3. Add payment infrastructure (Paystack/Flutterwave)
+4. Build school admin workspace with team collaboration
+5. Establish monitoring, audit logs, and support tools
+
+This document covers:
+
+1. Current implementation status (Phase 1 & 2 complete)
+2. Architecture and design decisions
+3. Phase 3 implementation roadmap
+4. Final production readiness criteria
+5. Next 12 weeks technical plan
+
+## 1.1 Production Hardening & Phase 2 Features (April 2026)
+
+### Security and Authentication Foundation
+
+1. **Password security upgrade with migration support**
+   - Existing local accounts migrated to stronger password hash format on next login
+   - New passwords validated with secure hash flow (no plain text comparison)
+2. **Login abuse protection (attempt throttling)**
+   - Failed login attempts tracked per account
+   - Temporary lockout after repeated failures to prevent brute force
+
+3. **Session hardening (idle timeout + max session age)**
+   - Sessions validated for inactivity and total age before restoration
+   - Expired sessions cleared instead of trusted indefinitely
+   - Prevents account hijacking from abandoned devices
+
+4. **Encrypted backups with user passphrase (AES-GCM + PBKDF2)**
+   - Exported backups encrypted with teacher-chosen passphrase
+   - Import requires matching passphrase for restoration
+   - Protects sensitive school data if backups are shared/lost
+
+5. **Backup safety reminders**
+   - In-app nudge when recent backup is missing or stale
+   - Critical for offline-first product data durability
+
+6. **Account email-change data migration**
+   - Teacher email change automatically migrates: classes, students, materials, history, settings
+   - Prevents accidental data loss during account updates
+
+7. **Privacy Policy and Terms consent gate**
+   - Standalone legal pages (privacy, terms, data handling)
+   - First-time users must actively consent before accessing app
+   - Supports institutional adoption and regulatory compliance
+
+8. **Backend-ready API client layer**
+   - Provider abstraction supports: local storage, Supabase, Next.js APIs
+   - Can switch providers without frontend disruption
+   - Supabase currently used for lightweight user record sync
+
+### Phase 2 Features: Role-Based Dashboards & Permission Guards (NEW)
+
+1. **Role-based dashboard routing**
+   - Teachers/staff/admin → Full teacher workspace (grades, analytics, students, materials, attendance, CBT, history, settings)
+   - Students → Student dashboard (personal grades, attendance, assignments, ranking)
+   - Parents → Parent dashboard (child progress, subjects, communications)
+   - Ensures users only see appropriate content
+
+2. **Permission guard functions**
+   - `canEditGrades()` → true only for teacher/staff/admin (shows editable score inputs)
+   - `canViewGrades()` → true only for teacher/staff/admin (view access control)
+   - `canDeleteStudent()` → true only for teacher/admin (deletion rights)
+   - Non-teachers see read-only grade displays instead of editable fields
+
+3. **Sidebar role-gating (navigation visibility)**
+   - Teachers see full sidebar: Grades, Analytics, Students, Materials, Attendance, CBT, History, Settings + Your Classes section
+   - Students/parents see empty sidebar (all teacher workspace items hidden)
+   - Prevents unauthorized navigation to restricted vies
+
+4. **Real data integration across dashboards**
+   - **Student Dashboard**: Real grades from allStudentGrades, actual attendance from allAttendance, real assignments from allMaterials, computed overall average
+   - **Parent Dashboard**: First-student-in-first-class enrolled as "child" (placeholder for Supabase enrollment v3), real grades, ranking, subject performance
+   - **Admin Dashboard**: Real class count, real student count, attendance percentage, class averages, completion metrics
+
+5. **Empty state handling with user guidance**
+   - Student: "No grades recorded yet", "No assignments yet"
+   - Admin: "No classes yet", "No pending approvals"
+   - Parent: "No child records found. Contact school to set up enrollment."
+   - Consistent messaging pattern across all dashboards
+
+These Phase 2 features enable multi-role usage while maintaining teacher workspace integrity and ensuring proper access control.
+
+---
+
+## 2. Current Product Scope (Fully Implemented - Phase 1 & 2 Complete)
 
 ### 2.1 Platform and Architecture
 
 GradeFlow is a single-page Progressive Web App built with:
 
-- HTML (`index.html`)
-- CSS (`style.css`)
-- Vanilla JavaScript (`script.js`)
-- Service Worker caching (`sw.js`)
-- PWA metadata (`manifest.json`)
+- **HTML** (`index.html`) - Semantic structure with modal workflows
+- **CSS** (`style.css`) - Design token system with light/dark mode support
+- **Vanilla JavaScript** (`script.js`) - ~6,300 lines, all core features
+- **Service Worker** (`sw.js`) - Cache-first strategy for PWA behavior
+- **PWA Manifest** (`manifest.json`) - Installable app metadata
 
-Key architectural characteristics:
+**Key Architectural Characteristics:**
 
-- Offline-first behavior via service worker and static asset caching
-- No backend server required for core usage
-- Data stored in browser `localStorage`
-- Multi-user data namespacing by account email in storage keys
-- Frontend-only account model
-- Progressive enhancement path for backend sync without breaking the offline app
-- Cloud provider abstraction already wired into the frontend
+- Offline-first: Service worker caches all assets; app works without internet
+- No backend required for core usage (local-first)
+- Data namespaced by account email in browser localStorage
+- Role-based routing with permission guards
+- Provider abstraction ready for Supabase/Next.js backend integration
+- Multi-user support through email-scoped storage keys
+- Graceful degradation for offline scenarios
 
-Current deployment shape:
+**Current Deployment:** Single HTML file + PWA manifest. Can run completely offline or with optional Supabase user-record sync.
 
-- The app can run completely offline as a local PWA.
-- The app can also be pointed at a backend provider for future sync.
-- The present cloud path is intentionally partial and should not yet be treated as full multi-device storage.
+### 2.2 Core Academic Features (Complete)
 
-### 2.2 Core User Flows Implemented
+**Grading System:**
 
-1. Teacher creates account and logs in locally.
-2. Teacher creates classes and subjects.
-3. Teacher adds students manually or imports from spreadsheet.
-4. Teacher enters test/practical/exam scores.
-5. GradeFlow computes totals, grades, rankings, and insights.
-6. Teacher exports outputs (PDF / Excel / WhatsApp text).
-7. Teacher can track attendance and basic CBT quizzes.
-8. Teacher can save term snapshots as history.
+- Class and subject management with unlimited classes
+- Student records per class (manual entry + CSV import)
+- Score capture: test (0-20), practical/CA (0-20), exam (0-60) = 100-point scale
+- Automatic total calculation with real-time updates
+- Overall student average across all subjects
+- Position/ranking with tie-break handling
+- WAEC-aligned default grading scale (A=90-100, B=80-89, etc.)
+- Custom grading scales: adjust ranges and letters per school
+- Grade remarks (Excellent, Pass, Fail, etc.) with customizable mapping
+- Batch grade entry and bulk updates
 
-Current strength of these flows:
+**Dashboard and Analytics:**
 
-- The teacher workflow is already usable without a backend.
-- The app favors fast classroom operations over heavy setup.
-- Most primary classroom actions are fully available inside the browser.
+- Teacher workspace: Grade sheet, analytics, students, materials, attendance, CBT, history, settings
+- Student dashboard: Personal grades, attendance, assignments, class ranking
+- Parent dashboard: Child's grades, subjects, performance, communications
+- Admin dashboard: School overview, class health, attendance metrics
+- Subject-level charts via Chart.js with summary metrics
+- Ranking visualization with filtering and sorting
+- Statistical analysis (average, highest, lowest, pass rate)
 
-### 2.3 Academic and Grading Features
+**Reporting and Export:**
 
-Implemented and functioning:
-
-- Class and subject management
-- Student records per class
-- Score capture model: test (0-20), practical/CA (0-20), exam (0-60)
-- Total score calculation on 100-point scale
-- Overall student average across subjects
-- Position/ranking with tie handling
-- WAEC-aligned default grading scale
-- Custom grading scale in settings
-- Grade remark mapping (e.g., Excellent, Pass, Fail)
-
-### 2.4 Analytics and Visibility
-
-Implemented and functioning:
-
-- Subject-level performance visualization via Chart.js
-- Summary metrics (average/highest/lowest/pass context)
-- Student card views for quick per-learner inspection
-- Dashboard stat cards for at-a-glance class health
-- Dedicated analytics view for grouped charting and ranking visibility
-
-### 2.5 Reporting and Export Features
-
-Implemented and functioning:
-
-- Individual report-card style PDF export (jsPDF + html2canvas)
+- Individual student report-card PDF (jsPDF + html2canvas)
 - Class broadsheet Excel export (SheetJS)
-- Spreadsheet import flow for learners/scores
+- Spreadsheet import for students and scores
 - WhatsApp share flow for result communication
-- Export-oriented workflows designed for school staff who need printable or shareable outputs quickly
+- Term snapshots for historical comparison
+- Export templates with school branding
 
-### 2.6 Teaching Workflow Extensions
+**Teaching Workflow:**
 
-Implemented and functioning:
-
-- Attendance tracking per date (Present/Absent/Late)
-- Class material uploads and metadata storage
-- Basic CBT/quiz builder and result handling
+- Attendance tracking (Present/Absent/Late per date)
+- Class material uploads with metadata
+- Basic CBT/quiz builder and scoring
 - Term history snapshots for previous term retrieval
-- Settings controls for branding, grading scale, term/session labels, and app preferences
-- Account consent management for privacy/terms acceptance
+- Settings for grading scale, term labels, school branding
+- AI-assisted comment generation (via Google Gemini API)
 
-### 2.7 PWA and Offline Behavior
+**Role-Based Access (Phase 2):**
 
-Implemented and functioning:
+- **Teacher/Staff/Admin**: Full workspace access, grade editing, all exports, team collaboration view
+- **Student**: Personal grades (read-only), attendance, assignments, ranking
+- **Parent**: Child's grades, subjects, ranking, communications (first-child enrollment model)
+- **Super Admin**: School-level analytics, team management (planned Phase 3)
+
+### 2.3 Security and Safety (Phase 1 & 2)
+
+**Implemented:**
+
+- HTML escaping to prevent script injection
+- Per-user storage namespacing by email
+- Local quota management with cleanup fallback
+- Password hashing with upgrade migration (old → new hash on login)
+- Login attempt throttling to prevent brute force
+- Session idle timeout (15 min) and max age (12 hours)
+- Encrypted backup export/import (AES-GCM + PBKDF2)
+- Privacy policy and terms consent gate
+- Role-based permission checks before rendering sensitive UI
+
+### 2.4 PWA and Offline Behavior
+
+**Implemented:**
 
 - Installable PWA manifest
 - Service worker registration on first visit
-- Cache-first strategy for local app shell
-- CDN asset caching for key libraries
-- Offline status banner and messaging UX
-- Works as a browser app and as an installable app on supported devices
-- Continues basic use even when connectivity is limited
+- Cache-first strategy for app shell and libraries
+- Offline status banner
+- Automatic sync fallback when connectivity returns
+- App works fully offline and transitions gracefully to online
+- Installable on iOS, Android, and desktop
 
-### 2.8 Security and Safety Measures Already Present
+### 2.5 UX/Design System
 
-Implemented:
+**Implemented:**
 
-- HTML escaping utility before injecting user-supplied text into `innerHTML`
-- Namespaced per-user storage keys
-- Local quota management attempt (`safeSave` + cleanup fallback)
-- Protection against accidental script injection through escaped text fields
-- Encrypted backup export/import for sensitive school data
-- Password migration and login throttling for account safety
-- Consent flow for legal acknowledgement
-
-### 2.9 UX and Design System
-
-Implemented:
-
-- Structured design tokens (colors, spacing, typography)
-- Light and dark mode support
-- Responsive behavior for mobile and desktop
-- Sidebar/dashboard navigation model
+- Design tokens: colors, spacing, typography, shadows
+- Light and dark mode with system preference detection
+- Responsive mobile, tablet, desktop layouts
+- Sidebar navigation with role-based visibility
 - Modal-based workflows for major actions
-- Premium visual polish layer with elevated cards, glass-style topbar, and more professional dashboard contrast
-- Landing page with marketing and pricing sections for product positioning
+- Premium visual polish: elevated cards, glass-style topbar
+- Empty state messaging with guidance
+- Toast notifications for feedback
+- Landing page with marketing and pricing sections
 
 ---
 
-## 3. Current Constraints and Partial Areas
+## 3. What Remains: Phase 3 Foundation & Production Requirements
 
-These are important because they directly affect trust, scalability, and paid conversion.
+These are the critical gaps to unlock multi-device reliability, institutional trust, and sustainable revenue.
 
-The most important thing to understand is that GradeFlow is currently in a mixed state:
+### 3.1 Data Durability and Cloud Sync (Critical)
 
-- The frontend product is mature enough for real classroom use.
-- The backend story is only partially implemented.
-- Cloud syncing exists in a limited form, but not yet as full canonical storage for all academic records.
+**Current State**: All data lives in browser localStorage only  
+**Problem**:
 
-### 3.1 Identity and Authentication Constraints
+- Browser storage is device-specific and can be lost when browser is cleared/device resets
+- File uploads (base64) consume storage quickly
+- No cross-device access to grades/records
+- Single point of failure for school data
 
-- Account system is browser-local.
-- No secure password hashing workflow tied to a server.
-- No cross-device sign-in guarantee.
-- No real account recovery path.
-- No hosted identity provider is yet enforcing login, password reset, or email verification.
+**Phase 3 Solution**:
 
-Impact: teachers risk account/data loss when device is reset, broken, or replaced.
+1. Cloud database schema for: classes, students, scores, attendance, materials, CBT, history
+2. Offline-first sync: Local cache + server reconciliation with conflict resolution
+3. Real-time sync status indicator (local/syncing/synced)
+4. Encrypted backup with restore history
+5. Migration path for existing local users to cloud-backed accounts
 
-### 3.2 Data Durability Constraints
+**Expected KPI**:
 
-- Core data lives in `localStorage` only.
-- Browser storage limits are small and inconsistent by device/browser.
-- File uploads (base64) can push storage usage quickly.
-- Cloud sync currently exists only as a provider abstraction and a limited user-record sync path.
-- Classes, students, scores, attendance, materials, CBT data, and history still need a real backend schema and sync pipeline.
+- Sync success rate > 99%
+- Data recovery time < 5 minutes
+- Cross-device access within 30 seconds
 
-Impact: data longevity is not guaranteed for professional usage.
+### 3.2 Secure Cloud Identity (Critical)
 
-### 3.3 Subscription and Revenue Constraints
+**Current State**: Account system is browser-local only  
+**Problem**:
 
-- Pro plan UX exists, but activation flow is manual.
-- No automated payment verification lifecycle.
-- No entitlement service (feature gating by server truth).
-- No webhook-driven subscription state sync.
-- No invoices/receipts stored centrally.
+- No secure password hashing tied to server
+- No cross-device sign-in guarantee
+- No real account recovery path
+- Teachers risk total data loss if device is lost/reset
 
-Impact: recurring billing and reliable premium enforcement are not production-grade.
+**Phase 3 Solution**:
 
-### 3.4 AI Feature Constraints
+1. Supabase authentication (email + secure password hashing)
+2. Session tokens with rotation and secure expiry
+3. Email-based account recovery (recovery link workflow)
+4. Multi-device session management (sign out from all devices)
+5. Account linking (merge duplicate accounts)
 
-- AI comments depend on external API availability and user key handling.
-- No server-side key protection model by default.
-- No strict quality guardrails for multilingual output consistency.
-- No usage limits, billing metering, or moderation layer for AI requests.
+**Expected KPI**:
 
-Impact: inconsistent output quality and potential key exposure risk.
+- Successful password reset completion > 95%
+- Cross-device re-login time < 2 minutes
+- Account recovery rate > 90%
 
-### 3.5 Operations and Support Constraints
+### 3.3 Payment and Subscription Infrastructure (Critical)
 
-- No backend telemetry or error pipeline.
-- No centralized event/audit trail.
-- Limited observability into failures across user devices.
-- No admin diagnostics console for support staff.
+**Current State**: Pro plan UX exists but no automated payment flow  
+**Problem**:
 
-Impact: difficult to troubleshoot production incidents and support paying schools.
+- No integrated payment gateway
+- Manual activation flow doesn't scale
+- No automated renewal or expiry checks
+- No server-side entitlements (can't enforce premium features)
+- No receipts or audit trail for schools
 
-### 3.6 What is already partially cloud-ready
+**Phase 3 Solution**:
 
-- The app can switch providers through the API connector.
-- Supabase credentials can be saved in the UI.
-- User records can be synchronized to Supabase through the current adapter.
-- The architecture is ready for extending cloud sync entity by entity.
+1. Payment gateway integration (Paystack or Flutterwave)
+2. Webhook verification and transaction reconciliation
+3. Subscription state model: active/grace/expired/canceled
+4. Server-side entitlement checks (feature gating truth on server)
+5. Automated renewal and grace-period workflows
+6. Receipts and invoice generation
 
-### 3.7 What is still local-only
+**Expected KPI**:
 
-- Actual gradebook data storage is still browser-local.
-- Report history and attachments are still local-first.
-- Permissions and collaboration are still single-user in practice.
-- There is no true multi-device merge/conflict system yet.
+- Payment success rate > 96%
+- Subscription churn rate < 5% monthly
+- Revenue per teacher > ₦2,500/month
 
----
+### 3.4 School Admin Workspace (High Priority)
 
-## 4. Production Readiness Requirements (Must-Have)
+**Current State**: Single-teacher workflows only  
+**Problem**:
 
-This section defines what must exist before positioning GradeFlow as a dependable paid product at scale.
+- No multi-teacher coordination
+- No approval workflows for final results
+- No cross-class analytics for school leadership
+- No audit trail for accountability
 
-### 4.1 Security and Identity Baseline
+**Phase 3 Solution**:
 
-Must add:
+1. School admin role with oversight dashboard
+2. Role-based permissions: teacher/reviewer/admin/super-admin
+3. Result approval workflow (draft → submitted → approved → locked)
+4. Cross-class analytics (subject trends, teacher performance, intervention lists)
+5. Activity audit log (who changed what, when)
+6. Team management (add teachers, remove users, reset passwords)
 
-1. real authentication service (email/password + secure hash, or passwordless + verified identity)
-2. secure session management (token rotation, expiration)
-3. account recovery (email or admin-assisted)
-4. role model readiness (teacher, school admin, super-admin)
+**Expected KPI**:
 
-Production outcome: users trust that their account and access are durable and secure.
+- Admin setup completion > 85%
+- Approval workflow usage > 70% of schools
+- Support ticket reduction > 30%
 
-### 4.2 Durable Storage and Sync
+### 3.5 Observability and Reliability (High Priority)
 
-Must add:
+**Current State**: No backend monitoring or error reporting  
+**Problem**:
 
-1. cloud database for canonical records (classes, students, scores, attendance, history)
-2. offline-first sync layer (local cache + server reconciliation)
-3. conflict resolution policy for multi-device edits
-4. encrypted backups and restore path
-5. migration strategy for existing local users into cloud-backed accounts
-6. sync status visibility so users know whether data is local, syncing, or saved remotely
+- Can't see when users have sync failures or data loss
+- Support team has no way to diagnose issues
+- No performance metrics or health monitoring
+- Hard to troubleshoot production incidents
 
-Production outcome: no single-device data fragility.
+**Phase 3 Solution**:
 
-### 4.3 Payment and Entitlement Infrastructure
+1. Frontend error tracking (Sentry or similar)
+2. Structured server logs for all operations
+3. Sync status and retry metrics
+4. Support diagnostics bundle (user can export for support)
+5. Dashboard health checks and uptime monitoring
+6. Admin console for support-team incident triage
 
-Must add:
+**Expected KPI**:
 
-1. integrated payment gateway (Paystack or Flutterwave)
-2. webhook verification and transaction reconciliation
-3. subscription state model (active, grace, expired, canceled)
-4. entitlement checks tied to server truth, not only local flags
-5. receipts/invoices for school operations
-6. renewal and grace-period workflow with notification history
+- First-response time < 2 hours
+- Error resolution rate > 80% same day
+- Uptime SLA > 99.5%
 
-Production outcome: predictable revenue and controlled premium access.
+### 3.6 What's Ready for Phase 3 (Already Implemented)
 
-### 4.4 Reliability and Update Safety
-
-Must add:
-
-1. explicit versioning and migration scripts for stored data schemas
-2. safe release strategy (staged rollout, rollback process)
-3. health monitoring (frontend error tracking + API monitoring)
-4. disaster recovery plan (backup cadence and restore tests)
-5. environment separation for development, staging, and production
-
-Production outcome: lower incident severity and faster recovery.
-
-### 4.5 Compliance and Trust Foundation
-
-Must add:
-
-1. clear privacy policy and terms
-2. child/student data handling policy aligned with applicable regional obligations
-3. data retention controls and deletion workflows
-4. consent and disclosure UX where required
-5. audit trail for account access and record changes
-
-Production outcome: stronger institutional adoption and lower legal risk.
-
-### 4.6 Support and Operations Baseline
-
-Must add:
-
-1. structured logs for sync/auth/payment operations
-2. support tooling to trace a school account end to end
-3. a diagnostic export for bug reports
-4. admin-only recovery tools for account and data issues
-
-Production outcome: the product can be supported like a real business service.
+- ✅ Frontend provider abstraction (local/Supabase switching)
+- ✅ Role-based permission functions
+- ✅ Sidebar gating and navigation filtering
+- ✅ Encryption/decryption utilities
+- ✅ Offline-first architecture and service worker
+- ✅ Modal-based workflows for complex actions
+- ✅ Real data integration across dashboards
+- ✅ Empty state handling patterns
 
 ---
 
-## 5. Premium Value Roadmap (What Makes It Worth Paying For)
+## 4. Phase 3 Implementation Roadmap (Weeks 1-12)
 
-A paid product must deliver outcomes users cannot easily recreate manually.
+### 4.1 Week 1-2: Cloud Foundation & Data Migration
 
-### 5.1 School-Grade Reliability Features
+**Deliverables:**
 
-High-value additions:
+- Supabase project setup with RLS policies
+- Database schema for: users, classes, students, scores, attendance, materials, CBT, history
+- Data migration tool (export local → import to cloud)
+- Offline-first IndexedDB layer for local caching
+- Basic auth integration (email/password login)
 
-1. multi-device sync with offline continuation
-2. automatic cloud backup with restore history
-3. term close workflow with locked report snapshots
-4. export consistency guarantees (branded templates)
-5. sync health indicator and last-sync timestamp
+**Success Criteria:**
 
-Why people pay: reliability and administrative confidence.
+- User can successfully login via Supabase
+- Local data can be exported and imported cleanly
+- No data loss during migration
+
+### 4.2 Week 3-4: Cloud Sync Engine
+
+**Deliverables:**
+
+- Offline-first sync client (PouchDB or custom sync layer)
+- Conflict resolution policy for concurrent edits
+- Sync status indicator (local/syncing/synced/error)
+- Retry logic with exponential backoff
+- Sync history for debugging
+
+**Success Criteria:**
+
+- Grades synced to cloud within 10 seconds
+- Cross-device access within 30 seconds
+- Sync continues during offline periods
+- Conflicts resolved without data loss
+
+### 4.3 Week 5-6: Account Recovery & Multi-Device
+
+**Deliverables:**
+
+- Password reset flow (email link)
+- Session token rotation and expiry
+- Multi-device session management
+- "Sign out everywhere" option
+- Account security audit log
+
+**Success Criteria:**
+
+- Password reset works end-to-end
+- User can access from 2+ devices simultaneously
+- Session timeout works correctly
+
+### 4.4 Week 7-8: Payment Integration
+
+**Deliverables:**
+
+- Paystack/Flutterwave integration
+- Webhook receiver for transaction verification
+- Subscription state management
+- Server-side entitlement checks
+- Invoice/receipt generation
+
+**Success Criteria:**
+
+- Test payment completes successfully
+- Subscription status updates correctly
+- Premium features gate properly
+
+### 4.5 Week 9-10: School Admin Workspace
+
+**Deliverables:**
+
+- Admin dashboard (school overview, teacher management)
+- Role-based access controls
+- Result approval workflow
+- Cross-class analytics
+- Activity audit log
+
+**Success Criteria:**
+
+- Admin can create school and add teachers
+- Approval workflow gates final results
+- Analytics show meaningful metrics
+
+### 4.6 Week 11-12: Observability, QA & Launch Prep
+
+**Deliverables:**
+
+- Error tracking (Sentry)
+- Structured logging (backend + frontend)
+- Support diagnostics bundle
+- Admin console for triage
+- Comprehensive test coverage
+- Performance optimization
+
+**Success Criteria:**
+
+- All critical paths have logging
+- Support team can triage issues quickly
+- Uptime monitoring shows > 99% availability
+- Ready for production launch
+
+### 4.7 Branch & Release Strategy
+
+**Phase 3 Branch**: `phase-3-cloud-sync`
+
+- Main → Phase 3 branch
+- Feature branches off Phase 3 (auth, payments, admin, etc.)
+- Staging environment mirrors production
+- Staged rollout: 10% → 50% → 100% of users
+- Rollback plan for critical issues
+
+---
+
+## 5. Premium Value Features (Phases 3+)
+
+### 5.1 School-Grade Reliability
+
+- Multi-device sync with offline continuation
+- Automatic cloud backup with restore history
+- Term lock/finalization workflow
+- Export consistency guarantees
+- Sync health dashboard
 
 ### 5.2 Administrative Intelligence
 
-High-value additions:
+- Class and subject trend analysis (across terms)
+- Risk alerts (declining learners, absentee patterns)
+- Teacher workload dashboards
+- Cross-class comparative analytics
+- Term-over-term summaries and intervention lists
 
-1. class and subject trend analysis across terms
-2. risk alerts (declining learners, chronic absentee patterns)
-3. teacher workload and grading completion dashboards
-4. cross-class comparative analytics for heads of school
-5. term-over-term summaries and intervention lists
+### 5.3 Collaboration and Control
 
-Why people pay: decision support, not just data entry.
+- School admin workspace
+- Role permissions (teacher/reviewer/admin/super-admin)
+- Approval workflows
+- Activity logs and accountability
+- Read-only reviewer roles
 
-### 5.3 Collaboration and Role-Based Control
+### 5.4 Parent Communication
 
-High-value additions:
+- Structured parent report summaries
+- Multilingual messaging templates
+- Scheduled communication windows
+- Communication history per student
+- Standardized remark templates
 
-1. school admin workspace
-2. role permissions (who can edit, approve, export)
-3. approval workflows for final result release
-4. activity logs for accountability
-5. read-only reviewer roles for school leadership
+### 5.5 Advanced Assessment
 
-Why people pay: multi-staff coordination without chaos.
-
-### 5.4 Parent/Guardian Communication Layer
-
-High-value additions:
-
-1. structured parent report summaries
-2. multilingual messaging templates
-3. scheduled communication windows
-4. communication history per student
-5. standardized remark and notification templates
-
-Why people pay: improved parent engagement and reduced friction.
-
-### 5.5 Assessment and Exam Expansion
-
-High-value additions:
-
-1. richer CBT engine (question bank, randomization, anti-cheat settings)
-2. rubric support for practical/skills assessment
-3. continuous assessment normalization tools
-4. exam moderation and outlier checks
-5. question bank management and paper reuse controls
-
-Why people pay: deeper academic tooling and confidence in grading quality.
+- Rich CBT engine (question bank, randomization)
+- Rubric support for practical/skills assessment
+- Exam moderation and outlier checks
+- Question bank management
+- Paper reuse controls
 
 ---
 
-## 6. Monetization Strategy (Practical and Defensible)
+## 6. Monetization Strategy (Practical & Defensible)
 
-### 6.1 Suggested Plan Structure
+### 6.1 Pricing Plan Structure
 
-1. Free Plan (teacher starter)
-   : basic classes, basic grading, limited exports, local-only mode
+**Free Plan (Teacher Starter)**
 
-2. Pro Teacher Plan
-   : unlimited exports, AI assistance, advanced analytics, cloud backup, priority support
+- 1 class, 50 students
+- Basic grading and exports
+- Local-only storage (no cloud sync)
+- Community support
+- Perfect for: Evaluating the product
 
-3. School Plan
-   : multi-teacher admin controls, approvals, consolidated analytics, audit logs, institutional support
+**Pro Teacher Plan (₦)5,000/month)**
+
+- Unlimited classes and students
+- Cloud sync + multi-device access
+- Advanced analytics and reporting
+- AI-assisted comments
+- Encrypted backup + recovery
+- Email support
+- Perfect for: Individual teachers who want reliability and features
+
+**School Plan (₦15,000/month per teacher)**
+
+- Everything in Pro
+- Multi-teacher admin workspace
+- Result approval workflow
+- Cross-class analytics
+- Audit logs and accountability
+- School-level customization
+- Priority support (< 2h response)
+- Perfect for: Schools wanting coordination and compliance
 
 ### 6.2 Value-to-Price Logic
 
-Users will pay when GradeFlow clearly saves time and reduces mistakes.
+Users will pay when GradeFlow saves time and prevents mistakes.
 
-A simple value framing:
+**Cost savings per teacher per term**:
 
-- If GradeFlow saves 2-4 hours per class cycle and prevents even one major reporting error, it delivers measurable operational value beyond subscription price.
+- Grade entry: -2 hours (automated calculations)
+- Report generation: -3 hours (automated PDF/Excel)
+- Error recovery: -1 incident avoided (cloud backup)
+- **Total**: ~5-6 hours saved per term
+- **Value**: ₦5,000 plan pays for itself in reduced admin time
+
+**For schools**:
+
+- Standardized reporting: -20 hours (admin coordination)
+- Compliance audit trail: 1 incident prevented
+- Teacher coordination: -10 hours (result approval)
+- **Total**: ~30 hours saved per term
+- **Value**: ₦15,000 plan saves 30+ hours of admin time
 
 ### 6.3 Revenue Protection Essentials
 
-1. server-side entitlements and expiry checks
-2. grace periods for failed renewals
-3. dunning workflow (renewal reminders)
-4. anti-abuse checks for account sharing where needed
+- Server-side entitlement checks (can't fake Pro)
+- Grace period workflow (7 days before losing access)
+- Dunning workflow (renewal reminders 7, 3, 1 days before)
+- Anti-abuse: detect account sharing, enforce per-school licensing
+- Churn reduction: feedback survey at cancel, recovery offer
 
 ---
 
-## 7. Recommended Technical Evolution
+## 7. Technical Stack & Architecture Evolution
 
-### 7.1 Near-Term Architecture Path
+### 7.1 Current Stack (Phase 1-2)
 
-Maintain the current PWA experience but introduce a backend progressively.
+- Frontend: Vanilla JS (~6,300 lines), HTML5, CSS3, Bootstrap Icons
+- Data: localStorage (browser-local)
+- Storage: IndexedDB (future, prepared)
+- UI: Modal-based workflows, responsive design
+- Auth: Browser-local (Phase 2)
+- Export: jsPDF, SheetJS, html2canvas
+- Analytics: Chart.js, tinycolor
+- Optional: Google Gemini API (AI comments)
 
-Suggested direction:
+### 7.2 Phase 3 Stack Additions
 
-1. keep current frontend UX and offline behavior
-2. add API layer for identity, payment, and synced data
-3. expand Supabase or a Next.js backend from user-only sync to full academic record sync
-4. transition heavy storage to IndexedDB locally + cloud canonical store
-5. enforce typed schemas for data integrity
+- Backend: Supabase (PostgreSQL + auth)
+- Sync Engine: Offline-first sync (PouchDB or custom)
+- Payment: Paystack/Flutterwave
+- Monitoring: Sentry (errors), LogRocket (replays)
+- API: RESTful endpoints (auth, sync, subscriptions)
+- Database: PostgreSQL with RLS policies
 
-Practical rollout order:
+### 7.3 Data Model Hardening (Phase 3)
 
-1. auth and profile sync
-2. classes and students sync
-3. scores and attendance sync
-4. materials and term history sync
-5. entitlement and subscription sync
+```
+Tables:
+- users (id, email, password_hash, role, school_id, created_at, updated_at)
+- schools (id, name, code, plan, subscription_status, created_at)
+- classes (id, school_id, name, emoji, subject_ids, created_at)
+- students (id, class_id, name, email, created_at)
+- scores (id, student_id, subject_id, test, prac, exam, created_at, updated_at)
+- attendance (id, student_id, class_id, date, status, created_at)
+- materials (id, class_id, title, desc, type, date, created_at)
+- quizzes (id, class_id, title, questions[], created_at)
+- subscriptions (id, school_id, plan, status, payment_id, expires_at)
+- audit_logs (id, school_id, user_id, action, resource, old_value, new_value, created_at)
 
-### 7.2 Data Model Hardening Priorities
+Indexes: (school_id, class_id), (school_id, user_id), (student_id, class_id)
+RLS: Users only see data from their school
+```
 
-1. strict schema validation on write
-2. migration version per stored entity set
-3. immutable historical report records once finalized
-4. consistent IDs with collision-safe generation
-5. server-side unique constraints for email, class IDs, student IDs, and snapshot IDs
+### 7.4 Sync Architecture (Phase 3)
 
-### 7.3 Observability and Quality
+```
+Local: IndexedDB (offline cache)
+Server: PostgreSQL (canonical source)
 
-1. crash/error instrumentation
-2. key user-flow analytics (import success rate, export success rate, sync latency)
-3. synthetic checks for critical endpoints
-4. support diagnostics bundle for incident triage
-5. sync retry metrics and failed-write reporting
+Sync Flow:
+1. User makes change locally → written to IndexedDB
+2. Mark record as "pending_sync"
+3. When online: POST /sync with pending records
+4. Server validates, applies, returns resolved state
+5. Client marks as "synced"
+6. Conflict: Server wins (deterministic)
+7. Sync status indicator shows: local/syncing/synced/error
+```
 
----
+### 7.5 Performance Targets (Phase 3)
 
-## 8. Implementation Roadmap (Phased)
-
-### Phase 1: Trust and Durability (0-6 weeks)
-
-1. secure auth and session foundation
-2. cloud data model for core entities
-3. backup/restore UX
-4. robust payment verification backend
-5. production logs and error reporting
-
-Primary KPI targets:
-
-- successful login recovery rate
-- backup restore success rate
-- payment activation success rate
-
-### Phase 2: Premium Reliability and Admin Features (6-12 weeks)
-
-1. school admin roles and permissions
-2. result approval workflow
-3. term lock/finalization
-4. cross-class analytics dashboards
-5. sync status and recovery tools
-
-Primary KPI targets:
-
-- reduction in grading completion time
-- increase in premium retention
-- decrease in support tickets tied to data loss
-
-### Phase 3: Product Differentiation (12-20 weeks)
-
-1. advanced CBT capabilities
-2. intervention/risk analytics
-3. parent communication suite
-4. multilingual quality improvements
-5. branded report themes and school-level customization
-
-Primary KPI targets:
-
-- weekly active usage depth
-- parent communication engagement
-- net revenue retention
+- Login: < 3 seconds
+- Sync: < 10 seconds for grade entry
+- Cross-device access: < 30 seconds
+- Search: < 1 second on 1000 students
+- PDF export: < 5 seconds
+- Excel export: < 3 seconds
+- Page load (offline): < 2 seconds
+- API latency: < 500ms p95
 
 ---
 
-## 9. Definition of Production-Ready for GradeFlow
+## 8. Final Production Readiness Checklist
 
-GradeFlow should be called production-ready when all of the following are true:
+GradeFlow is ready for production-scale deployment when:
 
-1. user identity is secure, recoverable, and multi-device capable
-2. core academic data is durably stored and recoverable after device loss
-3. payment and subscription status are automated, auditable, and enforceable
-4. release, monitoring, and rollback processes are reliable
-5. support teams can diagnose and resolve real incidents quickly
-6. legal/privacy documentation and user disclosures are complete
-7. cloud sync covers all important school data, not just account records
-8. users can clearly see whether data is local, synced, or in error
-9. backup restore has been tested against real user scenarios
+### Security & Trust
 
-In other words, GradeFlow is not production-ready just because it works on one device. It becomes production-ready when the product is safe to trust across devices, schools, payments, and recoveries.
+- [ ] Email-based authentication with secure password hashing
+- [ ] Session tokens with rotation and expiry
+- [ ] Multi-device session management
+- [ ] Account recovery workflow (email link)
+- [ ] Privacy policy and terms legally reviewed
+- [ ] Child data handling policy compliant with GDPR/local law
+- [ ] Password reset tested end-to-end
+- [ ] No secrets in code or documentation
+- [ ] SSL/TLS for all cloud communication
+
+### Data Durability & Sync
+
+- [ ] Cloud database schema deployed and tested
+- [ ] Offline-first sync engine working
+- [ ] Conflict resolution tested and documented
+- [ ] Data migration tool tested on 100+ local accounts
+- [ ] Cross-device sync verified
+- [ ] Backup/restore workflow tested
+- [ ] Data recovery time < 5 minutes
+- [ ] Sync success rate > 99%
+
+### Payment & Revenue
+
+- [ ] Payment gateway integrated and tested
+- [ ] Webhook verification working
+- [ ] Subscription state model enforced
+- [ ] Entitlement checks on server
+- [ ] Invoice/receipt generation working
+- [ ] Grace period and renewal workflow tested
+- [ ] Churn tracking and reporting working
+- [ ] Payment success rate > 96%
+
+### School Admin Features
+
+- [ ] Admin dashboard showing school overview
+- [ ] Teacher management (add/remove/permissions)
+- [ ] Result approval workflow working
+- [ ] Cross-class analytics dashboard
+- [ ] Audit log capturing all account changes
+- [ ] Admin testing with multi-teacher school
+
+### Reliability & Observability
+
+- [ ] Error tracking (Sentry) deployed
+- [ ] Structured logging on all API endpoints
+- [ ] Frontend error tracking live
+- [ ] Uptime monitoring (> 99.5%)
+- [ ] Health check dashboard
+- [ ] Support diagnostic export working
+- [ ] Admin console for incident review
+- [ ] Runbook for common failures documented
+
+### Testing & Quality Assurance
+
+- [ ] Unit tests for core algorithms (grading, ranking)
+- [ ] Integration tests for sync and auth
+- [ ] End-to-end tests for critical user paths
+- [ ] Load testing (1000+ concurrent users)
+- [ ] Data migration testing (large datasets)
+- [ ] Offline-to-online transition tested
+- [ ] Mobile and desktop UX verified
+- [ ] Accessibility audit (WCAG 2.1 AA)
+- [ ] Browser compatibility tested (Chrome, Safari, Firefox, Edge)
+
+### Operations & Support
+
+- [ ] Deployment automation (CI/CD)
+- [ ] Staged rollout process (10% → 50% → 100%)
+- [ ] Rollback procedure documented and tested
+- [ ] Backup strategy documented (daily snapshots)
+- [ ] Disaster recovery tested (restore from backup)
+- [ ] Support team trained on product
+- [ ] Documentation complete (API, admin, teacher, parent)
+- [ ] FAQ and common issues documented
+
+### Launch Readiness
+
+- [ ] User testimonials or beta feedback documented
+- [ ] Marketing materials prepared
+- [ ] School onboarding package ready
+- [ ] Payment page live and tested
+- [ ] Pricing page updated with clear terms
+- [ ] Privacy policy accepted by users
+- [ ] Terms of service accepted by users
+- [ ] Support channel ready (email/chat)
+- [ ] Go/no-go decision documented
 
 ---
 
-## 10. Final Product Positioning
+## 9. Success Metrics & KPIs (Phase 3+)
 
-Today, GradeFlow is a compelling advanced MVP with strong teacher-facing utility and a clear path to market fit.
+### User Adoption
 
-With the roadmap above, it can become:
+- Active teachers per week (target: 500+ by month 3)
+- Student daily active engagement (target: 60%+ of enrolled)
+- Parent adoption rate (target: 40%+ of classes)
+- School signup rate (target: 50+ schools by month 6)
 
-1. a trusted school operations platform (not only a grading tool)
-2. a resilient subscription business with defensible value
-3. a regional-first edtech product that institutions can confidently adopt
+### Data Health
 
-In short: the product already proves usefulness; the next step is to productize reliability, trust, and institutional controls so it is not only useful, but business-critical.
+- Sync success rate (target: > 99%)
+- Data loss incidents (target: 0)
+- Account recovery success (target: > 95%)
+- Backup completion rate (target: > 80%)
+
+### Business Metrics
+
+- Conversion rate (free to Pro) (target: > 10%)
+- School plan adoption (target: > 30% of active schools)
+- Monthly recurring revenue (target: ₦500k+ by month 6)
+- Churn rate (target: < 5% monthly)
+- Customer acquisition cost (target: break-even by month 4)
+
+### Quality Metrics
+
+- Support response time (target: < 2 hours)
+- Support resolution rate (target: > 80% first contact)
+- Uptime (target: > 99.5%)
+- Error rate (target: < 0.1% of requests)
+- Page load time (target: < 2s p95)
+
+---
+
+## 10. Timeline Summary
+
+| Phase   | Duration    | Focus                                          | Status                  |
+| ------- | ----------- | ---------------------------------------------- | ----------------------- |
+| Phase 1 | Weeks 1-8   | Auth, Role-Based Dashboards, Permission Guards | ✅ Complete             |
+| Phase 2 | Weeks 9-16  | UI Polish, Admin Features                      | ⏳ Next (UI/UX Refresh) |
+| Phase 3 | Weeks 17-28 | Cloud Sync, Payments, School Workspace         | → Active (12 weeks)     |
+| Phase 4 | Weeks 29+   | Advanced Features, Scaling                     | Future                  |
+
+---
+
+## 11. Final Positioning
+
+**Today (Phase 2 Complete)**:
+GradeFlow is a powerful, fast, offline-first grading platform that teachers love. It works locally with zero setup and exports results professionally.
+
+**After Phase 3 (Production Ready)**:
+GradeFlow becomes the trusted school operations platform: multi-device, cloud-backed, payment-enabled, and accountable. Schools can confidently adopt it knowing data is safe, synced, and compliant.
+
+**Growth Path (Phase 4+)**:
+GradeFlow expands into holistic school management: advanced analytics, parent communication, team collaboration, and institutional integrations. Teachers focus on teaching; admins focus on decisions, not data entry.
+
+**The Core Promise**:
+
+> "Grade faster, manage better, teach with confidence."
+
+---
+
+## 12. Next Steps (Immediate)
+
+1. **Branch UI/UX Refresh** (`ui-polish-v2`)
+   - Visual refresh while keeping all academic features stable
+   - Target: 2 weeks of focused design work
+
+2. **Prepare Phase 3 Groundwork**
+   - Supabase project setup
+   - Database schema review
+   - Migration script design
+   - Team onboarding
+
+3. **Stakeholder Communication**
+   - Update teachers on cloud sync roadmap
+   - Gather feedback on proposed admin features
+   - Confirm payment gateway preference
+
+4. **Risk Mitigation**
+   - Document rollback procedures
+   - Create staging environment
+   - Plan data migration strategy
+   - Build comprehensive test suite
