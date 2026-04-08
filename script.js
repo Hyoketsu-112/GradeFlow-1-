@@ -1480,13 +1480,6 @@
   //  PDF EXPORT
   // ════════════════════════════════════════════════════
   window.exportStudentPDF = async function (studentId, aiComment) {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUsePDF()) {
-    //   showUpgradeModal(
-    //     `Free plan allows ${FREE_PDF_LIMIT} PDF report cards per term. Upgrade to Pro for unlimited PDFs.`,
-    //   );
-    //   return;
-    // }
     const cls = classes.find((c) => c.id === activeClassId);
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
@@ -1617,13 +1610,6 @@
   };
 
   window.exportAllPDFs = async function () {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseBulkPDF()) {
-    //   showUpgradeModal(
-    //     "Bulk PDF export is a Pro feature. Upgrade to generate all report cards in one click.",
-    //   );
-    //   return;
-    // }
     const students = allStudents[activeClassId] || [];
     if (!students.length) {
       showToast("No students in this class", "info");
@@ -1698,13 +1684,6 @@
   //  EXCEL IMPORT
   // ════════════════════════════════════════════════════
   window.handleExcelUpload = function (files) {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canImportExcel()) {
-    //   showUpgradeModal(
-    //     "Excel & CSV import is a Pro feature. Upgrade to import entire class lists in seconds.",
-    //   );
-    //   return;
-    // }
     if (!files.length) return;
     showLoading("Parsing spreadsheet...");
     const reader = new FileReader();
@@ -1809,12 +1788,6 @@
   // ════════════════════════════════════════════════════
   window.exportBroadsheet = function () {
     // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseBroadsheet()) {
-    //   showUpgradeModal(
-    //     "Broadsheet export is a Pro feature. Upgrade to export the full master collation sheet.",
-    //   );
-    //   return;
-    // }
     const cls = classes.find((c) => c.id === activeClassId);
     if (!cls) {
       showToast("Select a class first", "error");
@@ -1946,10 +1919,6 @@
   // Export broadsheet for ALL classes into one workbook (one sheet per class)
   window.exportAllBroadsheets = function () {
     // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseBroadsheet()) {
-    //   showUpgradeModal("Broadsheet export is a Pro feature.");
-    //   return;
-    // }
     if (!classes.length) {
       showToast("No classes to export", "info");
       return;
@@ -2213,13 +2182,6 @@
 
   // Save current term's results as a snapshot
   window.saveTermSnapshot = function () {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseTermHistory()) {
-    //   showUpgradeModal(
-    //     "Term History & Progress tracking is a Pro feature. Upgrade to save term snapshots and track student growth.",
-    //   );
-    //   return;
-    // }
     }
     if (!activeClassId) {
       showToast("Select a class first", "error");
@@ -2702,14 +2664,6 @@
       showToast("Enter a class name", "error");
       return;
     }
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canAddClass()) {
-    //   closeModal("addClassModal");
-    //   showUpgradeModal(
-    //     `You've reached the free plan limit of ${FREE_CLASS_LIMIT} classes.`,
-    //   );
-    //   return;
-    // }
     const newId = "cls_" + Date.now();
     const subjId = "subj_" + Date.now();
     classes.push({
@@ -2817,14 +2771,6 @@
     }
     const cls = classes.find((c) => c.id === activeClassId);
     if (!cls) return;
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canAddStudent()) {
-    //   closeModal("addStudentModal");
-    //   showUpgradeModal(
-    //     `You've reached the free plan limit of ${FREE_STUDENT_LIMIT} total students.`,
-    //   );
-    //   return;
-    // }
     if (!allStudents[activeClassId]) allStudents[activeClassId] = [];
     allStudents[activeClassId].push({
       id: "s_" + Date.now(),
@@ -3304,10 +3250,14 @@
     }
   }
 
-  // isPro: true for individual pro, school plan, AND admin
+  // isPro: For Phase 2, always return true (all features enabled)
+  // In Phase 3, uncomment the original check:
   function isPro() {
-    const p = getPlan();
-    return p === "pro" || p === "school" || p === "admin";
+    // PHASE 2: All features unlocked for testing
+    return true;
+    // Original check for Phase 3:
+    // const p = getPlan();
+    // return p === "pro" || p === "school" || p === "admin";
   }
 
   // Shorthand: true for both pro AND admin
@@ -4834,13 +4784,6 @@ Please send payment and setup details. Thank you.`);
   let pendingMatFile = null;
 
   window.openUploadMaterialModal = function () {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseMaterials()) {
-    //   showUpgradeModal(
-    //     "Class Materials upload is a Pro feature. Upgrade to store and share lesson notes, PDFs and resources.",
-    //   );
-    //   return;
-    // }
     if (!activeClassId) {
       showToast("Select a class first", "error");
       return;
@@ -5868,13 +5811,6 @@ Please send payment and setup details. Thank you.`);
   let aiTargetStudentId = null;
 
   window.openAiComment = function (studentId) {
-    // PHASE 2: All features enabled (no upgrades until Phase 3)
-    // if (!canUseAIComment()) {
-    //   showUpgradeModal(
-    //     "AI Teacher Comments are a Pro feature. Upgrade to generate personalised, professional comments in seconds.",
-    //   );
-    //   return;
-    // }
     aiTargetStudentId = studentId;
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
