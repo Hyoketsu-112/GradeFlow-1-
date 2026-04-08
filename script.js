@@ -28,6 +28,7 @@
   let sessionActivityBound = false;
   let lastSessionActivityWrite = 0;
   let aiSessionKey = "";
+  let portalSelectedRole = "staff";
 
   // ════════════════════════════════════════════════════
   //  STORAGE KEYS (per user)
@@ -45,6 +46,31 @@
   function userKey(k) {
     const email = currentUser?.email || "guest";
     return `gf_${email}_${k}`;
+  }
+
+  function normalizeRole(rawRole) {
+    const role = String(rawRole || "teacher").toLowerCase();
+    if (["teacher", "staff", "student", "parent", "admin"].includes(role)) {
+      return role;
+    }
+    return "teacher";
+  }
+
+  function roleLabel(role) {
+    const normalized = normalizeRole(role);
+    const labels = {
+      teacher: "Teachers",
+      staff: "Admin & Staff",
+      student: "Students",
+      parent: "Parents",
+      admin: "Super Admin",
+    };
+    return labels[normalized] || "Teachers";
+  }
+
+  function ensureCurrentUserRole() {
+    if (!currentUser) return;
+    currentUser.role = normalizeRole(currentUser.role);
   }
 
   // ── Security helpers (Web Crypto with graceful fallback) ───────────────
@@ -682,6 +708,10 @@
       // native href="#section" scrolls body not the container — intercept
       _fixLandingNavLinks();
       updateOnlineStatus();
+    } else if (page === "login" || page === "portal-login") {
+      document.body.classList.add("on-landing");
+      const el = document.getElementById("page-" + page);
+      if (el) el.scrollTop = 0;
     } else {
       document.body.classList.remove("on-landing");
     }
@@ -2745,6 +2775,8 @@
       name: user.name,
       org: user.org,
       email: user.email,
+      role: normalizeRole(user.role),
+      schoolCode: user.schoolCode || existing.schoolCode || "",
     };
     localStorage.setItem("gf_accounts", JSON.stringify(accounts));
   }
@@ -2822,10 +2854,44 @@
     return String(h);
   }
 
-  window.openAuthModal = function (mode) {
-    document.getElementById("authModal").classList.add("active");
-    switchAuthTab(mode);
+  window.showMainLogin = function (mode = "login") {
+    showPage("login");
+    switchRouteAuthTab(mode);
   };
+
+  window.showPortalLogin = function () {
+    showPage("portal-login");
+    setPortalRole(portalSelectedRole || "staff");
+  };
+
+  window.openAuthModal = function (mode) {
+    showMainLogin(mode || "login");
+  };
+
+  window.switchRouteAuthTab = function (mode) {
+    document.getElementById("routeLoginFields").style.display =
+      mode === "login" ? "" : "none";
+    document.getElementById("routeSignupFields").style.display =
+      mode === "signup" ? "" : "none";
+    document
+      .getElementById("routeLoginTab")
+      .classList.toggle("active", mode === "login");
+    document
+      .getElementById("routeSignupTab")
+      .classList.toggle("active", mode === "signup");
+  };
+
+  window.setPortalRole = function (role) {
+    portalSelectedRole = normalizeRole(role);
+    document.querySelectorAll(".portal-role-card").forEach((card) => {
+      card.classList.toggle("active", card.dataset.role === portalSelectedRole);
+    });
+    const hint = document.getElementById("portalRoleHint");
+    if (hint) hint.textContent = `Sign in as ${roleLabel(portalSelectedRole)}`;
+    const suRole = document.getElementById("routeSignupRole");
+    if (suRole) suRole.value = portalSelectedRole;
+  };
+
   window.switchAuthTab = function (mode) {
     document.getElementById("loginFields").style.display =
       mode === "login" ? "" : "none";
@@ -2853,11 +2919,34 @@
       : '<i class="bi bi-eye"></i>';
   };
 
-  window.handleSignup = async function () {
-    const name = document.getElementById("su-name").value.trim();
-    const org = document.getElementById("su-org").value.trim();
-    const email = document.getElementById("su-email").value.trim();
-    const pass = document.getElementById("su-pass").value;
+  function _readLoginForm({ emailId, passId }) {
+    return {
+      email: document.getElementById(emailId)?.value?.trim() || "",
+      pass: document.getElementById(passId)?.value || "",
+    };
+  }
+
+  function _readSignupForm({
+    nameId,
+    orgId,
+    emailId,
+    passId,
+    roleId,
+    consentId,
+  }) {
+    return {
+      name: document.getElementById(nameId)?.value?.trim() || "",
+      org: document.getElementById(orgId)?.value?.trim() || "",
+      email: document.getElementById(emailId)?.value?.trim() || "",
+      pass: document.getElementById(passId)?.value || "",
+      role: normalizeRole(document.getElementById(roleId)?.value || "teacher"),
+      consent: Boolean(document.getElementById(consentId)?.checked),
+    };
+  }
+
+  async function _processSignup(formData, options) {
+    const { name, org, email, pass, role, consent } = formData;
+    const { closeAuthModal = false } = options || {};
     if (!name) {
       showToast("Please enter your name", "error");
       return;
@@ -2871,7 +2960,7 @@
       showToast("Password must be at least 8 characters", "error");
       return;
     }
-    if (!document.getElementById("su-consent")?.checked) {
+    if (!consent) {
       showToast("Please accept Terms and Privacy Policy to continue", "error");
       return;
     }
@@ -2884,7 +2973,13 @@
       );
       return;
     }
-    currentUser = { name, org: org || "My School", email: normalizedEmail };
+    currentUser = {
+      name,
+      org: org || "My School",
+      email: normalizedEmail,
+      role: normalizeRole(role),
+      schoolCode: "",
+    };
     saveUserToStorage(currentUser);
     const passRecord = await _createPasswordRecord(pass);
     safeSave(`gf_pass_${normalizedEmail}`, passRecord);
@@ -2895,6 +2990,7 @@
         name,
         org: org || "My School",
         email: normalizedEmail,
+        role: normalizeRole(role),
       }).catch((e) => ({
         ok: false,
         message: e?.message || "Cloud signup failed",
@@ -2909,18 +3005,45 @@
     // Mark as brand-new account so enterDashboard shows onboarding
     localStorage.setItem(`gf_new_account_${normalizedEmail}`, "1");
     loadUserData();
-    closeModal("authModal");
+    if (closeAuthModal) closeModal("authModal");
     enterDashboard();
     showToast(
       `🎉 Welcome, ${name.split(" ")[0]}! Let's set up your first class.`,
       "success",
     );
+  }
+
+  window.handleSignup = async function () {
+    const formData = _readSignupForm({
+      nameId: "su-name",
+      orgId: "su-org",
+      emailId: "su-email",
+      passId: "su-pass",
+      roleId: "su-role",
+      consentId: "su-consent",
+    });
+    await _processSignup(formData, { closeAuthModal: true });
   };
 
-  window.handleLogin = async function () {
-    const rawEmail = document.getElementById("li-email").value.trim();
+  window.handleRouteSignup = async function () {
+    const formData = _readSignupForm({
+      nameId: "routeSignupName",
+      orgId: "routeSignupOrg",
+      emailId: "routeSignupEmail",
+      passId: "routeSignupPass",
+      roleId: "routeSignupRole",
+      consentId: "routeSignupConsent",
+    });
+    await _processSignup(formData, { closeAuthModal: false });
+  };
+
+  async function _processLogin(formData, options) {
+    const { email: rawEmail, pass } = formData;
+    const opts = options || {};
+    const requestedRole = opts.requestedRole
+      ? normalizeRole(opts.requestedRole)
+      : null;
     const email = rawEmail.toLowerCase();
-    const pass = document.getElementById("li-pass").value;
     const emailReL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (!email || !emailReL.test(email)) {
       showToast("Please enter a valid email address", "error");
@@ -2952,6 +3075,15 @@
     }
     _clearLoginAttempts(email);
     currentUser = accounts[email];
+    ensureCurrentUserRole();
+    saveUserToStorage(currentUser);
+    if (requestedRole && normalizeRole(currentUser.role) !== requestedRole) {
+      showToast(
+        `This account is registered as ${roleLabel(currentUser.role)}, not ${roleLabel(requestedRole)}.`,
+        "error",
+      );
+      return;
+    }
     localStorage.setItem("gf_current_user", email);
     if (window.GradeFlowAPI) {
       const cloudLogin = await window.GradeFlowAPI.login({ email }).catch(
@@ -2965,7 +3097,7 @@
       }
     }
     loadUserData();
-    closeModal("authModal");
+    if (opts.closeAuthModal) closeModal("authModal");
     if (!_hasConsent(email)) {
       openConsentModal(true);
       showToast(
@@ -2976,6 +3108,33 @@
     }
     enterDashboard();
     showToast(`✅ Welcome back, ${currentUser.name.split(" ")[0]}!`, "success");
+  }
+
+  window.handleLogin = async function () {
+    const formData = _readLoginForm({
+      emailId: "li-email",
+      passId: "li-pass",
+    });
+    await _processLogin(formData, { closeAuthModal: true });
+  };
+
+  window.handleRouteLogin = async function () {
+    const formData = _readLoginForm({
+      emailId: "routeLoginEmail",
+      passId: "routeLoginPass",
+    });
+    await _processLogin(formData, { closeAuthModal: false });
+  };
+
+  window.handlePortalLogin = async function () {
+    const formData = _readLoginForm({
+      emailId: "portalEmail",
+      passId: "portalPass",
+    });
+    await _processLogin(formData, {
+      closeAuthModal: false,
+      requestedRole: portalSelectedRole,
+    });
   };
 
   // ════════════════════════════════════════════════════
@@ -3638,7 +3797,7 @@ Please send payment and setup details. Thank you.`);
     showToast("Logged out successfully", "info");
   };
 
-  function enterDashboard() {
+  function enterTeacherWorkspace() {
     loadUserData(); // also loads materials
     showPage("dashboard");
     updateSidebarUser();
@@ -3675,6 +3834,95 @@ Please send payment and setup details. Thank you.`);
       document.getElementById("themeIcon").className = "bi bi-sun-fill";
       document.getElementById("themeLabel").textContent = "Light mode";
     }
+    _startSessionMonitor();
+    _maybeRemindBackup();
+  }
+
+  const ROLE_HOME_CARDS = {
+    staff: [
+      {
+        title: "School Summary",
+        body: "Track class readiness, attendance health, and active teachers.",
+      },
+      {
+        title: "Result Oversight",
+        body: "Review publishing status and monitor pending class actions.",
+      },
+      {
+        title: "Teacher Workspace",
+        body: "Open grading workspace when you need to compile class results.",
+      },
+    ],
+    student: [
+      {
+        title: "My Performance",
+        body: "View subject trends and recent score updates in one place.",
+      },
+      {
+        title: "Assignments",
+        body: "Check open tasks and due dates for your classes.",
+      },
+      {
+        title: "Attendance Snapshot",
+        body: "Track present, absent, and late records by term.",
+      },
+    ],
+    parent: [
+      {
+        title: "Child Progress",
+        body: "Follow scores, rankings, and report summaries for your child.",
+      },
+      {
+        title: "Attendance",
+        body: "Monitor attendance consistency and weekly summaries.",
+      },
+      {
+        title: "Communication",
+        body: "Access announcements and school communication channels.",
+      },
+    ],
+  };
+
+  function renderRoleHome() {
+    if (!currentUser) return;
+    const role = normalizeRole(currentUser.role);
+    const titleEl = document.getElementById("roleHomeTitle");
+    const subtitleEl = document.getElementById("roleHomeSubtitle");
+    const cardsEl = document.getElementById("roleHomeCards");
+    const teacherBtn = document.getElementById("roleHomeTeacherBtn");
+    if (!titleEl || !subtitleEl || !cardsEl || !teacherBtn) return;
+
+    const firstName = (currentUser.name || "User").split(" ")[0];
+    titleEl.textContent = `Welcome, ${firstName}`;
+    subtitleEl.textContent = `${roleLabel(role)} portal is active for ${currentUser.org || "your school"}.`;
+
+    const cards = ROLE_HOME_CARDS[role] || ROLE_HOME_CARDS.staff;
+    cardsEl.innerHTML = cards
+      .map(
+        (card) =>
+          `<article class="role-home-card"><h4>${esc(card.title)}</h4><p>${esc(card.body)}</p></article>`,
+      )
+      .join("");
+
+    teacherBtn.style.display =
+      role === "teacher" || role === "staff" || role === "admin" ? "" : "none";
+  }
+
+  window.openTeacherWorkspace = function () {
+    if (!currentUser) return;
+    enterTeacherWorkspace();
+  };
+
+  function enterDashboard() {
+    ensureCurrentUserRole();
+    const role = normalizeRole(currentUser?.role);
+    if (role === "teacher" || role === "admin" || role === "staff") {
+      enterTeacherWorkspace();
+      return;
+    }
+    loadUserData();
+    showPage("role-home");
+    renderRoleHome();
     _startSessionMonitor();
     _maybeRemindBackup();
   }
@@ -3797,7 +4045,7 @@ Please send payment and setup details. Thank you.`);
             ? ' <span style="font-size:.63rem;background:linear-gradient(90deg,#00b894,#0984e3);color:white;border-radius:99px;padding:.1rem .45rem;font-weight:700;vertical-align:middle;">PRO</span>'
             : ' <span style="font-size:.63rem;background:var(--border);color:var(--muted);border-radius:99px;padding:.1rem .45rem;font-weight:600;vertical-align:middle;">FREE</span>';
     document.getElementById("userRole").innerHTML =
-      (currentUser.org || "Teacher") + badge;
+      `${roleLabel(currentUser.role)} · ${currentUser.org || "School"}` + badge;
     // Show lock icons on Pro-only nav items for free users
     ["nav-cbt", "nav-materials", "nav-history"].forEach((id) => {
       const el = document.getElementById(id);
@@ -5479,6 +5727,8 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
       if (accounts[savedEmail]) {
         currentUser = accounts[savedEmail];
+        ensureCurrentUserRole();
+        saveUserToStorage(currentUser);
         // Validate persisted session before auto-entering dashboard.
         const exp = parseInt(
           localStorage.getItem(`gf_session_expiresAt_${savedEmail}`) || "0",
