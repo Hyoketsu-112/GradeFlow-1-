@@ -67,4 +67,4 @@ Any other info that might help us fix this?
 - [ ] I tried refreshing the page (F5 or Ctrl+F5)
 - [ ] I tried a different browser
 - [ ] I checked [FAQ.md](../docs/FAQ.md) for similar issues
-- [ ] I'm not reporting security issue (use oshinayadamilola3@gmail.com instead)
+- [ ] I'm not reporting security issue (use [oshinayadamilola3@gmail.com](mailto:oshinayadamilola3@gmail.com) instead)

@@ -3048,6 +3048,94 @@ body.on-landing {
   border-radius: var(--r-md);
   margin: 0.5em 0;
 }
+
+/* ============================================================
+   LANDING PAGE UTILITY CLASSES
+   ============================================================ */
+
+/* Feature badge styles */
+.badge-accent {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  background: var(--accent-l);
+  color: var(--accent);
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.badge-pro {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+/* Feature card center container */
+.feature-card-center {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+/* Pricing features list container */
+.pricing-list-container {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+/* Feature list styling */
+.feature-list {
+  margin-top: 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-list li {
+  text-align: center;
+  padding: 0.8rem;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feature-list i {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* How it works section styling */
+.how-section-background {
+  background: var(--surface);
+  padding: 7rem 0;
+}
+
+.how-section-inner {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Feature divider */
+.feature-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Pricing tier flex layout */
+.pricing-tiers-flex {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
 .mat-viewer-body pre,
 .mat-viewer-body code {
   font-family: var(--font-mono);

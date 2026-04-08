@@ -530,7 +530,7 @@ These are the critical gaps to unlock multi-device reliability, institutional tr
 
 ### 6.1 Pricing Plan Structure
 
-**Free Plan (Teacher Starter)**
+#### Free Plan (Teacher Starter)
 
 - 1 class, 50 students
 - Basic grading and exports
@@ -538,7 +538,7 @@ These are the critical gaps to unlock multi-device reliability, institutional tr
 - Community support
 - Perfect for: Evaluating the product
 
-**Pro Teacher Plan (₦)5,000/month)**
+#### Pro Teacher Plan (₦5,000/month)
 
 - Unlimited classes and students
 - Cloud sync + multi-device access
@@ -548,7 +548,7 @@ These are the critical gaps to unlock multi-device reliability, institutional tr
 - Email support
 - Perfect for: Individual teachers who want reliability and features
 
-**School Plan (₦15,000/month per teacher)**
+#### School Plan (₦15,000/month per teacher)
 
 - Everything in Pro
 - Multi-teacher admin workspace
@@ -613,7 +613,7 @@ Users will pay when GradeFlow saves time and prevents mistakes.
 
 ### 7.3 Data Model Hardening (Phase 3)
 
-```
+```sql
 Tables:
 - users (id, email, password_hash, role, school_id, created_at, updated_at)
 - schools (id, name, code, plan, subscription_status, created_at)
