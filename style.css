@@ -3291,6 +3291,36 @@ body.on-landing {
   margin-top: 0.4rem;
 }
 
+/* Pricing features list */
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.pricing-features li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.88rem;
+}
+
+.pricing-features li i {
+  color: var(--emerald);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.pricing-feature-disabled {
+  color: var(--muted);
+}
+
+.pricing-feature-disabled i {
+  color: inherit;
+}
+
 /* Pricing divider */
 .pricing-divider {
   border: none;
