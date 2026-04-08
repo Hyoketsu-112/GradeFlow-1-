@@ -7,6 +7,7 @@ Your GradeFlow PWA is ready to deploy! Pick your preferred method below.
 ## ⚡ FASTEST: One-Click Deploy (2 minutes)
 
 ### Windows Users (PowerShell)
+
 ```powershell
 cd "C:\Users\The_Dev_Forge\Documents\Codes\GradeFlow(1)"
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
@@ -14,6 +15,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 ```
 
 ### Mac/Linux Users (Bash)
+
 ```bash
 cd ~/path/to/GradeFlow
 chmod +x deploy-netlify.sh
@@ -27,6 +29,7 @@ chmod +x deploy-netlify.sh
 ## 🔗 RECOMMENDED: GitHub-Connected Deploy (5 minutes)
 
 1. **Push your code to GitHub**
+
    ```bash
    cd "C:\Users\The_Dev_Forge\Documents\Codes\GradeFlow(1)"
    git push origin main
@@ -53,6 +56,7 @@ Future deploys happen automatically whenever you push to main!
 ## 📋 SETUP VERIFICATION
 
 Before deploying, verify your setup:
+
 ```bash
 node validate-netlify.js
 ```
@@ -72,6 +76,7 @@ Should show all ✅ checks passing.
 ## 🎯 What You Get
 
 After deployment:
+
 - ✅ **Free HTTPS** certificate
 - ✅ **Global CDN** (fast everywhere)
 - ✅ **Auto-deploys** on every push
@@ -96,13 +101,13 @@ Example: `gradeflow.app` instead of `[random-name].netlify.app`
 
 ## ❓ Need Help?
 
-| Issue | Solution |
-|-------|----------|
-| Scripts won't run | Install: `npm install -g netlify-cli` |
-| Can't see your site | Wait 2-3 minutes for Netlify to build |
-| 404 errors | SPA routing is configured - should work |
-| Service worker issues | Not cached - browsers always get fresh |
-| Slow deployment | First build takes longer, subsequent pushes are faster |
+| Issue                 | Solution                                               |
+| --------------------- | ------------------------------------------------------ |
+| Scripts won't run     | Install: `npm install -g netlify-cli`                  |
+| Can't see your site   | Wait 2-3 minutes for Netlify to build                  |
+| 404 errors            | SPA routing is configured - should work                |
+| Service worker issues | Not cached - browsers always get fresh                 |
+| Slow deployment       | First build takes longer, subsequent pushes are faster |
 
 ---
 

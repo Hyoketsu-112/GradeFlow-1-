@@ -5,12 +5,14 @@ GradeFlow is now fully configured for Netlify hosting!
 ## Option 1: One-Click Deploy (Automated)
 
 ### On macOS/Linux:
+
 ```bash
 chmod +x deploy-netlify.sh
 ./deploy-netlify.sh
 ```
 
 ### On Windows (PowerShell):
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 .\deploy-netlify.ps1
@@ -19,6 +21,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 ## Option 2: GitHub-Connected Deploy (Recommended)
 
 1. **Push to GitHub** (if haven't already)
+
    ```bash
    git push origin main
    ```
@@ -48,6 +51,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 Your site will be live at: `https://[your-subdomain].netlify.app`
 
 Features automatically enabled:
+
 - ✅ HTTPS (free certificate)
 - ✅ Global CDN
 - ✅ Auto-deployments on every push to main
