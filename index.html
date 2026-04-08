@@ -535,31 +535,9 @@
               </p>
             </div>
             <hr class="feature-divider" />
-            <ul
-              style="
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 0.6rem;
-                flex: 1;
-              "
-            >
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+            <ul class="pricing-features">
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span>Up to <strong>2 classes</strong></span>
               </li>
               <li
@@ -580,94 +558,24 @@
                 ></i
                 ><span>Up to <strong>35 students</strong> total</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span><strong>3 PDF</strong> report cards per term</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span>Auto grade computation</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span>Live analytics dashboard</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span>Attendance tracking</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
+              <li>
+                <i class="bi bi-check-circle-fill"></i
                 ><span>WhatsApp result sharing</span>
               </li>
               <li
@@ -730,25 +638,13 @@
                 ></i
                 ><span>CBT Quizzes</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
+              <li class="disabled">
+                <i class="bi bi-x-circle"></i
                 ><span>Term History &amp; Progress</span>
               </li>
             </ul>
             <button
-              class="btn"
-              style="width: 100%; justify-content: center; margin-top: 0.5rem"
+              class="btn pricing-button"
               onclick="openAuthModal('signup')"
             >
               <i class="bi bi-person-plus"></i> Start for free
@@ -756,20 +652,7 @@
           </div>
 
           <!-- Pro plan -->
-          <div
-            style="
-              background: linear-gradient(160deg, #4361ee, #7209b7);
-              border: 2px solid transparent;
-              border-radius: var(--r-xl);
-              padding: 2rem;
-              display: flex;
-              flex-direction: column;
-              gap: 1rem;
-              color: white;
-              position: relative;
-              overflow: hidden;
-              box-shadow: 0 20px 60px -10px rgba(67, 97, 238, 0.5);
-            "
+          <div class="pricing-pro">
           >
             <div
               style="
@@ -799,41 +682,21 @@
                 pointer-events: none;
               "
             ></div>
-            <div>
-              <div
-                style="
-                  font-size: 0.75rem;
-                  font-weight: 700;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                  opacity: 0.7;
-                  margin-bottom: 0.5rem;
-                "
-              >
+            <div class="pricing-header">
+              <div class="pricing-label">
                 Pro Plan
               </div>
-              <div
-                style="
-                  font-size: 2.4rem;
-                  font-weight: 800;
-                  font-family: var(--font-display);
-                "
-              >
+              <div class="pricing-price">
                 ₦5,000
-                <span style="font-size: 0.9rem; font-weight: 400; opacity: 0.7"
+                <span class="pricing-price-period"
                   >/ term</span
                 >
               </div>
-              <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.4rem">
+              <p class="pricing-description">
                 Everything unlimited. All features. One fixed price per term.
               </p>
             </div>
-            <hr
-              style="
-                border: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.2);
-              "
-            />
+            <hr class="pricing-divider" />
             <ul
               style="
                 list-style: none;
@@ -857,59 +720,27 @@
                 ></i
                 ><span><strong>Unlimited</strong> classes &amp; subjects</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span><strong>Unlimited</strong> students</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span><strong>Unlimited</strong> PDF report cards</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span>Broadsheet export (Excel)</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span>Excel / CSV student import</span>
               </li>
@@ -955,41 +786,22 @@
                 ></i
                 ><span>Term History &amp; Progress tracking</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span>Class Materials storage</span>
               </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
+              <li>
                 <i
                   class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
                 ></i
                 ><span>All future features</span>
               </li>
             </ul>
             <button
-              class="btn"
+              class="btn pricing-button"
               style="
-                width: 100%;
-                justify-content: center;
-                margin-top: 0.5rem;
                 background: white;
                 color: #4361ee;
                 font-weight: 700;
@@ -999,14 +811,7 @@
             >
               <i class="bi bi-stars"></i> Get Pro — ₦5,000/term
             </button>
-            <p
-              style="
-                text-align: center;
-                font-size: 0.75rem;
-                opacity: 0.65;
-                margin-top: -0.2rem;
-              "
-            >
+            <p style="text-align: center; font-size: 0.75rem; opacity: 0.65; margin-top: -0.2rem;">
               Pay via WhatsApp or email after signing up.
             </p>
           </div>
