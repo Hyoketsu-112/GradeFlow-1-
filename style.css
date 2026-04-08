@@ -157,6 +157,501 @@ body.on-landing {
   overscroll-behavior: contain;
 }
 
+/* Dedicated auth and portal pages */
+#page-login,
+#page-portal-login,
+#page-role-home {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 8% 10%,
+      rgba(249, 168, 37, 0.14),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 90% 95%,
+      rgba(67, 97, 238, 0.14),
+      transparent 42%
+    ),
+    var(--bg);
+  padding: 2rem;
+}
+
+.route-auth-page {
+  min-height: calc(100vh - 4rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+}
+
+.route-auth-brand,
+.route-auth-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-md);
+}
+
+.route-auth-brand {
+  padding: 2.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.route-auth-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-full);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.route-auth-brand h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.8rem;
+}
+
+.route-auth-brand p {
+  color: var(--muted);
+  max-width: 44ch;
+}
+
+.route-auth-points {
+  margin-top: 1.2rem;
+  display: grid;
+  gap: 0.65rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.route-auth-points i {
+  color: var(--accent);
+  margin-right: 0.45rem;
+}
+
+.route-auth-links {
+  margin-top: 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.route-auth-panel {
+  padding: 2rem;
+}
+
+.route-tabs {
+  margin-bottom: 1.2rem;
+}
+
+.route-consent-row {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+}
+
+.route-consent-row input {
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.route-consent-row a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.portal-page-wrap {
+  min-height: calc(100vh - 4rem);
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg);
+  border: 1px solid rgba(122, 23, 23, 0.25);
+}
+
+.portal-brand-side {
+  background:
+    radial-gradient(
+      circle at 20% 18%,
+      rgba(249, 168, 37, 0.22),
+      transparent 50%
+    ),
+    linear-gradient(145deg, #5c0f12, #701718 45%, #8f2323);
+  color: #fdf2e0;
+  padding: 2.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.portal-mark {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.portal-brand-side h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.portal-brand-side p {
+  max-width: 40ch;
+  opacity: 0.92;
+}
+
+.portal-role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 0.7rem;
+}
+
+.portal-role-card {
+  border: 1px solid rgba(252, 228, 192, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff7ea;
+  border-radius: var(--r-md);
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  transition: var(--trans);
+}
+
+.portal-role-card i {
+  font-size: 1rem;
+}
+
+.portal-role-card.active,
+.portal-role-card:hover {
+  border-color: #f9a825;
+  background: rgba(249, 168, 37, 0.18);
+}
+
+.portal-login-side {
+  background: #fffdf8;
+  padding: 2.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.portal-login-header {
+  margin-bottom: 1rem;
+}
+
+.portal-login-kicker {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: #8b5e3c;
+  font-weight: 700;
+}
+
+.portal-login-header h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+  margin-top: 0.35rem;
+}
+
+.portal-login-header p {
+  color: var(--muted);
+}
+
+.portal-login-links {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.role-home-wrap {
+  min-height: calc(100vh - 4rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--sh-md);
+  padding: 2rem;
+}
+
+.role-home-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  margin-top: 0.35rem;
+}
+
+.role-home-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.role-home-head p {
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.role-home-grid {
+  margin-top: 1.2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.8rem;
+}
+
+.role-home-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1rem;
+  background: var(--surface-2);
+}
+
+.role-home-card h4 {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.role-home-card p {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.role-home-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+/* ==================================================================== 
+   DASHBOARD SHELLS (Admin, Student, Parent)
+   ==================================================================== */
+
+.admin-dashboard-wrap,
+.student-dashboard-wrap,
+.parent-dashboard-wrap {
+  min-height: calc(100vh - 4rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--sh-md);
+  padding: 2rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dashboard-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  margin-top: 0.35rem;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard-header p {
+  color: var(--muted);
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+
+.stat-card .stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.dashboard-section {
+  margin-bottom: 2rem;
+}
+
+.dashboard-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.teacher-list,
+.approval-queue,
+.performance-grid,
+.assignment-list,
+.child-performance,
+.communication-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.teacher-item,
+.approval-item,
+.performance-item,
+.assignment-item,
+.child-card,
+.communication-item {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.teacher-item:hover,
+.approval-item:hover,
+.performance-item:hover,
+.assignment-item:hover,
+.child-card:hover,
+.communication-item:hover {
+  background: var(--surface-3);
+  border-color: var(--primary-light);
+}
+
+.teacher-item-left,
+.approval-item-left,
+.performance-item-left,
+.assignment-item-left,
+.child-card-left,
+.communication-item-left {
+  flex: 1;
+}
+
+.teacher-item-name,
+.approval-item-title,
+.performance-item-name,
+.assignment-item-name,
+.child-card-name,
+.communication-item-subject {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.teacher-item-classes,
+.approval-item-desc,
+.performance-item-average,
+.assignment-item-due,
+.child-card-average,
+.communication-item-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.teacher-item-right,
+.approval-item-right,
+.performance-item-right,
+.assignment-item-right,
+.child-card-right,
+.communication-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.complete {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.urgent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.progress-bar {
+  width: 60px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.dashboard-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
 /* Nav */
 .land-nav {
   position: sticky;
@@ -4900,4 +5395,61 @@ body {
 .land-cta-section .hero-cta,
 .land-cta-section > div[style*="flex"] {
   justify-content: center;
+}
+
+@media (max-width: 980px) {
+  #page-login,
+  #page-portal-login,
+  #page-role-home,
+  #page-admin-dashboard,
+  #page-student-dashboard,
+  #page-parent-dashboard {
+    padding: 1rem;
+  }
+
+  .route-auth-page,
+  .portal-page-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .route-auth-brand,
+  .route-auth-panel,
+  .portal-brand-side,
+  .portal-login-side,
+  .role-home-wrap,
+  .admin-dashboard-wrap,
+  .student-dashboard-wrap,
+  .parent-dashboard-wrap {
+    padding: 1.25rem;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .portal-role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-login-links,
+  .route-auth-links,
+  .role-home-actions,
+  .dashboard-actions {
+    flex-direction: column;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-item-right,
+  .approval-item-right,
+  .performance-item-right,
+  .assignment-item-right,
+  .child-card-right,
+  .communication-item-right {
+    flex-direction: row;
+  }
 }

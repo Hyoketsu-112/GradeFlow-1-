@@ -130,6 +130,9 @@
           <li><a href="#testimonials">Testimonials</a></li>
         </ul>
         <div class="land-nav-actions">
+          <button class="btn btn-sm" onclick="showPortalLogin()">
+            <i class="bi bi-shield-lock"></i> Portal
+          </button>
           <button
             class="btn btn-sm btn-outline"
             onclick="openAuthModal('login')"
@@ -1588,6 +1591,411 @@
       </footer>
     </div>
 
+    <!-- ============================================================ MAIN LOGIN PAGE -->
+    <div id="page-login" class="page">
+      <section class="route-auth-page">
+        <div class="route-auth-brand">
+          <div class="route-auth-badge">Secure Portal Access</div>
+          <h1>GradeFlow Access</h1>
+          <p>
+            Sign in to continue to your school workspace. Teachers can also
+            create new accounts from here.
+          </p>
+          <div class="route-auth-points">
+            <div><i class="bi bi-shield-check"></i> Session hardening</div>
+            <div><i class="bi bi-cloud-check"></i> Optional cloud sync</div>
+            <div><i class="bi bi-wifi-off"></i> Offline-first workflow</div>
+          </div>
+          <div class="route-auth-links">
+            <button class="btn btn-sm" onclick="showPage('landing')">
+              <i class="bi bi-arrow-left"></i> Back to landing
+            </button>
+            <button class="btn btn-sm btn-outline" onclick="showPortalLogin()">
+              <i class="bi bi-grid-3x3-gap-fill"></i> School portal login
+            </button>
+          </div>
+        </div>
+
+        <div class="route-auth-panel">
+          <div class="auth-tabs route-tabs">
+            <button
+              class="auth-tab active"
+              id="routeLoginTab"
+              onclick="switchRouteAuthTab('login')"
+            >
+              Log in
+            </button>
+            <button
+              class="auth-tab"
+              id="routeSignupTab"
+              onclick="switchRouteAuthTab('signup')"
+            >
+              Sign up
+            </button>
+          </div>
+
+          <div id="routeLoginFields">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-input"
+                id="routeLoginEmail"
+                placeholder="you@school.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-input"
+                id="routeLoginPass"
+                placeholder="Enter your password"
+              />
+            </div>
+            <button
+              class="btn btn-primary w-full"
+              style="justify-content: center"
+              onclick="handleRouteLogin()"
+            >
+              <i class="bi bi-box-arrow-in-right"></i> Sign in
+            </button>
+          </div>
+
+          <div id="routeSignupFields" style="display: none">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="routeSignupName"
+                placeholder="e.g. Mrs. Adaeze Okonkwo"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">School Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="routeSignupOrg"
+                placeholder="e.g. Greenfield Academy"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select class="form-input" id="routeSignupRole">
+                <option value="teacher">Teacher</option>
+                <option value="staff">Admin & Staff</option>
+                <option value="student">Student</option>
+                <option value="parent">Parent</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-input"
+                id="routeSignupEmail"
+                placeholder="you@school.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-input"
+                id="routeSignupPass"
+                placeholder="At least 8 characters"
+              />
+            </div>
+            <label class="route-consent-row">
+              <input type="checkbox" id="routeSignupConsent" />
+              <span>
+                I agree to the
+                <a href="terms.html" target="_blank" rel="noopener noreferrer"
+                  >Terms</a
+                >
+                and
+                <a
+                  href="privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Privacy Policy</a
+                >.
+              </span>
+            </label>
+            <button
+              class="btn btn-primary w-full"
+              style="justify-content: center"
+              onclick="handleRouteSignup()"
+            >
+              <i class="bi bi-person-check-fill"></i> Create account
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ SCHOOL PORTAL LOGIN PAGE -->
+    <div id="page-portal-login" class="page">
+      <section class="portal-page-wrap">
+        <div class="portal-brand-side">
+          <div class="portal-mark">GradeFlow Portal</div>
+          <h2>School Workspace Access</h2>
+          <p>
+            Select your portal access level and continue to your secure
+            dashboard.
+          </p>
+          <div class="portal-role-grid">
+            <button
+              class="portal-role-card active"
+              data-role="staff"
+              onclick="setPortalRole('staff')"
+            >
+              <i class="bi bi-briefcase-fill"></i>
+              <span>Admin & Staff</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="teacher"
+              onclick="setPortalRole('teacher')"
+            >
+              <i class="bi bi-person-video3"></i>
+              <span>Teachers</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="student"
+              onclick="setPortalRole('student')"
+            >
+              <i class="bi bi-mortarboard-fill"></i>
+              <span>Students</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="parent"
+              onclick="setPortalRole('parent')"
+            >
+              <i class="bi bi-people-fill"></i>
+              <span>Parents</span>
+            </button>
+          </div>
+          <button class="btn btn-sm" onclick="showPage('landing')">
+            <i class="bi bi-arrow-left"></i> Back to landing
+          </button>
+        </div>
+
+        <div class="portal-login-side">
+          <div class="portal-login-header">
+            <div class="portal-login-kicker">Secure Login</div>
+            <h3>Welcome Back</h3>
+            <p id="portalRoleHint">Sign in as Admin & Staff</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username or Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="portalEmail"
+              placeholder="you@school.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-input"
+              id="portalPass"
+              placeholder="Enter password"
+            />
+          </div>
+          <button
+            class="btn btn-primary w-full"
+            style="justify-content: center"
+            onclick="handlePortalLogin()"
+          >
+            <i class="bi bi-box-arrow-in-right"></i> Sign in to dashboard
+          </button>
+          <div class="portal-login-links">
+            <button
+              class="btn btn-sm btn-outline"
+              onclick="showMainLogin('login')"
+            >
+              Main Login
+            </button>
+            <button class="btn btn-sm" onclick="showMainLogin('signup')">
+              Create Account
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ ROLE HOME PAGE -->
+    <div id="page-role-home" class="page">
+      <section class="role-home-wrap">
+        <div class="role-home-head">
+          <div class="role-home-kicker">Portal Dashboard</div>
+          <h2 id="roleHomeTitle">Welcome</h2>
+          <p id="roleHomeSubtitle">Your role workspace is ready.</p>
+        </div>
+        <div class="role-home-grid" id="roleHomeCards"></div>
+        <div class="role-home-actions">
+          <button
+            class="btn btn-primary"
+            id="roleHomeTeacherBtn"
+            onclick="openTeacherWorkspace()"
+          >
+            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ ADMIN DASHBOARD PAGE -->
+    <div id="page-admin-dashboard" class="page">
+      <section class="admin-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Admin Dashboard</div>
+          <h2 id="adminDashboardTitle">School Overview</h2>
+          <p id="adminDashboardSubtitle">
+            Manage staff, classes, and oversight approvals.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="adminStatsGrid">
+          <!-- Stats: total teachers, classes, pending approvals, avg attendance -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Teacher Oversight</h3>
+          <div class="teacher-list" id="adminTeacherList">
+            <!-- Teacher list with completion status -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Pending Approvals</h3>
+          <div class="approval-queue" id="adminApprovalQueue">
+            <!-- Approval items -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn btn-primary" onclick="openTeacherWorkspace()">
+            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ STUDENT DASHBOARD PAGE -->
+    <div id="page-student-dashboard" class="page">
+      <section class="student-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">My Performance</div>
+          <h2 id="studentDashboardTitle">Your Academic Progress</h2>
+          <p id="studentDashboardSubtitle">
+            Track your grades, assignments, and attendance.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="studentStatsGrid">
+          <!-- Stats: overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Subject Performance</h3>
+          <div class="performance-grid" id="studentPerformanceGrid">
+            <!-- Subject averages and grades -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Assignments</h3>
+          <div class="assignment-list" id="studentAssignmentList">
+            <!-- Assignment items with due dates -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ PARENT DASHBOARD PAGE -->
+    <div id="page-parent-dashboard" class="page">
+      <section class="parent-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Child Progress</div>
+          <h2 id="parentDashboardTitle">Your Child's Academic Journey</h2>
+          <p id="parentDashboardSubtitle">
+            Monitor grades, attendance, and school communications.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="parentStatsGrid">
+          <!-- Stats: child's overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Class Performance Summary</h3>
+          <div class="child-performance" id="parentPerformanceGrid">
+            <!-- Child's subject grades and rankings -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Communications</h3>
+          <div class="communication-log" id="parentCommunicationLog">
+            <!-- School announcements and messages -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
     <!-- ============================================================ DASHBOARD PAGE -->
     <div id="page-dashboard" class="page">
       <!-- Sidebar -->
@@ -2946,6 +3354,15 @@
               id="su-email"
               placeholder="you@email.com"
             />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="form-input" id="su-role">
+              <option value="teacher">Teacher</option>
+              <option value="staff">Admin & Staff</option>
+              <option value="student">Student</option>
+              <option value="parent">Parent</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label"
