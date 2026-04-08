@@ -2,7 +2,7 @@
    GradeFlow Service Worker — Offline-first PWA
    ============================================================ */
 
-const CACHE_NAME = "gradeflow-v5";
+const CACHE_NAME = "gradeflow-v6";
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -13,7 +13,7 @@ const STATIC_ASSETS = [
   "/icon-512.svg",
 ];
 
-const CDN_CACHE = "gradeflow-cdn-v5";
+const CDN_CACHE = "gradeflow-cdn-v6";
 const CDN_DOMAINS = [
   "cdn.sheetjs.com",
   "cdnjs.cloudflare.com",

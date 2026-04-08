@@ -3762,52 +3762,9 @@ Please send payment and setup details. Thank you.`);
         ${daysLeft <= 14 ? `<div style="margin-top:1rem;padding:.8rem 1rem;background:#fff0f3;border:1px solid #ef476f;border-radius:var(--r-md);color:#ef476f;font-size:.82rem;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Your Pro plan expires soon. Contact your GradeFlow admin to renew.</div>` : ""}
         ${renderStorageMeter()}`;
     } else {
-      const classPct = Math.min(100, (classes.length / FREE_CLASS_LIMIT) * 100);
-      const stuPct = Math.min(100, (totalStudents / FREE_STUDENT_LIMIT) * 100);
-      const classColor =
-        classPct >= 100
-          ? "#ef476f"
-          : classPct >= 80
-            ? "#f9a825"
-            : "var(--accent)";
-      const stuColor =
-        stuPct >= 100 ? "#ef476f" : stuPct >= 80 ? "#f9a825" : "var(--accent)";
+      // PHASE 2: All plan display removed until Phase 3
       panel.innerHTML = `
-        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.4rem;margin-bottom:1.2rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;">
-            <div style="display:flex;align-items:center;gap:.6rem;">
-              <i class="bi bi-lock-fill" style="font-size:1.1rem;color:var(--muted);"></i>
-              <span style="font-size:1rem;font-weight:700;">Free Plan</span>
-            </div>
-            <span style="font-size:.7rem;background:var(--border);color:var(--muted);padding:.15rem .55rem;border-radius:99px;font-weight:700;">FREE</span>
-          </div>
-          <div style="font-size:.82rem;color:var(--muted);">2 classes · 35 students · 3 PDFs per term</div>
-        </div>
-        <div style="margin-bottom:.8rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>Classes</span><span style="font-weight:700;color:${classColor};">${classes.length} / ${FREE_CLASS_LIMIT}</span></div>
-          <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${classPct}%;background:${classColor};border-radius:99px;transition:width .4s;"></div></div>
-        </div>
-        <div style="margin-bottom:1.2rem;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.35rem;font-size:.8rem;color:var(--muted);"><span>Students</span><span style="font-weight:700;color:${stuColor};">${totalStudents} / ${FREE_STUDENT_LIMIT}</span></div>
-          <div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="height:100%;width:${stuPct}%;background:${stuColor};border-radius:99px;transition:width .4s;"></div></div>
-        </div>
-        <!-- PHASE 3: Upgrade section hidden for Phase 2 (pricing coming TODO Phase 3) -->
-        <!-- <div style="background:linear-gradient(135deg,#4361ee18,#7209b718);border:1.5px solid var(--accent);border-radius:var(--r-lg);padding:1.2rem;margin-bottom:1rem;">
-          <div style="font-weight:800;font-size:.95rem;margin-bottom:.25rem;">⭐ Upgrade to Pro — ${PRO_PRICE_LABEL}</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-bottom:.9rem;">Unlimited everything. All Pro features unlocked.</div>
-          <button class="btn btn-primary" onclick="document.getElementById('upgradeModal').classList.add('active')" style="width:100%;justify-content:center;font-weight:700;">
-            <i class="bi bi-stars"></i> Upgrade Now
-          </button>
-        </div>
-        <div style="border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.1rem;">
-          <div style="font-weight:700;font-size:.87rem;margin-bottom:.2rem;">🏫 Have a School Access Code?</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-bottom:.7rem;">Your school admin will give you a code after the school pays.</div>
-          <div style="display:flex;gap:.5rem;">
-            <input type="text" class="form-input" id="schoolCodeInput" placeholder="e.g. GREENF-2026-AB12" style="flex:1;font-family:var(--font-mono);font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;"/>
-            <button class="btn btn-primary btn-sm" onclick="redeemSchoolCode()"><i class="bi bi-building-fill-check"></i> Activate</button>
-          </div>
-        </div> --iv>
-        </div> -->
+        <!-- PHASE 2: All plan/pricing UI removed until Phase 3 -->
         ${renderStorageMeter()}`;
     }
   }
