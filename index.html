@@ -1855,6 +1855,147 @@
       </section>
     </div>
 
+    <!-- ============================================================ ADMIN DASHBOARD PAGE -->
+    <div id="page-admin-dashboard" class="page">
+      <section class="admin-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Admin Dashboard</div>
+          <h2 id="adminDashboardTitle">School Overview</h2>
+          <p id="adminDashboardSubtitle">
+            Manage staff, classes, and oversight approvals.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="adminStatsGrid">
+          <!-- Stats: total teachers, classes, pending approvals, avg attendance -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Teacher Oversight</h3>
+          <div class="teacher-list" id="adminTeacherList">
+            <!-- Teacher list with completion status -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Pending Approvals</h3>
+          <div class="approval-queue" id="adminApprovalQueue">
+            <!-- Approval items -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn btn-primary" onclick="openTeacherWorkspace()">
+            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ STUDENT DASHBOARD PAGE -->
+    <div id="page-student-dashboard" class="page">
+      <section class="student-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">My Performance</div>
+          <h2 id="studentDashboardTitle">Your Academic Progress</h2>
+          <p id="studentDashboardSubtitle">
+            Track your grades, assignments, and attendance.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="studentStatsGrid">
+          <!-- Stats: overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Subject Performance</h3>
+          <div class="performance-grid" id="studentPerformanceGrid">
+            <!-- Subject averages and grades -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Assignments</h3>
+          <div class="assignment-list" id="studentAssignmentList">
+            <!-- Assignment items with due dates -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ PARENT DASHBOARD PAGE -->
+    <div id="page-parent-dashboard" class="page">
+      <section class="parent-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Child Progress</div>
+          <h2 id="parentDashboardTitle">Your Child's Academic Journey</h2>
+          <p id="parentDashboardSubtitle">
+            Monitor grades, attendance, and school communications.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="parentStatsGrid">
+          <!-- Stats: child's overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Class Performance Summary</h3>
+          <div class="child-performance" id="parentPerformanceGrid">
+            <!-- Child's subject grades and rankings -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Communications</h3>
+          <div class="communication-log" id="parentCommunicationLog">
+            <!-- School announcements and messages -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
     <!-- ============================================================ DASHBOARD PAGE -->
     <div id="page-dashboard" class="page">
       <!-- Sidebar -->

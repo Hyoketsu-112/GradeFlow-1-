@@ -73,6 +73,71 @@
     currentUser.role = normalizeRole(currentUser.role);
   }
 
+  // ── Permission checks ─────────────────────────────────────────────────
+  function canEditGrades() {
+    if (!currentUser) return false;
+    const role = normalizeRole(currentUser.role);
+    return role === "teacher" || role === "staff" || role === "admin";
+  }
+
+  function canViewGrades() {
+    if (!currentUser) return false;
+    const role = normalizeRole(currentUser.role);
+    return role === "teacher" || role === "staff" || role === "admin";
+  }
+
+  function canDeleteStudent() {
+    if (!currentUser) return false;
+    const role = normalizeRole(currentUser.role);
+    return role === "teacher" || role === "admin";
+  }
+
+  // ── Navigation gating (role-based sidebar visibility) ─────────────────
+  function gateNavigation() {
+    if (!currentUser) return;
+    const role = normalizeRole(currentUser.role);
+    const isTeacher = role === "teacher" || role === "staff" || role === "admin";
+
+    // Teacher/staff/admin get full access; others get restricted view
+    const restrictedItems = [
+      "nav-grades",
+      "nav-analytics",
+      "nav-students",
+      "nav-materials",
+      "nav-attendance",
+      "nav-cbt",
+      "nav-history",
+      "nav-settings",
+    ];
+
+    if (!isTeacher) {
+      // For non-teachers, hide all teacher workspace items
+      restrictedItems.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      });
+      // Also hide the "Your Classes" section
+      const classLabel = document.querySelector(".sidebar-section-label");
+      const classList = document.querySelector(".sidebar-classes");
+      const newClassBtn = document.querySelector(".sidebar-new-class");
+      if (classLabel) classLabel.style.display = "none";
+      if (classList) classList.style.display = "none";
+      if (newClassBtn) newClassBtn.style.display = "none";
+    } else {
+      // Teachers get full sidebar
+      restrictedItems.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "";
+      });
+      const classLabel = document.querySelector(".sidebar-section-label");
+      const classList = document.querySelector(".sidebar-classes");
+      const newClassBtn = document.querySelector(".sidebar-new-class");
+      if (classLabel) classLabel.style.display = "";
+      if (classList) classList.style.display = "";
+      if (newClassBtn) newClassBtn.style.display = "";
+    }
+  }
+
   // ── Security helpers (Web Crypto with graceful fallback) ───────────────
   function _toHex(bytes) {
     return Array.from(bytes)
@@ -918,17 +983,31 @@
                 : "";
         const ini = initials(s.name);
         const checked = selectedStudentIds.has(s.id);
+        const canEdit = canEditGrades();
+        const scoreInputs = canEdit
+          ? `<td><input type="number" min="0" max="20" value="${sub.test ?? 0}" class="score-input" onchange="updateScore('${s.id}','${activeSubjectId}','test',this)" title="Test score (max 20)"/></td>
+        <td><input type="number" min="0" max="20" value="${sub.prac ?? 0}" class="score-input" onchange="updateScore('${s.id}','${activeSubjectId}','prac',this)" title="Practical score (max 20)"/></td>
+        <td><input type="number" min="0" max="60" value="${sub.exam === "" ? "" : sub.exam}" class="score-input" style="width:80px;" onchange="updateScore('${s.id}','${activeSubjectId}','exam',this)" placeholder="—" title="Exam score (max 60)"/></td>`
+          : `<td style="text-align:center; font-family:var(--font-mono); color:var(--muted);">${sub.test ?? "—"}</td>
+        <td style="text-align:center; font-family:var(--font-mono); color:var(--muted);">${sub.prac ?? "—"}</td>
+        <td style="text-align:center; font-family:var(--font-mono); color:var(--muted);">${sub.exam === "" ? "—" : sub.exam}</td>`;
+        const actionButtons = canEdit
+          ? `<button class="btn btn-xs" onclick="viewStudentDetail('${s.id}')" title="View details"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-xs btn-primary" onclick="exportStudentPDF('${s.id}')" title="Generate PDF"><i class="bi bi-file-pdf"></i></button>
+            <button class="btn btn-xs" onclick="openRenameStudent('${s.id}')" title="Rename"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-xs btn-danger" onclick="deleteStudent('${s.id}')" title="Delete"><i class="bi bi-trash3"></i></button>`
+          : `<button class="btn btn-xs" onclick="viewStudentDetail('${s.id}')" title="View details"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-xs btn-primary" onclick="exportStudentPDF('${s.id}')" title="Generate PDF"><i class="bi bi-file-pdf"></i></button>`;
+
         return `<tr class="${checked ? "selected" : ""}">
-        <td><input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px;" ${checked ? "checked" : ""} onchange="handleCheck('${s.id}',this.checked)"/></td>
+        <td ${canEdit ? "" : 'style="display:none;"'}><input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px;" ${checked ? "checked" : ""} onchange="handleCheck('${s.id}',this.checked)"/></td>
         <td>
           <div class="student-name-cell">
             <div class="student-mini-avatar">${esc(ini)}</div>
             <span class="student-name td-name">${esc(s.name)}</span>
           </div>
         </td>
-        <td><input type="number" min="0" max="20" value="${sub.test ?? 0}" class="score-input" onchange="updateScore('${s.id}','${activeSubjectId}','test',this)" title="Test score (max 20)"/></td>
-        <td><input type="number" min="0" max="20" value="${sub.prac ?? 0}" class="score-input" onchange="updateScore('${s.id}','${activeSubjectId}','prac',this)" title="Practical score (max 20)"/></td>
-        <td><input type="number" min="0" max="60" value="${sub.exam === "" ? "" : sub.exam}" class="score-input" style="width:80px;" onchange="updateScore('${s.id}','${activeSubjectId}','exam',this)" placeholder="—" title="Exam score (max 60)"/></td>
+        ${scoreInputs}
         <td>
           <div class="score-bar-wrap">
             <span class="score-val">${totalDisplay}</span>
@@ -940,10 +1019,7 @@
         <td><span class="pos-badge ${posCls}">${posCls === "pos-1" ? "🏆" : posCls === "pos-2" ? "🥈" : posCls === "pos-3" ? "🥉" : ""}${posDisplay}</span></td>
         <td>
           <div style="display:flex; gap:.3rem;">
-            <button class="btn btn-xs" onclick="viewStudentDetail('${s.id}')" title="View details"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-xs btn-primary" onclick="exportStudentPDF('${s.id}')" title="Generate PDF"><i class="bi bi-file-pdf"></i></button>
-            <button class="btn btn-xs" onclick="openRenameStudent('${s.id}')" title="Rename"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-xs btn-danger" onclick="deleteStudent('${s.id}')" title="Delete"><i class="bi bi-trash3"></i></button>
+            ${actionButtons}
           </div>
         </td>
       </tr>`;
@@ -3800,6 +3876,7 @@ Please send payment and setup details. Thank you.`);
   function enterTeacherWorkspace() {
     loadUserData(); // also loads materials
     showPage("dashboard");
+    gateNavigation(); // Apply role-based sidebar visibility
     updateSidebarUser();
     ensureSidebarOverlay();
     handleResponsive();
@@ -3913,6 +3990,386 @@ Please send payment and setup details. Thank you.`);
     enterTeacherWorkspace();
   };
 
+  function renderAdminDashboard() {
+    if (!currentUser) return;
+
+    const titleEl = document.getElementById("adminDashboardTitle");
+    const subtitleEl = document.getElementById("adminDashboardSubtitle");
+    const statsEl = document.getElementById("adminStatsGrid");
+    const teacherListEl = document.getElementById("adminTeacherList");
+    const approvalQueueEl = document.getElementById("adminApprovalQueue");
+
+    if (
+      !titleEl ||
+      !subtitleEl ||
+      !statsEl ||
+      !teacherListEl ||
+      !approvalQueueEl
+    )
+      return;
+
+    const firstName = (currentUser.name || "Admin").split(" ")[0];
+    titleEl.textContent = `Welcome, ${firstName}`;
+    subtitleEl.textContent = `${currentUser.org || "Your School"} – Staff Dashboard`;
+
+    // Real stats from data
+    const totalClasses = classes.length;
+    const totalStudents = Object.values(allStudents).flat().length;
+    const pendingApprovals = 0; // Placeholder—would come from approval workflow
+
+    // Calculate avg attendance rate
+    let allAttendanceRecords = [];
+    Object.values(allAttendance).forEach((classAttendance) => {
+      Object.values(classAttendance).forEach((dayRecord) => {
+        Object.values(dayRecord).forEach((status) => {
+          allAttendanceRecords.push(status);
+        });
+      });
+    });
+    const avgAttendance =
+      allAttendanceRecords.length > 0
+        ? Math.round(
+            (allAttendanceRecords.filter((s) => s === "P").length /
+              allAttendanceRecords.length) *
+              100,
+          )
+        : 0;
+
+    statsEl.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">${totalClasses}</div>
+        <div class="stat-label">Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${totalStudents}</div>
+        <div class="stat-label">Students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${pendingApprovals}</div>
+        <div class="stat-label">Pending Approvals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${avgAttendance}${allAttendanceRecords.length > 0 ? "%" : "—"}</div>
+        <div class="stat-label">Avg Attendance</div>
+      </div>
+    `;
+
+    // Class list with student counts and averages
+    const classList = classes.map((cls) => {
+      const studentCount = (allStudents[cls.id] || []).length;
+      const classGrades = [];
+      (allStudents[cls.id] || []).forEach((s) => {
+        const overall = computeStudentOverall(s);
+        if (overall !== null) classGrades.push(overall);
+      });
+      const classAvg =
+        classGrades.length > 0
+          ? Math.round(
+              classGrades.reduce((a, b) => a + b, 0) / classGrades.length,
+            )
+          : 0;
+      const completionPct =
+        studentCount > 0
+          ? Math.round((classGrades.length / studentCount) * 100)
+          : 0;
+
+      return `<div class="teacher-item">
+        <div class="teacher-item-left">
+          <div class="teacher-item-name">${esc(cls.name)}</div>
+          <div class="teacher-item-classes">${studentCount} student${studentCount !== 1 ? "s" : ""} • Avg: ${classAvg}%</div>
+        </div>
+        <div class="teacher-item-right">
+          <div class="progress-bar">
+            <div class="progress-bar-fill" style="width: ${completionPct}%"></div>
+          </div>
+          <span class="status-badge complete">${completionPct}%</span>
+        </div>
+      </div>`;
+    });
+
+    teacherListEl.innerHTML =
+      classList.length > 0
+        ? classList.join("")
+        : `<div style="padding:1rem; color:var(--muted); text-align:center;">No classes yet</div>`;
+
+    // Approval queue (placeholder—no dynamic approvals yet)
+    approvalQueueEl.innerHTML = `
+      <div style="padding:1rem; color:var(--muted); text-align:center;">No pending approvals</div>
+    `;
+  }
+
+  function renderStudentDashboard() {
+    if (!currentUser) return;
+
+    const titleEl = document.getElementById("studentDashboardTitle");
+    const subtitleEl = document.getElementById("studentDashboardSubtitle");
+    const statsEl = document.getElementById("studentStatsGrid");
+    const performanceEl = document.getElementById("studentPerformanceGrid");
+    const assignmentEl = document.getElementById("studentAssignmentList");
+
+    if (!titleEl || !subtitleEl || !statsEl || !performanceEl || !assignmentEl)
+      return;
+
+    const firstName = (currentUser.name || "Student").split(" ")[0];
+    titleEl.textContent = `${firstName}'s Progress`;
+    subtitleEl.textContent = `${currentUser.org || "Your School"} – Academic Dashboard`;
+
+    // Aggregate grades across all classes
+    let allStudentGrades = [];
+    let totalAttendance = 0;
+    let attendanceDays = 0;
+
+    classes.forEach((cls) => {
+      const classStudents = allStudents[cls.id] || [];
+      classStudents.forEach((s) => {
+        s.subjects.forEach((sub) => {
+          const comp = computeSubject(sub);
+          if (comp.total !== null) {
+            allStudentGrades.push({ subject: sub.name, score: comp.total });
+          }
+        });
+      });
+      const attendance = allAttendance[cls.id] || {};
+      Object.values(attendance).forEach((dayRecord) => {
+        Object.values(dayRecord).forEach((status) => {
+          attendanceDays++;
+          if (status === "P") totalAttendance++;
+        });
+      });
+    });
+
+    const overallAverage =
+      allStudentGrades.length > 0
+        ? Math.round(
+            allStudentGrades.reduce((a, g) => a + g.score, 0) /
+              allStudentGrades.length,
+          )
+        : 0;
+
+    const subjectCount = classes.reduce((acc, cls) => {
+      return acc + (cls.subjects || []).length;
+    }, 0);
+
+    const attendanceRate =
+      attendanceDays > 0
+        ? Math.round((totalAttendance / attendanceDays) * 100)
+        : 0;
+
+    const assignmentsDue = (allMaterials[activeClassId] || []).filter(
+      (m) => m.type === "assignment",
+    ).length;
+
+    statsEl.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">${overallAverage}${overallAverage > 0 ? "%" : "—"}</div>
+        <div class="stat-label">Overall Average</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${subjectCount}</div>
+        <div class="stat-label">Subjects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${attendanceRate}${attendanceDays > 0 ? "%" : "—"}</div>
+        <div class="stat-label">Attendance Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${assignmentsDue}</div>
+        <div class="stat-label">Assignments</div>
+      </div>
+    `;
+
+    // Performance by subject (unique subjects with averages)
+    const subjectMap = {};
+    allStudentGrades.forEach((g) => {
+      if (!subjectMap[g.subject]) subjectMap[g.subject] = [];
+      subjectMap[g.subject].push(g.score);
+    });
+
+    const subjectLines = Object.entries(subjectMap)
+      .map(([subName, scores]) => {
+        const avg = Math.round(
+          scores.reduce((a, b) => a + b, 0) / scores.length,
+        );
+        return `<div class="performance-item">
+          <div class="performance-item-left">
+            <div class="performance-item-name">${esc(subName)}</div>
+            <div class="performance-item-average">Avg: ${avg}%</div>
+          </div>
+          <div class="performance-item-right">
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width: ${avg}%"></div>
+            </div>
+            <span class="status-badge complete">${avg}%</span>
+          </div>
+        </div>`;
+      })
+      .join("");
+
+    performanceEl.innerHTML =
+      subjectLines ||
+      `<div style="padding:1rem; color:var(--muted); text-align:center;">No grades recorded yet</div>`;
+
+    // Assignments from active class
+    const assignments = (allMaterials[activeClassId] || [])
+      .filter((m) => m.type === "assignment")
+      .slice(0, 3);
+
+    assignmentEl.innerHTML =
+      assignments.length > 0
+        ? assignments
+            .map(
+              (a) =>
+                `<div class="assignment-item">
+            <div class="assignment-item-left">
+              <div class="assignment-item-name">${esc(a.title)}</div>
+              <div class="assignment-item-due">${esc(a.desc || "No description")}</div>
+            </div>
+            <div class="assignment-item-right">
+              <span class="status-badge pending">Submitted</span>
+            </div>
+          </div>`,
+            )
+            .join("")
+        : `<div style="padding:1rem; color:var(--muted); text-align:center;">No assignments yet</div>`;
+  }
+
+  function renderParentDashboard() {
+    if (!currentUser) return;
+
+    const titleEl = document.getElementById("parentDashboardTitle");
+    const subtitleEl = document.getElementById("parentDashboardSubtitle");
+    const statsEl = document.getElementById("parentStatsGrid");
+    const performanceEl = document.getElementById("parentPerformanceGrid");
+    const communicationEl = document.getElementById("parentCommunicationLog");
+
+    if (
+      !titleEl ||
+      !subtitleEl ||
+      !statsEl ||
+      !performanceEl ||
+      !communicationEl
+    )
+      return;
+
+    // Placeholder: Use first student from first class as "child" 
+    // TODO: Replace with real parent→child enrollment linkage in v3
+    let child = null;
+    let childRanking = null;
+    let childClassId = null;
+
+    for (const cls of classes) {
+      const students = allStudents[cls.id] || [];
+      if (students.length > 0) {
+        child = students[0];
+        childClassId = cls.id;
+        break;
+      }
+    }
+
+    if (!child) {
+      performanceEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;"><div class="empty-icon">👨‍👩‍👧</div><p>No child records found. Contact school to set up enrollment.</p></div>`;
+      statsEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;">Awaiting enrollment</div>`;
+      communicationEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;">No communications yet</div>`;
+      return;
+    }
+
+    // Real child data
+    const childName = child.name;
+    const childOverall = computeStudentOverall(child);
+    const ranked = rankStudents(allStudents[childClassId] || []);
+    const rank = ranked.find((s) => s.id === child.id);
+    childRanking = rank?.pos || null;
+
+    // Attendance for child
+    let childPresent = 0;
+    let childTotal = 0;
+    const classAttendance = allAttendance[childClassId] || {};
+    Object.values(classAttendance).forEach((dayRecord) => {
+      if (dayRecord[child.id]) {
+        childTotal++;
+        if (dayRecord[child.id] === "P") childPresent++;
+      }
+    });
+    const childAttendanceRate =
+      childTotal > 0 ? Math.round((childPresent / childTotal) * 100) : 0;
+
+    const childSubjectCount = (child.subjects || []).length;
+
+    titleEl.textContent = `${childName}'s Academic Progress`;
+    subtitleEl.textContent = `${currentUser.org || "Your School"} – Parent Portal`;
+
+    statsEl.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">${childOverall !== null ? childOverall + "%" : "—"}</div>
+        <div class="stat-label">Overall Average</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${childRanking ? "#" + childRanking : "—"}</div>
+        <div class="stat-label">Class Position</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${childAttendanceRate}${childTotal > 0 ? "%" : "—"}</div>
+        <div class="stat-label">Attendance</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${childSubjectCount}</div>
+        <div class="stat-label">Subjects</div>
+      </div>
+    `;
+
+    // Child's real subject performance
+    const subjectCards = child.subjects
+      .map((sub) => {
+        const comp = computeSubject(sub);
+        const gr = gradeResult(comp.total);
+        return `<div class="child-card">
+          <div class="child-card-left">
+            <div class="child-card-name">${esc(sub.name)}</div>
+            <div class="child-card-average">Score: ${comp.total !== null ? comp.total + "%" : "—"} • Grade: ${gr.g}</div>
+          </div>
+          <div class="child-card-right">
+            <span class="status-badge complete">${gr.g}</span>
+          </div>
+        </div>`;
+      })
+      .join("");
+
+    performanceEl.innerHTML =
+      subjectCards ||
+      `<div style="padding:1rem; color:var(--muted); text-align:center;">No grades recorded yet</div>`;
+
+    // Communications (simplified—real implementation would fetch from backend)
+    communicationEl.innerHTML = `
+      <div class="communication-item">
+        <div class="communication-item-left">
+          <div class="communication-item-subject">Mid-Term Results Released</div>
+          <div class="communication-item-date">School Announcement • 2 days ago</div>
+        </div>
+        <div class="communication-item-right">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+      <div class="communication-item">
+        <div class="communication-item-left">
+          <div class="communication-item-subject">Holiday Schedule 2026</div>
+          <div class="communication-item-date">Important Notice • 1 week ago</div>
+        </div>
+        <div class="communication-item-right">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+      <div class="communication-item">
+        <div class="communication-item-left">
+          <div class="communication-item-subject">Tuition Payment Reminder</div>
+          <div class="communication-item-date">Bursar's Office • 10 days ago</div>
+        </div>
+        <div class="communication-item-right">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+    `;
+  }
+
   function enterDashboard() {
     ensureCurrentUserRole();
     const role = normalizeRole(currentUser?.role);
@@ -3920,9 +4377,25 @@ Please send payment and setup details. Thank you.`);
       enterTeacherWorkspace();
       return;
     }
+
     loadUserData();
-    showPage("role-home");
-    renderRoleHome();
+
+    // Route to role-specific dashboard
+    if (role === "admin" || role === "staff") {
+      showPage("admin-dashboard");
+      renderAdminDashboard();
+    } else if (role === "student") {
+      showPage("student-dashboard");
+      renderStudentDashboard();
+    } else if (role === "parent") {
+      showPage("parent-dashboard");
+      renderParentDashboard();
+    } else {
+      // Fallback to role-home
+      showPage("role-home");
+      renderRoleHome();
+    }
+
     _startSessionMonitor();
     _maybeRemindBackup();
   }

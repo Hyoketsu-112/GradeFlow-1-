@@ -448,6 +448,210 @@ body.on-landing {
   flex-wrap: wrap;
 }
 
+/* ==================================================================== 
+   DASHBOARD SHELLS (Admin, Student, Parent)
+   ==================================================================== */
+
+.admin-dashboard-wrap,
+.student-dashboard-wrap,
+.parent-dashboard-wrap {
+  min-height: calc(100vh - 4rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--sh-md);
+  padding: 2rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dashboard-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  margin-top: 0.35rem;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard-header p {
+  color: var(--muted);
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+
+.stat-card .stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.dashboard-section {
+  margin-bottom: 2rem;
+}
+
+.dashboard-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.teacher-list,
+.approval-queue,
+.performance-grid,
+.assignment-list,
+.child-performance,
+.communication-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.teacher-item,
+.approval-item,
+.performance-item,
+.assignment-item,
+.child-card,
+.communication-item {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.teacher-item:hover,
+.approval-item:hover,
+.performance-item:hover,
+.assignment-item:hover,
+.child-card:hover,
+.communication-item:hover {
+  background: var(--surface-3);
+  border-color: var(--primary-light);
+}
+
+.teacher-item-left,
+.approval-item-left,
+.performance-item-left,
+.assignment-item-left,
+.child-card-left,
+.communication-item-left {
+  flex: 1;
+}
+
+.teacher-item-name,
+.approval-item-title,
+.performance-item-name,
+.assignment-item-name,
+.child-card-name,
+.communication-item-subject {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.teacher-item-classes,
+.approval-item-desc,
+.performance-item-average,
+.assignment-item-due,
+.child-card-average,
+.communication-item-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.teacher-item-right,
+.approval-item-right,
+.performance-item-right,
+.assignment-item-right,
+.child-card-right,
+.communication-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.status-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.complete {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.urgent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.progress-bar {
+  width: 60px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.dashboard-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
 /* Nav */
 .land-nav {
   position: sticky;
@@ -5196,7 +5400,10 @@ body {
 @media (max-width: 980px) {
   #page-login,
   #page-portal-login,
-  #page-role-home {
+  #page-role-home,
+  #page-admin-dashboard,
+  #page-student-dashboard,
+  #page-parent-dashboard {
     padding: 1rem;
   }
 
@@ -5209,8 +5416,15 @@ body {
   .route-auth-panel,
   .portal-brand-side,
   .portal-login-side,
-  .role-home-wrap {
+  .role-home-wrap,
+  .admin-dashboard-wrap,
+  .student-dashboard-wrap,
+  .parent-dashboard-wrap {
     padding: 1.25rem;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -5221,7 +5435,21 @@ body {
 
   .portal-login-links,
   .route-auth-links,
-  .role-home-actions {
+  .role-home-actions,
+  .dashboard-actions {
     flex-direction: column;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-item-right,
+  .approval-item-right,
+  .performance-item-right,
+  .assignment-item-right,
+  .child-card-right,
+  .communication-item-right {
+    flex-direction: row;
   }
 }
