@@ -4776,7 +4776,8 @@ html {
   }
 }
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -4854,10 +4855,14 @@ html {
   transform: translateY(-2px);
 }
 .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
   opacity: 0;
   transition: opacity 0.3s var(--ease);
 }
@@ -4874,7 +4879,9 @@ html {
 .feature-card:hover {
   border-color: var(--accent);
   transform: translateY(-4px);
-  box-shadow: var(--sh-lg), 0 0 0 1px var(--accent-l);
+  box-shadow:
+    var(--sh-lg),
+    0 0 0 1px var(--accent-l);
 }
 .feature-card-icon {
   font-size: clamp(2rem, 5vw, 3.2rem);
