@@ -1479,14 +1479,14 @@
   // ════════════════════════════════════════════════════
   //  PDF EXPORT
   // ════════════════════════════════════════════════════
-  
+
   window.generateStudentPDFAsBlob = async function (studentId) {
     const cls = classes.find((c) => c.id === activeClassId);
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
     );
     if (!student || !cls) return null;
-    
+
     const ranked = rankStudents(allStudents[activeClassId] || []);
     const rs = ranked.find((s) => s.id === studentId);
     const overall = computeStudentOverall(student);
@@ -1599,7 +1599,7 @@
       return null;
     }
   };
-  
+
   window.exportStudentPDF = async function (studentId, aiComment) {
     const cls = classes.find((c) => c.id === activeClassId);
     const student = (allStudents[activeClassId] || []).find(
@@ -6155,7 +6155,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
 
     try {
       showToast("📄 Generating report card PDF...", "info");
-      
+
       // Generate PDF as blob for WhatsApp sharing
       const pdfBlob = await generateStudentPDFAsBlob(studentId);
       if (!pdfBlob) {
@@ -6169,9 +6169,13 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
 
       // Check if Web Share API is available (mobile devices)
       if (navigator.share) {
-        const file = new File([pdfBlob], `${student.name.replace(/\s+/g, "_")}_Report_Card.pdf`, {
-          type: "application/pdf",
-        });
+        const file = new File(
+          [pdfBlob],
+          `${student.name.replace(/\s+/g, "_")}_Report_Card.pdf`,
+          {
+            type: "application/pdf",
+          },
+        );
         try {
           await navigator.share({
             title: "Report Card",
@@ -6200,7 +6204,8 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       const term = settings.term || "Second Term";
       const session = settings.session || "2025/2026";
 
-      const msg = `📋 *Report Card — ${student.name}*\n` +
+      const msg =
+        `📋 *Report Card — ${student.name}*\n` +
         `School: ${school}\n` +
         `${term} · ${session}\n` +
         `Class: ${cls.name}, Position: ${rs?.pos ? ordinal(rs.pos) : "—"} of ${classSize}\n` +
@@ -6211,7 +6216,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       document.getElementById("waShareStudentName").textContent = student.name;
       document.getElementById("waMessagePreview").textContent = msg;
       document.getElementById("waPhoneInput").value = "";
-      
+
       // Show modal with enhanced info about PDF sharing
       const modal = document.getElementById("whatsappShareModal");
       if (!modal.querySelector(".wa-pdf-notice")) {
@@ -6236,7 +6241,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
         const msgPreview = modal.querySelector(".modal-body") || modal;
         msgPreview.insertBefore(notice, msgPreview.firstChild);
       }
-      
+
       modal.classList.add("active");
       showToast("✅ PDF generated! Ready to share.", "success");
     } catch (err) {
@@ -6252,7 +6257,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       .value.trim()
       .replace(/\D/g, "");
     if (phone.startsWith("0")) phone = "234" + phone.slice(1);
-    
+
     // If PDF is available, offer to download it first
     if (window.whatsappPdfBlob) {
       const pdfFileName = `${window.whatsappStudentName.replace(/\s+/g, "_")}_Report_Card.pdf`;
@@ -6262,10 +6267,10 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       // Show instruction toast
       showToast("📄 PDF downloaded! Open WhatsApp to send it.", "info");
-      
+
       // Also open WhatsApp with the message
       if (phone) {
         const encoded = encodeURIComponent(msg);
@@ -6281,7 +6286,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
         : `https://wa.me/?text=${encoded}`;
       window.open(url, "_blank");
     }
-    
+
     closeModal("whatsappShareModal");
   };
 
