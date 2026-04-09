@@ -5863,12 +5863,22 @@ Please send payment and setup details. Thank you.`);
       );
       return;
     }
+    
+    // SECURITY: Warn if key looks like it might be exposed
+    if (!key.startsWith("AIzaSy")) {
+      showToast(
+        "⚠️ This doesn't look like a valid Gemini API key. Verify it starts with 'AIzaSy'",
+        "warning",
+      );
+      return;
+    }
+    
     aiSessionKey = key;
     sessionStorage.setItem("gf_ai_key", key);
     localStorage.removeItem("gf_ai_key");
     document.getElementById("aiKeySection").style.display = "none";
     closeModal("aiKeyModal");
-    showToast("✅ API key saved for this session", "success");
+    showToast("✅ API key saved for this session (cleared when browser closes)", "success");
   };
 
   window.selectTone = function (btn) {

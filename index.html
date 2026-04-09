@@ -3682,7 +3682,7 @@
               border: 1px solid rgba(67, 97, 238, 0.2);
               border-radius: var(--r-md);
               padding: 1rem;
-              margin-bottom: 1rem;
+              margin-bottom: 0.8rem;
             "
           >
             <div
@@ -3695,11 +3695,34 @@
             >
               <i class="bi bi-info-circle"></i> One-time setup
             </div>
-            <div style="font-size: 0.8rem; color: var(--muted)">
+            <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.6;">
               Enter your free Google Gemini API key in the session modal. The
               key is kept only for this browser session and is not stored in
               localStorage.
             </div>
+          </div>
+          <div
+            style="
+              background: #fff3cd;
+              border: 1px solid #ffc107;
+              border-radius: var(--r-md);
+              padding: 0.9rem;
+              margin-bottom: 1rem;
+              font-size: 0.8rem;
+            "
+          >
+            <div style="display: flex; gap: 0.6rem; margin-bottom: 0.5rem; color: #ff6b6b; font-weight: 600;">
+              <i class="bi bi-shield-lock" style="flex-shrink: 0;"></i>
+              <span>🔒 Security First</span>
+            </div>
+            <div style="color: #5c4033; margin-bottom: 0.5rem;">
+              <strong>Never share your API key!</strong> If you accidentally expose it:
+            </div>
+            <ol style="margin: 0.5rem 0 0 1.2rem; color: #5c4033;">
+              <li>Revoke it immediately in <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #4361ee; text-decoration: underline;">Google Cloud Console</a></li>
+              <li>Create a new API key</li>
+              <li>Delete browser data to clear old key</li>
+            </ol>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openAiKeyModal()">
             <i class="bi bi-key-fill"></i> Enter API key
@@ -3810,7 +3833,7 @@
 
     <!-- ============================================================ AI KEY MODAL -->
     <div class="modal-overlay" id="aiKeyModal">
-      <div class="modal-box" style="max-width: 460px">
+      <div class="modal-box" style="max-width: 520px">
         <button class="modal-close" onclick="closeModal('aiKeyModal')">
           <i class="bi bi-x-lg"></i>
         </button>
@@ -3819,6 +3842,17 @@
           Enter your Gemini API key for this browser session only. It is not
           stored in localStorage.
         </div>
+        
+        <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:var(--r-md);padding:.9rem;margin-bottom:1rem;font-size:.85rem;">
+          <div style="display:flex;gap:.6rem;margin-bottom:.5rem;"><i class="bi bi-shield-exclamation" style="color:#ff6b6b;font-weight:bold;"></i><strong style="color:#ff6b6b;">Security Warning</strong></div>
+          <div style="color:#5c4033;line-height:1.5;">
+            • Never share your API key publicly or in chat<br/>
+            • If exposed, delete it immediately in Google Cloud Console<br/>
+            • Key is cleared when you close the browser<br/>
+            • We never store or transmit your key to our servers
+          </div>
+        </div>
+        
         <div class="form-group">
           <label class="form-label">Google Gemini API Key</label>
           <input
