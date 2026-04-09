@@ -2483,6 +2483,17 @@
       if (el) el.value = scale[i].min;
     });
     renderGradeScalePreview();
+    
+    // Load AI settings
+    const aiTone = settings.aiTone || "encouraging";
+    const aiLanguage = settings.aiLanguage || "English";
+    document
+      .querySelectorAll(".ai-tone-btn")
+      .forEach((b) => b.classList.remove("active"));
+    document.querySelector(`.ai-tone-btn[data-tone="${aiTone}"]`)?.classList.add("active");
+    const langSel = document.getElementById("aiLanguageSelect");
+    if (langSel) langSel.value = aiLanguage;
+    
     const logo = settings.logoDataUrl || "";
     const prev = document.getElementById("logoPreview");
     const rmBtn = document.getElementById("logoRemoveBtn");
@@ -2618,6 +2629,17 @@
     settings.term = document.getElementById("settingTerm").value;
     saveData();
     showToast("✅ Report settings saved", "success");
+  };
+
+  window.saveAiSettings = function () {
+    const tone =
+      document.querySelector(".ai-tone-btn.active")?.dataset?.tone ||
+      "encouraging";
+    const language = document.getElementById("aiLanguageSelect").value;
+    settings.aiTone = tone;
+    settings.aiLanguage = language;
+    saveData();
+    showToast("✅ AI settings saved", "success");
   };
 
   // ════════════════════════════════════════════════════
