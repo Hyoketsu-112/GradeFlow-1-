@@ -1479,6 +1479,127 @@
   // ════════════════════════════════════════════════════
   //  PDF EXPORT
   // ════════════════════════════════════════════════════
+  
+  window.generateStudentPDFAsBlob = async function (studentId) {
+    const cls = classes.find((c) => c.id === activeClassId);
+    const student = (allStudents[activeClassId] || []).find(
+      (s) => s.id === studentId,
+    );
+    if (!student || !cls) return null;
+    
+    const ranked = rankStudents(allStudents[activeClassId] || []);
+    const rs = ranked.find((s) => s.id === studentId);
+    const overall = computeStudentOverall(student);
+    const grade = gradeResult(overall);
+    const graded = ranked.filter((s) => s.overall !== null);
+    const classAvg = graded.length
+      ? Math.round(graded.reduce((a, s) => a + s.overall, 0) / graded.length)
+      : 0;
+
+    const template = document.getElementById("pdf-template").cloneNode(true);
+    template.style.display = "block";
+    template.id = "pdf-clone-" + Date.now();
+
+    const pdfSchool = settings.pdfSchool || currentUser?.org || "SCHOOL NAME";
+    template.querySelector(".pdf-schoolname").textContent = pdfSchool;
+    template.querySelector(".pdf-motto").textContent = settings.motto || "";
+    template.querySelector(".pdf-term").textContent =
+      settings.term || "Second Term";
+    template.querySelector(".pdf-session").textContent =
+      settings.session || "2025/2026";
+    const pdfLogoEl = template.querySelector(".pdf-school-logo");
+    const pdfIconEl = template.querySelector(".pdf-school-icon");
+    if (pdfLogoEl) {
+      pdfLogoEl.src = settings.logoDataUrl || "";
+      pdfLogoEl.style.display = settings.logoDataUrl ? "block" : "none";
+    }
+    if (pdfIconEl)
+      pdfIconEl.style.display = settings.logoDataUrl ? "none" : "flex";
+    template.querySelector(".pdf-studentname").textContent = student.name;
+    template.querySelector(".pdf-classname").textContent = cls.name;
+    template.querySelector(".pdf-position").textContent = rs?.pos
+      ? ordinal(rs.pos)
+      : "—";
+    template.querySelector(".pdf-classsize").textContent = (
+      allStudents[activeClassId] || []
+    ).length;
+    template.querySelector(".pdf-overall").textContent =
+      (overall ?? "—") + (overall !== null ? "%" : "");
+    template.querySelector(".pdf-remark").textContent = grade.r;
+    template.querySelector(".pdf-classavg").textContent = classAvg;
+
+    const tbody = template.querySelector(".pdf-subjectrows");
+    tbody.innerHTML = "";
+    const bgColors = {
+      A: "#dcfce7",
+      B: "#e0e7ff",
+      C: "#fef3c7",
+      D: "#fed7aa",
+      E: "#fecaca",
+    };
+    const textColors = {
+      A: "#166534",
+      B: "#312e81",
+      C: "#92400e",
+      D: "#9a3412",
+      E: "#991b1b",
+    };
+    student.subjects.forEach((sub) => {
+      const c = computeSubject(sub);
+      const gr = gradeResult(c.total);
+      const tr = document.createElement("tr");
+      const cells = [
+        { text: sub.name, align: "left" },
+        { text: c.total ?? "—", align: "center", fw: "600" },
+        { text: gr.r, align: "center", fw: "600" },
+      ];
+      cells.forEach((cell) => {
+        const td = document.createElement("td");
+        td.style.cssText = `padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:${cell.align};${cell.fw ? "font-weight:" + cell.fw + ";" : ""}`;
+        td.textContent = cell.text;
+        tr.appendChild(td);
+      });
+      const tdGrade = document.createElement("td");
+      tdGrade.style.cssText =
+        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:center;";
+      const span = document.createElement("span");
+      span.style.cssText = `padding:.2rem .8rem;border-radius:40px;font-weight:700;font-size:11px;background:${bgColors[gr.g] || "#f1f5f9"};color:${textColors[gr.g] || "#475569"};`;
+      span.textContent = gr.g;
+      tdGrade.appendChild(span);
+      tr.appendChild(tdGrade);
+      const tdRemark = document.createElement("td");
+      tdRemark.style.cssText =
+        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;color:#6b7699;font-size:11px;";
+      tdRemark.textContent = gr.r;
+      tr.appendChild(tdRemark);
+      tbody.appendChild(tr);
+    });
+
+    document.body.appendChild(template);
+    try {
+      const canvas = await html2canvas(template, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
+      const pdfBlob = pdf.output("blob");
+      document.body.removeChild(template);
+      return pdfBlob;
+    } catch (e) {
+      console.error(e);
+      document.body.removeChild(template);
+      return null;
+    }
+  };
+  
   window.exportStudentPDF = async function (studentId, aiComment) {
     const cls = classes.find((c) => c.id === activeClassId);
     const student = (allStudents[activeClassId] || []).find(
@@ -2483,17 +2604,19 @@
       if (el) el.value = scale[i].min;
     });
     renderGradeScalePreview();
-    
+
     // Load AI settings
     const aiTone = settings.aiTone || "encouraging";
     const aiLanguage = settings.aiLanguage || "English";
     document
       .querySelectorAll(".ai-tone-btn")
       .forEach((b) => b.classList.remove("active"));
-    document.querySelector(`.ai-tone-btn[data-tone="${aiTone}"]`)?.classList.add("active");
+    document
+      .querySelector(`.ai-tone-btn[data-tone="${aiTone}"]`)
+      ?.classList.add("active");
     const langSel = document.getElementById("aiLanguageSelect");
     if (langSel) langSel.value = aiLanguage;
-    
+
     const logo = settings.logoDataUrl || "";
     const prev = document.getElementById("logoPreview");
     const rmBtn = document.getElementById("logoRemoveBtn");
@@ -5885,7 +6008,7 @@ Please send payment and setup details. Thank you.`);
       );
       return;
     }
-    
+
     // SECURITY: Warn if key looks like it might be exposed
     if (!key.startsWith("AIzaSy")) {
       showToast(
@@ -5894,13 +6017,16 @@ Please send payment and setup details. Thank you.`);
       );
       return;
     }
-    
+
     aiSessionKey = key;
     sessionStorage.setItem("gf_ai_key", key);
     localStorage.removeItem("gf_ai_key");
     document.getElementById("aiKeySection").style.display = "none";
     closeModal("aiKeyModal");
-    showToast("✅ API key saved for this session (cleared when browser closes)", "success");
+    showToast(
+      "✅ API key saved for this session (cleared when browser closes)",
+      "success",
+    );
   };
 
   window.selectTone = function (btn) {
@@ -6019,7 +6145,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
   // ════════════════════════════════════════════════════
   let waTargetStudentId = null;
 
-  window.openWhatsAppShare = function (studentId) {
+  window.openWhatsAppShare = async function (studentId) {
     waTargetStudentId = studentId;
     const student = (allStudents[activeClassId] || []).find(
       (s) => s.id === studentId,
@@ -6027,51 +6153,151 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
     const cls = classes.find((c) => c.id === activeClassId);
     if (!student || !cls) return;
 
-    const ranked = rankStudents(allStudents[activeClassId] || []);
-    const rs = ranked.find((s) => s.id === studentId);
-    const overall = computeStudentOverall(student);
-    const grade = gradeResult(overall);
-    const classSize = (allStudents[activeClassId] || []).length;
-    const school = settings.pdfSchool || currentUser?.org || "School";
-    const term = settings.term || "Second Term";
-    const session = settings.session || "2025/2026";
+    try {
+      showToast("📄 Generating report card PDF...", "info");
+      
+      // Generate PDF as blob for WhatsApp sharing
+      const pdfBlob = await generateStudentPDFAsBlob(studentId);
+      if (!pdfBlob) {
+        showToast("Failed to generate PDF", "error");
+        return;
+      }
 
-    const subjectLines = student.subjects
-      .map((sub) => {
-        const c = computeSubject(sub);
-        const g = gradeResult(c.total);
-        return `  • ${sub.name}: ${c.total ?? "—"}% (${g.g})`;
-      })
-      .join("\n");
+      // Store PDF blob for sharing
+      window.whatsappPdfBlob = pdfBlob;
+      window.whatsappStudentName = student.name;
 
-    const msg =
-      `📋 *Academic Report — ${school}*\n${term} · ${session}\n\n` +
-      `👤 *${student.name}*\n` +
-      `🏫 Class: ${cls.name}\n` +
-      `🏆 Position: ${rs?.pos ? ordinal(rs.pos) : "—"} of ${classSize}\n` +
-      `📊 Overall Average: *${overall ?? "—"}%* (Grade ${grade.g} — ${grade.r})\n\n` +
-      `*Subject Performance:*\n${subjectLines}\n\n` +
-      `_Generated by GradeFlow_`;
+      // Check if Web Share API is available (mobile devices)
+      if (navigator.share) {
+        const file = new File([pdfBlob], `${student.name.replace(/\s+/g, "_")}_Report_Card.pdf`, {
+          type: "application/pdf",
+        });
+        try {
+          await navigator.share({
+            title: "Report Card",
+            text: `${student.name}'s report card from ${settings.pdfSchool || "School"}`,
+            files: [file],
+          });
+          showToast("✅ Shared successfully!", "success");
+          return;
+        } catch (err) {
+          if (err.name !== "AbortError") {
+            console.error("Share API error:", err);
+          }
+        }
+      }
 
-    document.getElementById("waShareStudentName").textContent = student.name;
-    document.getElementById("waMessagePreview").textContent = msg;
-    document.getElementById("waPhoneInput").value = "";
-    document.getElementById("whatsappShareModal").classList.add("active");
+      // Fallback: Create blob URL and offer download + WhatsApp send
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      window.whatsappPdfUrl = blobUrl;
+
+      const ranked = rankStudents(allStudents[activeClassId] || []);
+      const rs = ranked.find((s) => s.id === studentId);
+      const overall = computeStudentOverall(student);
+      const grade = gradeResult(overall);
+      const classSize = (allStudents[activeClassId] || []).length;
+      const school = settings.pdfSchool || currentUser?.org || "School";
+      const term = settings.term || "Second Term";
+      const session = settings.session || "2025/2026";
+
+      const msg = `📋 *Report Card — ${student.name}*\n` +
+        `School: ${school}\n` +
+        `${term} · ${session}\n` +
+        `Class: ${cls.name}, Position: ${rs?.pos ? ordinal(rs.pos) : "—"} of ${classSize}\n` +
+        `Overall: ${overall ?? "—"}% (Grade ${grade.g})\n\n` +
+        `📎 Report card PDF attached below ↓\n` +
+        `Generated by GradeFlow`;
+
+      document.getElementById("waShareStudentName").textContent = student.name;
+      document.getElementById("waMessagePreview").textContent = msg;
+      document.getElementById("waPhoneInput").value = "";
+      
+      // Show modal with enhanced info about PDF sharing
+      const modal = document.getElementById("whatsappShareModal");
+      if (!modal.querySelector(".wa-pdf-notice")) {
+        const notice = document.createElement("div");
+        notice.className = "wa-pdf-notice";
+        notice.style.cssText = `
+          background: #e7faf0;
+          border: 1px solid #b2eacb;
+          border-radius: 8px;
+          padding: 12px;
+          margin-bottom: 16px;
+          font-size: 14px;
+          color: #1a7a3e;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        `;
+        notice.innerHTML = `
+          <i class="bi bi-file-pdf" style="font-size: 18px;"></i>
+          <span><strong>PDF Ready!</strong> Your report card is ready to share as PDF. Download or send via WhatsApp.</span>
+        `;
+        const msgPreview = modal.querySelector(".modal-body") || modal;
+        msgPreview.insertBefore(notice, msgPreview.firstChild);
+      }
+      
+      modal.classList.add("active");
+      showToast("✅ PDF generated! Ready to share.", "success");
+    } catch (err) {
+      console.error("WhatsApp share error:", err);
+      showToast("Error generating PDF for sharing", "error");
+    }
   };
 
-  window.openWhatsApp = function () {
+  window.openWhatsApp = async function () {
     const msg = document.getElementById("waMessagePreview").textContent;
     let phone = document
       .getElementById("waPhoneInput")
       .value.trim()
       .replace(/\D/g, "");
     if (phone.startsWith("0")) phone = "234" + phone.slice(1);
-    const encoded = encodeURIComponent(msg);
-    const url = phone
-      ? `https://wa.me/${phone}?text=${encoded}`
-      : `https://wa.me/?text=${encoded}`;
-    window.open(url, "_blank");
+    
+    // If PDF is available, offer to download it first
+    if (window.whatsappPdfBlob) {
+      const pdfFileName = `${window.whatsappStudentName.replace(/\s+/g, "_")}_Report_Card.pdf`;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(window.whatsappPdfBlob);
+      link.download = pdfFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show instruction toast
+      showToast("📄 PDF downloaded! Open WhatsApp to send it.", "info");
+      
+      // Also open WhatsApp with the message
+      if (phone) {
+        const encoded = encodeURIComponent(msg);
+        setTimeout(() => {
+          window.open(`https://wa.me/${phone}?text=${encoded}`, "_blank");
+        }, 800);
+      }
+    } else {
+      // Fallback: just open WhatsApp with message text
+      const encoded = encodeURIComponent(msg);
+      const url = phone
+        ? `https://wa.me/${phone}?text=${encoded}`
+        : `https://wa.me/?text=${encoded}`;
+      window.open(url, "_blank");
+    }
+    
     closeModal("whatsappShareModal");
+  };
+
+  window.downloadWhatsAppPdf = function () {
+    if (!window.whatsappPdfBlob) {
+      showToast("PDF not ready. Please try again.", "error");
+      return;
+    }
+    const pdfFileName = `${window.whatsappStudentName.replace(/\s+/g, "_")}_Report_Card.pdf`;
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(window.whatsappPdfBlob);
+    link.download = pdfFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`✅ ${pdfFileName} downloaded`, "success");
   };
 
   window.copyWaMessage = function () {

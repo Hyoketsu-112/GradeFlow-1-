@@ -2304,61 +2304,159 @@
                 <i class="bi bi-stars" style="color: var(--accent)"></i>
                 AI Teacher Comments
               </h3>
-              <p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem;">
-                Generate personalized, professional teacher comments powered by Google's Gemini AI. 
-                Each comment is tailored to a student's actual performance.
+              <p
+                style="
+                  font-size: 0.82rem;
+                  color: var(--muted);
+                  margin-bottom: 1rem;
+                "
+              >
+                Generate personalized, professional teacher comments powered by
+                Google's Gemini AI. Each comment is tailored to a student's
+                actual performance.
               </p>
-              
-              <div id="aiKeySection" style="margin-bottom: 1.2rem;">
-                <div style="background: var(--accent-l); border: 1px solid rgba(67, 97, 238, 0.2); border-radius: var(--r-md); padding: 1rem; margin-bottom: 0.8rem;">
-                  <div style="font-size: 0.82rem; color: var(--accent); font-weight: 600; margin-bottom: 0.4rem;">
+
+              <div id="aiKeySection" style="margin-bottom: 1.2rem">
+                <div
+                  style="
+                    background: var(--accent-l);
+                    border: 1px solid rgba(67, 97, 238, 0.2);
+                    border-radius: var(--r-md);
+                    padding: 1rem;
+                    margin-bottom: 0.8rem;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.82rem;
+                      color: var(--accent);
+                      font-weight: 600;
+                      margin-bottom: 0.4rem;
+                    "
+                  >
                     <i class="bi bi-info-circle"></i> One-time setup
                   </div>
-                  <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.6;">
-                    Enter your free Google Gemini API key in the modal below. The key is kept only for this browser session and is not stored in localStorage.
+                  <div
+                    style="
+                      font-size: 0.8rem;
+                      color: var(--muted);
+                      line-height: 1.6;
+                    "
+                  >
+                    Enter your free Google Gemini API key in the modal below.
+                    The key is kept only for this browser session and is not
+                    stored in localStorage.
                   </div>
                 </div>
-                <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: var(--r-md); padding: 0.9rem; margin-bottom: 1rem; font-size: 0.8rem;">
-                  <div style="display: flex; gap: 0.6rem; margin-bottom: 0.5rem; color: #ff6b6b; font-weight: 600;">
-                    <i class="bi bi-shield-lock" style="flex-shrink: 0;"></i>
+                <div
+                  style="
+                    background: #fff3cd;
+                    border: 1px solid #ffc107;
+                    border-radius: var(--r-md);
+                    padding: 0.9rem;
+                    margin-bottom: 1rem;
+                    font-size: 0.8rem;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      gap: 0.6rem;
+                      margin-bottom: 0.5rem;
+                      color: #ff6b6b;
+                      font-weight: 600;
+                    "
+                  >
+                    <i class="bi bi-shield-lock" style="flex-shrink: 0"></i>
                     <span>🔒 Security First</span>
                   </div>
-                  <div style="color: #5c4033; margin-bottom: 0.5rem;">
-                    <strong>Never share your API key!</strong> If you accidentally expose it:
+                  <div style="color: #5c4033; margin-bottom: 0.5rem">
+                    <strong>Never share your API key!</strong> If you
+                    accidentally expose it:
                   </div>
-                  <ol style="margin: 0.5rem 0 0 1.2rem; color: #5c4033;">
-                    <li>Revoke it immediately in <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #4361ee; text-decoration: underline;">Google Cloud Console</a></li>
+                  <ol style="margin: 0.5rem 0 0 1.2rem; color: #5c4033">
+                    <li>
+                      Revoke it immediately in
+                      <a
+                        href="https://console.cloud.google.com/apis/credentials"
+                        target="_blank"
+                        style="color: #4361ee; text-decoration: underline"
+                        >Google Cloud Console</a
+                      >
+                    </li>
                     <li>Create a new API key</li>
                     <li>Delete browser cache & cookies</li>
                   </ol>
                 </div>
-                <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-                  <button class="btn btn-primary btn-sm" onclick="openAiKeyModal()">
+                <div style="display: flex; gap: 0.6rem; flex-wrap: wrap">
+                  <button
+                    class="btn btn-primary btn-sm"
+                    onclick="openAiKeyModal()"
+                  >
                     <i class="bi bi-key-fill"></i> Enter API key
                   </button>
-                  <a href="https://makersuite.google.com/app/apikey" target="_blank" class="btn btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none;">
+                  <a
+                    href="https://makersuite.google.com/app/apikey"
+                    target="_blank"
+                    class="btn btn-sm"
+                    style="
+                      display: inline-flex;
+                      align-items: center;
+                      gap: 0.4rem;
+                      text-decoration: none;
+                    "
+                  >
                     <i class="bi bi-box-arrow-up-right"></i> Get Free API Key
                   </a>
                 </div>
               </div>
 
-              <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
-                <div style="font-size: 0.82rem; color: var(--muted); margin-bottom: 0.8rem;">
-                  <strong>Default comment tone & language:</strong> Used as defaults when generating comments
+              <div
+                style="
+                  border-top: 1px solid var(--border);
+                  padding-top: 1rem;
+                  margin-top: 1rem;
+                "
+              >
+                <div
+                  style="
+                    font-size: 0.82rem;
+                    color: var(--muted);
+                    margin-bottom: 0.8rem;
+                  "
+                >
+                  <strong>Default comment tone & language:</strong> Used as
+                  defaults when generating comments
                 </div>
                 <div class="form-group">
                   <label class="form-label">Comment tone</label>
-                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="ai-tone-btn" data-tone="encouraging" onclick="selectTone(this)">
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+                    <button
+                      class="ai-tone-btn"
+                      data-tone="encouraging"
+                      onclick="selectTone(this)"
+                    >
                       <i class="bi bi-hand-thumbs-up"></i> Encouraging
                     </button>
-                    <button class="ai-tone-btn" data-tone="formal" onclick="selectTone(this)">
+                    <button
+                      class="ai-tone-btn"
+                      data-tone="formal"
+                      onclick="selectTone(this)"
+                    >
                       <i class="bi bi-file-earmark"></i> Formal
                     </button>
-                    <button class="ai-tone-btn" data-tone="detailed" onclick="selectTone(this)">
+                    <button
+                      class="ai-tone-btn"
+                      data-tone="detailed"
+                      onclick="selectTone(this)"
+                    >
                       <i class="bi bi-list-check"></i> Detailed
                     </button>
-                    <button class="ai-tone-btn" data-tone="brief" onclick="selectTone(this)">
+                    <button
+                      class="ai-tone-btn"
+                      data-tone="brief"
+                      onclick="selectTone(this)"
+                    >
                       <i class="bi bi-chat-dots"></i> Brief
                     </button>
                   </div>
@@ -2373,7 +2471,11 @@
                     <option value="Hausa">Hausa</option>
                   </select>
                 </div>
-                <button class="btn btn-primary" onclick="saveAiSettings()" style="margin-top: 0.5rem;">
+                <button
+                  class="btn btn-primary"
+                  onclick="saveAiSettings()"
+                  style="margin-top: 0.5rem"
+                >
                   <i class="bi bi-check2"></i> Save AI Settings
                 </button>
               </div>
@@ -3776,7 +3878,9 @@
             >
               <i class="bi bi-info-circle"></i> One-time setup
             </div>
-            <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.6;">
+            <div
+              style="font-size: 0.8rem; color: var(--muted); line-height: 1.6"
+            >
               Enter your free Google Gemini API key in the session modal. The
               key is kept only for this browser session and is not stored in
               localStorage.
@@ -3792,15 +3896,32 @@
               font-size: 0.8rem;
             "
           >
-            <div style="display: flex; gap: 0.6rem; margin-bottom: 0.5rem; color: #ff6b6b; font-weight: 600;">
-              <i class="bi bi-shield-lock" style="flex-shrink: 0;"></i>
+            <div
+              style="
+                display: flex;
+                gap: 0.6rem;
+                margin-bottom: 0.5rem;
+                color: #ff6b6b;
+                font-weight: 600;
+              "
+            >
+              <i class="bi bi-shield-lock" style="flex-shrink: 0"></i>
               <span>🔒 Security First</span>
             </div>
-            <div style="color: #5c4033; margin-bottom: 0.5rem;">
-              <strong>Never share your API key!</strong> If you accidentally expose it:
+            <div style="color: #5c4033; margin-bottom: 0.5rem">
+              <strong>Never share your API key!</strong> If you accidentally
+              expose it:
             </div>
-            <ol style="margin: 0.5rem 0 0 1.2rem; color: #5c4033;">
-              <li>Revoke it immediately in <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #4361ee; text-decoration: underline;">Google Cloud Console</a></li>
+            <ol style="margin: 0.5rem 0 0 1.2rem; color: #5c4033">
+              <li>
+                Revoke it immediately in
+                <a
+                  href="https://console.cloud.google.com/apis/credentials"
+                  target="_blank"
+                  style="color: #4361ee; text-decoration: underline"
+                  >Google Cloud Console</a
+                >
+              </li>
               <li>Create a new API key</li>
               <li>Delete browser data to clear old key</li>
             </ol>
@@ -3923,17 +4044,32 @@
           Enter your Gemini API key for this browser session only. It is not
           stored in localStorage.
         </div>
-        
-        <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:var(--r-md);padding:.9rem;margin-bottom:1rem;font-size:.85rem;">
-          <div style="display:flex;gap:.6rem;margin-bottom:.5rem;"><i class="bi bi-shield-exclamation" style="color:#ff6b6b;font-weight:bold;"></i><strong style="color:#ff6b6b;">Security Warning</strong></div>
-          <div style="color:#5c4033;line-height:1.5;">
-            • Never share your API key publicly or in chat<br/>
-            • If exposed, delete it immediately in Google Cloud Console<br/>
-            • Key is cleared when you close the browser<br/>
+
+        <div
+          style="
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: var(--r-md);
+            padding: 0.9rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+          "
+        >
+          <div style="display: flex; gap: 0.6rem; margin-bottom: 0.5rem">
+            <i
+              class="bi bi-shield-exclamation"
+              style="color: #ff6b6b; font-weight: bold"
+            ></i
+            ><strong style="color: #ff6b6b">Security Warning</strong>
+          </div>
+          <div style="color: #5c4033; line-height: 1.5">
+            • Never share your API key publicly or in chat<br />
+            • If exposed, delete it immediately in Google Cloud Console<br />
+            • Key is cleared when you close the browser<br />
             • We never store or transmit your key to our servers
           </div>
         </div>
-        
+
         <div class="form-group">
           <label class="form-label">Google Gemini API Key</label>
           <input
@@ -4018,6 +4154,9 @@
             onclick="openWhatsApp()"
           >
             <i class="bi bi-whatsapp"></i> Send on WhatsApp
+          </button>
+          <button class="btn btn-sm" onclick="downloadWhatsAppPdf()">
+            <i class="bi bi-file-pdf"></i> Download PDF
           </button>
           <button class="btn btn-sm" onclick="copyWaMessage()">
             <i class="bi bi-clipboard"></i> Copy message
