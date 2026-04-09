@@ -6434,7 +6434,9 @@ button:not([class*="quiz"]):not([class*="att-"])[onclick],
 /* Secondary button styling */
 .btn-secondary,
 .btn-outline,
-[type="button"]:not([class*="btn-primary"]):not([class*="btn-success"]):not([class*="btn-danger"]) {
+[type="button"]:not([class*="btn-primary"]):not([class*="btn-success"]):not(
+    [class*="btn-danger"]
+  ) {
   background: #f6f9ff;
   border: 2px solid #dce3f2;
   color: #2f6df6;
@@ -6487,10 +6489,11 @@ button.active {
 
 /* Loading state animation */
 @keyframes buttonPulse {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(47, 109, 246, 0.7);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 0 8px rgba(47, 109, 246, 0);
   }
 }
@@ -6542,15 +6545,25 @@ a i:hover {
 }
 
 @keyframes iconBounce {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.15) rotate(-5deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Loading spinner */
 @keyframes spinner {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {
@@ -6560,11 +6573,12 @@ a i:hover {
 
 /* Icon pulse for notifications */
 @keyframes iconPulse {
-  0%, 100% { 
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
-  50% { 
+  50% {
     transform: scale(1.1);
     opacity: 0.8;
   }
@@ -6614,7 +6628,7 @@ a i:hover {
     padding: 0.55rem 1rem;
     font-size: 0.78rem;
   }
-  
+
   .btn {
     padding: 0.7rem 1.4rem;
     font-size: 0.92rem;
@@ -6626,11 +6640,11 @@ a i:hover {
     padding: 0.5rem 0.9rem;
     font-size: 0.75rem;
   }
-  
+
   .btn {
     padding: 0.65rem 1.2rem;
   }
-  
+
   /* Full-width buttons on mobile */
   .btn-mobile-full {
     width: 100%;
