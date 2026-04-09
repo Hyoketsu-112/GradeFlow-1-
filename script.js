@@ -2182,7 +2182,6 @@
 
   // Save current term's results as a snapshot
   window.saveTermSnapshot = function () {
-    }
     if (!activeClassId) {
       showToast("Select a class first", "error");
       return;
