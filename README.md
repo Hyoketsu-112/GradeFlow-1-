@@ -27,9 +27,18 @@ GradeFlow is a Progressive Web App (PWA) designed to streamline grade management
 
 ### Installation (Browser)
 
-1. **Visit**: [gradeflow.app](https://gradeflow.app) _(Phase 3 - Coming Soon)_
+1. **Visit**: [gradeflow app](https://gradeflow-app.vercel.app) on Vercel _(Hosted & Live)_
 2. **Create Account**: Email + password (local or cloud)
 3. **Start Grading**: No setup required, works immediately
+
+**Or Deploy Your Own:**
+
+Deploy GradeFlow to Vercel with a single click:
+- Sign up at [vercel.com](https://vercel.com)
+- Import this GitHub repository
+- Auto-deploys on every push
+
+→ See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions
 
 ### Installation (Local Development)
 
@@ -158,16 +167,17 @@ gradeflow/
 │   ├── ROADMAP.md          # Phase 3-4 planning
 │   ├── API.md              # Backend API reference
 │   ├── ARCHITECTURE.md      # Technical design
-│   └── DEPLOYMENT.md        # Cloud deployment guide
+│   └── VERCEL_DEPLOYMENT.md # Vercel hosting guide
 ├── src/                     # Source code
-│   ├── app.js              # Main application (core logic)
+│   ├── script.js           # Main application (core logic)
 │   ├── api-client.js       # Cloud provider abstraction
 │   ├── styles.css          # Design system & themes
 │   ├── service-worker.js   # Offline caching
 │   └── templates/          # Modals and workflows
-├── public/                  # Static assets
+│   ├── Static assets            # Served directly
 │   ├── index.html          # Main app shell
 │   ├── manifest.json       # PWA metadata
+│   ├── vercel.json         # Vercel hosting config
 │   ├── icons/              # App icons (192x192, 512x512)
 │   └── privacy-policy.html # Legal pages
 ├── tests/                  # Test suite
@@ -415,7 +425,7 @@ See LICENSE file for full terms.
 **Questions or interested in GradeFlow for your school?**
 
 - 📧 Email: oshinayadamilola3@gmail.com _(Phase 3)_
-- 🌐 Website: gradeflow.app _(Phase 3)_
+- 🌐 Website: [gradeflow-app.vercel.app](https://gradeflow-app.vercel.app) _(Hosted on Vercel)_
 - 💼 LinkedIn: [GradeFlow](https://linkedin.com/company/gradeflow)
 - 🐦 Twitter: [@GradeFlowApp](https://twitter.com/gradeflowapp)
 
