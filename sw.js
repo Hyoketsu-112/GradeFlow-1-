@@ -9,6 +9,7 @@ const STATIC_ASSETS = [
   "/style.css",
   "/style-professional-dashboard.css",
   "/style-responsive-improvements.css",
+  "/style-spacing-fixes.css",
   "/script.js",
   "/manifest.json",
   "/icon-192.svg",
