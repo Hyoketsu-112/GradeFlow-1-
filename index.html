@@ -3397,16 +3397,17 @@
     <!-- EXCEL IMPORT SUBJECT SELECTION MODAL -->
     <div class="modal-overlay" id="excelSubjectSelectModal">
       <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('excelSubjectSelectModal')">
+        <button
+          class="modal-close"
+          onclick="closeModal('excelSubjectSelectModal')"
+        >
           <i class="bi bi-x-lg"></i>
         </button>
         <div class="modal-title">Select Subject for Import</div>
-        <div class="modal-sub">
-          Which subject is this Excel file for?
-        </div>
+        <div class="modal-sub">Which subject is this Excel file for?</div>
         <div class="form-group">
           <label class="form-label">Subject</label>
-          <select class="form-input form-select" id="excelImportSubjectSelect">
+          <select class="form-input form-select" id="excelImportSubjectSelect" onchange="toggleExcelSubjectCustom()">
             <option value="">Choose a subject...</option>
             <option value="English">English</option>
             <option value="Mathematics">Mathematics</option>
@@ -3430,7 +3431,9 @@
             <option value="Music">Music</option>
             <option value="Physical Education">Physical Education</option>
             <option value="Religious Studies">Religious Studies</option>
-            <option value="Digital School Program (DSP)">Digital School Program (DSP)</option>
+            <option value="Digital School Program (DSP)">
+              Digital School Program (DSP)
+            </option>
             <option value="custom">Custom Subject</option>
           </select>
         </div>

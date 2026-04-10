@@ -1857,13 +1857,14 @@
           nameIdx,
           testIdx,
           pracIdx,
-          examIdx
+          examIdx,
         };
 
         hideLoading();
-        
+
         // Show subject selection modal
-        openModal('excelSubjectSelectModal');
+        const modal = document.getElementById("excelSubjectSelectModal");
+        if (modal) modal.classList.add("active");
       } catch (err) {
         console.error(err);
         hideLoading();
@@ -1944,13 +1945,13 @@
       renderSubjectTabs();
       renderTable();
       saveData();
-      closeModal('excelSubjectSelectModal');
+      closeModal("excelSubjectSelectModal");
       hideLoading();
       showToast(
         `✅ Imported "${data.className}" as ${selectedSubject} — ${allStudents[newClassId].length} students`,
         "success",
       );
-      
+
       // Reset pending data
       pendingExcelImportData = null;
     } catch (err) {
@@ -1972,13 +1973,21 @@
     }
   };
 
-  // Add event listener for subject select change
-  document.addEventListener("DOMContentLoaded", function() {
+  // Set up event listeners when DOM is ready
+  function _setupExcelImportListeners() {
     const subjectSelect = document.getElementById("excelImportSubjectSelect");
-    if (subjectSelect) {
+    if (subjectSelect && !subjectSelect._hasListener) {
       subjectSelect.addEventListener("change", toggleExcelSubjectCustom);
+      subjectSelect._hasListener = true;
     }
-  });
+  }
+
+  // Call setup on DOMContentLoaded and also try immediately
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", _setupExcelImportListeners);
+  } else {
+    _setupExcelImportListeners();
+  }
 
   // ════════════════════════════════════════════════════
   //  BROADSHEET EXPORT
