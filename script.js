@@ -6494,15 +6494,18 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
   function renderReportCardView() {
     const sel = document.getElementById("reportCardStudentSelect2");
     const students = allStudents[activeClassId] || [];
-    sel.innerHTML = '<option value="">Choose a student...</option>' +
-      students.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    sel.innerHTML =
+      '<option value="">Choose a student...</option>' +
+      students
+        .map((s) => `<option value="${s.id}">${s.name}</option>`)
+        .join("");
   }
 
-  window.updateCompiledReportPreview =function() {
+  window.updateCompiledReportPreview = function () {
     // Will be implemented similar to updateReportCardPreview
   };
 
-  window.generateCompiledReportCard = function() {
+  window.generateCompiledReportCard = function () {
     const studentId = document.getElementById("reportCardStudentSelect2").value;
     if (!studentId) {
       showToast("Please select a student", "error");
@@ -6512,7 +6515,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
     showToast("✅ Report card generated", "success");
   };
 
-  window.printCompiledReportCard = function() {
+  window.printCompiledReportCard = function () {
     const preview = document.getElementById("compiledReportCardPreview");
     if (!preview || !preview.innerHTML) {
       showToast("Please generate a report card first", "error");
@@ -6521,7 +6524,7 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
     window.print();
   };
 
-  window.downloadCompiledReportCardPDF = async function() {
+  window.downloadCompiledReportCardPDF = async function () {
     showToast("Generating PDF...", "info");
     // Will use exportStudentPDF function
   };
@@ -6532,44 +6535,49 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
   function renderStudentRegistry() {
     // Populate student registry table and stats
     const students = allStudents[activeClassId] || [];
-    
+
     // Update stats
-    document.getElementById("registryTotalStudents").textContent = students.length;
-    document.getElementById("registryTotalClasses").textContent = classes.length;
-    
+    document.getElementById("registryTotalStudents").textContent =
+      students.length;
+    document.getElementById("registryTotalClasses").textContent =
+      classes.length;
+
     let totalSubjects = 0;
     let totalScores = 0;
     let scoreCount = 0;
-    
-    students.forEach(s => {
+
+    students.forEach((s) => {
       totalSubjects = Math.max(totalSubjects, s.subjects?.length || 0);
-      s.subjects?.forEach(sub => {
+      s.subjects?.forEach((sub) => {
         if (sub.total || sub.total === 0) {
           totalScores += sub.total;
           scoreCount++;
         }
       });
     });
-    
-    document.getElementById("registryTotalSubjects").textContent = totalSubjects;
-    document.getElementById("registryAvgScore").textContent = 
+
+    document.getElementById("registryTotalSubjects").textContent =
+      totalSubjects;
+    document.getElementById("registryAvgScore").textContent =
       scoreCount > 0 ? Math.round(totalScores / scoreCount) : "—";
-    
+
     // Populate table
     const tbody = document.getElementById("registryTableBody");
     if (!students.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--muted)">No students registered yet. Add one to get started.</td></tr>';
+      tbody.innerHTML =
+        '<tr><td colspan="6" style="padding: 2rem; text-align: center; color: var(--muted)">No students registered yet. Add one to get started.</td></tr>';
       return;
     }
-    
+
     const ranked = rankStudents(students);
-    tbody.innerHTML = students.map((s, idx) => {
-      const overall = computeStudentOverall(s);
-      const pos = ranked.find(r => r.id === s.id)?.pos || "—";
-      const subjectCount = s.subjects?.length || 0;
-      return `<tr style="border-bottom: 1px solid var(--border); ${idx % 2 === 0 ? 'background: var(--surface-2)' : ''}">
+    tbody.innerHTML = students
+      .map((s, idx) => {
+        const overall = computeStudentOverall(s);
+        const pos = ranked.find((r) => r.id === s.id)?.pos || "—";
+        const subjectCount = s.subjects?.length || 0;
+        return `<tr style="border-bottom: 1px solid var(--border); ${idx % 2 === 0 ? "background: var(--surface-2)" : ""}">
         <td style="padding: 0.8rem">${s.name}</td>
-        <td style="padding: 0.8rem">${classes.find(c => c.id === activeClassId)?.name || "—"}</td>
+        <td style="padding: 0.8rem">${classes.find((c) => c.id === activeClassId)?.name || "—"}</td>
         <td style="padding: 0.8rem; text-align: center">${subjectCount}</td>
         <td style="padding: 0.8rem; text-align: center; font-weight: 600">${overall || "—"}%</td>
         <td style="padding: 0.8rem; text-align: center">${pos}</td>
@@ -6578,32 +6586,33 @@ Write a single, personal, natural-sounding teacher's comment (2–4 sentences).
           <button class="btn btn-xs btn-outline" onclick="deleteStudentRegistry('${s.id}')"><i class="bi bi-trash3"></i></button>
         </td>
       </tr>`;
-    }).join('');
+      })
+      .join("");
   }
 
-  window.filterRegistryStudents = function(query) {
+  window.filterRegistryStudents = function (query) {
     const tbody = document.getElementById("registryTableBody");
     const rows = tbody.querySelectorAll("tr");
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const text = row.textContent.toLowerCase();
       row.style.display = text.includes(query.toLowerCase()) ? "" : "none";
     });
   };
 
-  window.openAddStudentToRegistryModal = function() {
+  window.openAddStudentToRegistryModal = function () {
     // Opens modal to add student to registry
     openAddStudentModal();
   };
 
-  window.editStudentRegistry = function(studentId) {
+  window.editStudentRegistry = function (studentId) {
     // Opens modal to edit student info
     showToast("Edit student feature coming soon", "info");
   };
 
-  window.deleteStudentRegistry = function(studentId) {
-    if(confirm("Delete this student? This cannot be undone.")) {
+  window.deleteStudentRegistry = function (studentId) {
+    if (confirm("Delete this student? This cannot be undone.")) {
       const students = allStudents[activeClassId] || [];
-      allStudents[activeClassId] = students.filter(s => s.id !== studentId);
+      allStudents[activeClassId] = students.filter((s) => s.id !== studentId);
       saveAllStudents();
       renderStudentRegistry();
       showToast("Student deleted", "success");
