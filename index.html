@@ -3394,6 +3394,67 @@
       </div>
     </div>
 
+    <!-- EXCEL IMPORT SUBJECT SELECTION MODAL -->
+    <div class="modal-overlay" id="excelSubjectSelectModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('excelSubjectSelectModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Select Subject for Import</div>
+        <div class="modal-sub">
+          Which subject is this Excel file for?
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <select class="form-input form-select" id="excelImportSubjectSelect">
+            <option value="">Choose a subject...</option>
+            <option value="English">English</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Science">Science</option>
+            <option value="Social Studies">Social Studies</option>
+            <option value="History">History</option>
+            <option value="Geography">Geography</option>
+            <option value="Civic Education">Civic Education</option>
+            <option value="Business Studies">Business Studies</option>
+            <option value="Economics">Economics</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Biology">Biology</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="ICT">ICT</option>
+            <option value="French">French</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Agricultural Science">Agricultural Science</option>
+            <option value="Home Economics">Home Economics</option>
+            <option value="Visual Arts">Visual Arts</option>
+            <option value="Music">Music</option>
+            <option value="Physical Education">Physical Education</option>
+            <option value="Religious Studies">Religious Studies</option>
+            <option value="Digital School Program (DSP)">Digital School Program (DSP)</option>
+            <option value="custom">Custom Subject</option>
+          </select>
+        </div>
+        <div class="form-group" id="customSubjectGroup" style="display: none">
+          <label class="form-label">Custom Subject Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="customSubjectInput"
+            placeholder="Enter custom subject name"
+            onkeydown="if (event.key === 'Enter') confirmExcelImportSubject();"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmExcelImportSubject()">
+            <i class="bi bi-upload"></i> Import as Selected Subject
+          </button>
+          <button class="btn" onclick="closeModal('excelSubjectSelectModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- DELETE CLASS MODAL -->
     <div class="modal-overlay" id="deleteClassModal">
       <div class="modal-box" style="max-width: 420px">

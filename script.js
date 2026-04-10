@@ -29,6 +29,7 @@
   let lastSessionActivityWrite = 0;
   let aiSessionKey = "";
   let portalSelectedRole = "staff";
+  let pendingExcelImportData = null; // Temporary holder for parsed Excel data before subject selection
 
   // ════════════════════════════════════════════════════
   //  STORAGE KEYS (per user)
@@ -1848,60 +1849,136 @@
         );
         const examIdx = header.findIndex((h) => h.includes("exam"));
 
-        const newClassId = "cls_" + Date.now();
-        const subjId = "subj_" + Date.now();
-        const newClass = {
-          id: newClassId,
-          name: className,
-          emoji: "📥",
-          subjects: [{ id: subjId, name: "General" }],
+        // Store parsed data temporarily
+        pendingExcelImportData = {
+          className,
+          headerIdx,
+          rows,
+          nameIdx,
+          testIdx,
+          pracIdx,
+          examIdx
         };
-        classes.push(newClass);
-        allStudents[newClassId] = [];
 
-        for (let i = headerIdx + 1; i < rows.length; i++) {
-          const row = rows[i];
-          if (!row?.length) continue;
-          const sName = row[nameIdx]?.toString().trim();
-          if (!sName || /^[\d\s]+$/.test(sName)) continue;
-          allStudents[newClassId].push({
-            id: "s_" + Date.now() + "_" + i,
-            name: sName,
-            subjects: [
-              {
-                id: subjId,
-                name: "General",
-                test: testIdx >= 0 ? parseFloat(row[testIdx]) || 0 : 0,
-                prac: pracIdx >= 0 ? parseFloat(row[pracIdx]) || 0 : 0,
-                exam:
-                  examIdx >= 0 && row[examIdx] !== ""
-                    ? parseFloat(row[examIdx]) || 0
-                    : "",
-                total: null,
-              },
-            ],
-          });
-        }
-
-        activeClassId = newClassId;
-        activeSubjectId = subjId;
-        renderSidebarClasses();
-        renderSubjectTabs();
-        renderTable();
-        saveData();
-        showToast(
-          `✅ Imported "${className}" — ${allStudents[newClassId].length} students`,
-          "success",
-        );
+        hideLoading();
+        
+        // Show subject selection modal
+        openModal('excelSubjectSelectModal');
       } catch (err) {
         console.error(err);
+        hideLoading();
         showToast("Error parsing file", "error");
       }
-      hideLoading();
       document.getElementById("excelUpload").value = "";
     };
     reader.readAsArrayBuffer(files[0]);
   };
+
+  // Complete the Excel import with the selected subject
+  window.confirmExcelImportSubject = function () {
+    if (!pendingExcelImportData) {
+      showToast("Error: No import data found", "error");
+      return;
+    }
+
+    const subjectSelect = document.getElementById("excelImportSubjectSelect");
+    let selectedSubject = subjectSelect.value;
+
+    if (!selectedSubject) {
+      showToast("Please select a subject", "error");
+      return;
+    }
+
+    // Handle custom subject
+    if (selectedSubject === "custom") {
+      const customInput = document.getElementById("customSubjectInput");
+      selectedSubject = customInput.value.trim();
+      if (!selectedSubject) {
+        showToast("Please enter a custom subject name", "error");
+        return;
+      }
+    }
+
+    const data = pendingExcelImportData;
+    showLoading("Importing students...");
+
+    try {
+      const newClassId = "cls_" + Date.now();
+      const subjId = "subj_" + Date.now();
+      const newClass = {
+        id: newClassId,
+        name: data.className,
+        emoji: "📥",
+        subjects: [{ id: subjId, name: selectedSubject }],
+      };
+      classes.push(newClass);
+      allStudents[newClassId] = [];
+
+      for (let i = data.headerIdx + 1; i < data.rows.length; i++) {
+        const row = data.rows[i];
+        if (!row?.length) continue;
+        const sName = row[data.nameIdx]?.toString().trim();
+        if (!sName || /^[\d\s]+$/.test(sName)) continue;
+        allStudents[newClassId].push({
+          id: "s_" + Date.now() + "_" + i,
+          name: sName,
+          subjects: [
+            {
+              id: subjId,
+              name: selectedSubject,
+              test: data.testIdx >= 0 ? parseFloat(row[data.testIdx]) || 0 : 0,
+              prac: data.pracIdx >= 0 ? parseFloat(row[data.pracIdx]) || 0 : 0,
+              exam:
+                data.examIdx >= 0 && row[data.examIdx] !== ""
+                  ? parseFloat(row[data.examIdx]) || 0
+                  : "",
+              total: null,
+            },
+          ],
+        });
+      }
+
+      activeClassId = newClassId;
+      activeSubjectId = subjId;
+      renderSidebarClasses();
+      renderSubjectTabs();
+      renderTable();
+      saveData();
+      closeModal('excelSubjectSelectModal');
+      hideLoading();
+      showToast(
+        `✅ Imported "${data.className}" as ${selectedSubject} — ${allStudents[newClassId].length} students`,
+        "success",
+      );
+      
+      // Reset pending data
+      pendingExcelImportData = null;
+    } catch (err) {
+      console.error(err);
+      hideLoading();
+      showToast("Error importing file", "error");
+    }
+  };
+
+  // Show/hide custom subject input
+  window.toggleExcelSubjectCustom = function () {
+    const select = document.getElementById("excelImportSubjectSelect");
+    const customGroup = document.getElementById("customSubjectGroup");
+    if (select.value === "custom") {
+      customGroup.style.display = "block";
+      document.getElementById("customSubjectInput").focus();
+    } else {
+      customGroup.style.display = "none";
+    }
+  };
+
+  // Add event listener for subject select change
+  document.addEventListener("DOMContentLoaded", function() {
+    const subjectSelect = document.getElementById("excelImportSubjectSelect");
+    if (subjectSelect) {
+      subjectSelect.addEventListener("change", toggleExcelSubjectCustom);
+    }
+  });
 
   // ════════════════════════════════════════════════════
   //  BROADSHEET EXPORT
