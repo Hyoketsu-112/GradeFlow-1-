@@ -133,12 +133,20 @@
 }
 
 .collapsible-group.expanded .collapsible-header {
-  background: linear-gradient(135deg, var(--accent-l) 0%, rgba(67, 97, 238, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-l) 0%,
+    rgba(67, 97, 238, 0.05) 100%
+  );
   border-bottom-color: var(--accent);
 }
 
 .collapsible-header:hover {
-  background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 100%
+  );
 }
 
 .collapsible-icon {
@@ -199,7 +207,11 @@
   flex-wrap: wrap;
   gap: 0.9rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(114, 9, 183, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(67, 97, 238, 0.08),
+    rgba(114, 9, 183, 0.05)
+  );
   border-radius: var(--r-lg);
   border: 1px solid rgba(67, 97, 238, 0.15);
   margin-bottom: 1.8rem;
@@ -515,24 +527,44 @@
 /* == DARK MODE ENHANCEMENTS == */
 @media (prefers-color-scheme: dark) {
   .section-group {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--surface) 0%,
+      var(--surface-2) 100%
+    );
   }
 
   .mini-card {
-    background: linear-gradient(135deg, var(--surface-2) 0%, rgba(67, 97, 238, 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--surface-2) 0%,
+      rgba(67, 97, 238, 0.05) 100%
+    );
   }
 
   .action-group {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.12), rgba(114, 9, 183, 0.08));
+    background: linear-gradient(
+      135deg,
+      rgba(67, 97, 238, 0.12),
+      rgba(114, 9, 183, 0.08)
+    );
     border-color: rgba(67, 97, 238, 0.25);
   }
 
   .collapsible-header {
-    background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--surface-2) 0%,
+      var(--surface) 100%
+    );
   }
 
   .collapsible-group.expanded .collapsible-header {
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.15), rgba(114, 9, 183, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(67, 97, 238, 0.15),
+      rgba(114, 9, 183, 0.1)
+    );
   }
 }
 

@@ -1,0 +1,614 @@
+/* ============================================================
+   REPORT CARD SECTION STYLES
+   Professional report card layout and styling
+   ============================================================ */
+
+/* == REPORT CARD CONTAINER == */
+.report-card-section {
+  margin-bottom: 2.5rem;
+}
+
+.report-card-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 2.2rem;
+  box-shadow: var(--sh-sm);
+}
+
+/* == REPORT CARD SELECTOR == */
+.report-card-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+}
+
+.form-group-report {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.form-group-report label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.form-group-report select,
+.form-group-report input {
+  min-height: 40px;
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.95rem;
+  background: var(--surface-2);
+  color: var(--ink);
+  transition: all 0.2s ease;
+}
+
+.form-group-report select:focus,
+.form-group-report input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.report-card-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.report-card-actions .btn {
+  min-height: 40px;
+  font-size: 0.9rem;
+}
+
+/* == REPORT CARD DISPLAY == */
+.report-card-container {
+  background: white;
+  border: 1px solid #e3e6f0;
+  border-radius: var(--r-xl);
+  padding: 3rem 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  max-width: 900px;
+  margin: 2rem auto;
+  page-break-inside: avoid;
+}
+
+.report-card-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid var(--accent);
+}
+
+.report-card-school-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+  font-family: var(--font-display);
+}
+
+.report-card-term {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.report-card-divider {
+  width: 80px;
+  height: 2px;
+  background: var(--accent);
+  margin: 1rem auto 0;
+}
+
+/* == STUDENT INFO SECTION == */
+.report-card-student-info {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(114, 9, 183, 0.05));
+  padding: 1.8rem;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(67, 97, 238, 0.15);
+}
+
+.report-card-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  font-family: var(--font-display);
+}
+
+.report-card-student-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem;
+}
+
+.report-card-student-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.report-card-student-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.report-card-student-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.report-card-summary {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: flex-end;
+}
+
+.report-card-summary-item {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.report-card-summary-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.report-card-summary-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-display);
+}
+
+/* == SUBJECT GRADES TABLE == */
+.report-card-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+}
+
+.report-card-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.report-card-table thead {
+  background: linear-gradient(135deg, #f9fafd 0%, #f6f7fb 100%);
+  border-bottom: 2px solid var(--border);
+}
+
+.report-card-table th {
+  padding: 1.1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #3774a7;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-right: 1px solid var(--border);
+}
+
+.report-card-table th:last-child {
+  border-right: none;
+}
+
+.report-card-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s ease;
+}
+
+.report-card-table tbody tr:hover {
+  background: rgba(67, 97, 238, 0.04);
+}
+
+.report-card-table td {
+  padding: 1rem 1.1rem;
+  border-right: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.report-card-table td:last-child {
+  border-right: none;
+}
+
+.report-card-table-subject {
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 140px;
+}
+
+.report-card-table-number {
+  font-family: "JetBrains Mono", monospace;
+  text-align: center;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.report-card-table-grade {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.98rem;
+  border-radius: var(--r-sm);
+  padding: 0.3rem 0.6rem;
+  display: inline-block;
+  min-width: 35px;
+}
+
+.grade-a { background: #d1fae5; color: #064e3b; }
+.grade-b { background: #dbeafe; color: #1e3a5f; }
+.grade-c { background: #fed7aa; color: #7c2d12; }
+.grade-d { background: #fef9c3; color: #713f12; }
+.grade-e { background: #ede9fe; color: #4c1d95; }
+.grade-f { background: #fee2e2; color: #7f1d1d; }
+
+/* == REMARKS SECTION == */
+.report-card-remarks {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.08), rgba(114, 9, 183, 0.05));
+  border: 1px solid rgba(67, 97, 238, 0.15);
+  border-radius: var(--r-lg);
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.report-card-remarks-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.report-card-remarks-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/* == FOOTER == */
+.report-card-footer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--border);
+  text-align: center;
+}
+
+.report-card-signature-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.report-card-signature-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+}
+
+/* == ALL SUBJECTS VIEW == */
+.all-subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.subject-card-full {
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.8rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.subject-card-full:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sh-md);
+  border-color: rgba(67, 97, 238, 0.25);
+}
+
+.subject-card-full-icon {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.subject-card-full-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+}
+
+.subject-card-full-score {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.subject-card-full-grade {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--r-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(67, 97, 238, 0.1);
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.subject-card-full-remark {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.subject-card-full-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+}
+
+.subject-card-full-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.subject-card-full-detail-label {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.subject-card-full-detail-value {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* == EMPTY STATES == */
+.report-card-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border-radius: var(--r-lg);
+  border: 2px dashed var(--border);
+}
+
+.report-card-empty-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+  margin-bottom: 1rem;
+}
+
+.report-card-empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.report-card-empty-text {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* == PRINT STYLES == */
+@media print {
+  .report-card-section,
+  .report-card-container {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: none;
+  }
+
+  .report-card-selector,
+  .report-card-actions {
+    display: none;
+  }
+
+  .report-card-wrapper {
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
+}
+
+/* == RESPONSIVE DESIGN == */
+@media (max-width: 900px) {
+  .report-card-container {
+    padding: 2rem 1.5rem;
+    margin: 1.5rem auto;
+  }
+
+  .report-card-student-info {
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+  }
+
+  .report-card-summary {
+    gap: 1rem;
+  }
+
+  .report-card-summary-item {
+    gap: 0.1rem;
+  }
+
+  .report-card-summary-value {
+    font-size: 1.1rem;
+  }
+
+  .all-subjects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-card-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .report-card-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .report-card-header {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .report-card-student-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.2rem;
+  }
+
+  .report-card-student-details {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .report-card-summary {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .report-card-table {
+    font-size: 0.8rem;
+  }
+
+  .report-card-table th,
+  .report-card-table td {
+    padding: 0.7rem;
+  }
+
+  .report-card-table-subject {
+    min-width: 100px;
+  }
+
+  .report-card-footer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .all-subjects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-card-container {
+    padding: 1rem;
+  }
+
+  .report-card-school-name {
+    font-size: 1.1rem;
+  }
+
+  .report-card-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+
+  .report-card-summary-value {
+    font-size: 1rem;
+  }
+
+  .report-card-table th,
+  .report-card-table td {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .subject-card-full {
+    padding: 1.2rem;
+  }
+
+  .subject-card-full-score {
+    font-size: 1.6rem;
+  }
+}
+
+/* == DARK MODE == */
+@media (prefers-color-scheme: dark) {
+  .report-card-container {
+    background: #1a1f3a;
+    border-color: #2a2f45;
+  }
+
+  .report-card-header {
+    border-bottom-color: var(--accent);
+  }
+
+  .report-card-table {
+    background: var(--surface);
+  }
+
+  .report-card-table thead {
+    background: linear-gradient(135deg, #1c2240 0%, #161b2e 100%);
+  }
+
+  .report-card-table th {
+    color: #a8aed0;
+  }
+
+  .report-card-table td {
+    border-color: #2a2f45;
+  }
+
+  .report-card-table tbody tr:hover {
+    background: rgba(67, 97, 238, 0.1);
+  }
+}

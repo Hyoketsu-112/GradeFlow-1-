@@ -76,6 +76,7 @@
     <link rel="stylesheet" href="style-responsive-improvements.css" />
     <link rel="stylesheet" href="style-spacing-fixes.css" />
     <link rel="stylesheet" href="style-interface-grouping.css" />
+    <link rel="stylesheet" href="style-report-card.css" />
   </head>
   <body>
     <!-- ============================================================ TOAST CONTAINER -->
@@ -1970,6 +1971,80 @@
                 Averages
               </h3>
               <div id="subjectAverages"></div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: REPORT CARD
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-report-card">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-file-earmark-pdf"></i> Report Card
+              </h2>
+              <span id="reportCardClassName" class="badge-pill"></span>
+            </div>
+
+            <!-- Student & Report Selector -->
+            <div class="report-card-wrapper">
+              <div class="report-card-selector">
+                <div class="form-group-report">
+                  <label><i class="bi bi-person"></i> Select Student</label>
+                  <select id="reportCardStudentSelect" onchange="updateReportCardPreview()">
+                    <option value="">Choose a student...</option>
+                  </select>
+                </div>
+                <div class="form-group-report">
+                  <label><i class="bi bi-calendar3"></i> Term/Session</label>
+                  <input type="text" id="reportCardTerm" placeholder="e.g. 1st Term 2025-2026" value="1st Term 2025-2026" />
+                </div>
+              </div>
+
+              <div class="report-card-actions">
+                <button class="btn btn-primary" onclick="generateReportCard()">
+                  <i class="bi bi-printer"></i> View Report Card
+                </button>
+                <button class="btn btn-outline" onclick="printReportCard()">
+                  <i class="bi bi-printer-fill"></i> Print
+                </button>
+                <button class="btn btn-outline" onclick="downloadReportCardPDF()">
+                  <i class="bi bi-download"></i> Download PDF
+                </button>
+              </div>
+
+              <!-- Report Card Preview -->
+              <div id="reportCardPreview"></div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: ALL SUBJECTS
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-all-subjects">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-journal-text"></i> All Subjects
+              </h2>
+              <span id="allSubjectsClassName" class="badge-pill"></span>
+            </div>
+
+            <!-- Subject Filter -->
+            <div class="report-card-wrapper" style="margin-bottom: 2rem;">
+              <div class="form-group-report" style="width: 100%; margin-bottom: 1rem;">
+                <label><i class="bi bi-funnel"></i> Filter by Subject (Optional)</label>
+                <select id="subjectsFilterSelect" onchange="updateAllSubjectsView()">
+                  <option value="">Show all subjects</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- All Subjects Grid -->
+            <div id="allSubjectsGrid" class="all-subjects-grid">
+              <div class="report-card-empty" style="grid-column: 1/-1;">
+                <div class="report-card-empty-icon">📋</div>
+                <div class="report-card-empty-title">No Subjects Found</div>
+                <div class="report-card-empty-text">Add subjects to the class to see them here</div>
+              </div>
             </div>
           </div>
 
@@ -4693,5 +4768,6 @@
 
     <script src="api-client.js"></script>
     <script src="script.js"></script>
+    <script src="script-report-card.js"></script>
   </body>
 </html>
