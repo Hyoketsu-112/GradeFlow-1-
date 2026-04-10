@@ -284,7 +284,7 @@ window.downloadReportCardPDF = async function () {
       showToast("Error: PDF library not loaded. Please refresh.", "error");
       return;
     }
-    
+
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -314,7 +314,10 @@ window.downloadReportCardPDF = async function () {
     showToast("✅ Report card downloaded", "success");
   } catch (err) {
     console.error("PDF generation error:", err);
-    showToast("Error generating PDF: " + (err.message || "Check console for details"), "error");
+    showToast(
+      "Error generating PDF: " + (err.message || "Check console for details"),
+      "error",
+    );
   }
 };
 

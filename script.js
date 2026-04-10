@@ -1753,7 +1753,10 @@
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
       if (!jsPDF) {
-        showToast("Error: PDF library not loaded. Please refresh and try again.", "error");
+        showToast(
+          "Error: PDF library not loaded. Please refresh and try again.",
+          "error",
+        );
         return;
       }
       const pdf = new jsPDF({
@@ -1771,7 +1774,11 @@
       showToast(`✅ PDF generated for ${student.name}${_remLabel}`, "success");
     } catch (e) {
       console.error("PDF Generation Error:", e);
-      showToast("Error generating PDF: " + (e.message || "Unknown error. Check console."), "error");
+      showToast(
+        "Error generating PDF: " +
+          (e.message || "Unknown error. Check console."),
+        "error",
+      );
     } finally {
       if (document.body.contains(template)) {
         document.body.removeChild(template);
