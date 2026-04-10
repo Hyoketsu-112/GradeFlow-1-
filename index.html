@@ -1989,60 +1989,6 @@
           </div>
 
           <!-- ══════════════════════════════════════════
-           VIEW: REPORT CARD
-      ══════════════════════════════════════════ -->
-          <div class="view" id="view-report-card">
-            <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-file-earmark-pdf"></i> Report Card
-              </h2>
-              <span id="reportCardClassName" class="badge-pill"></span>
-            </div>
-
-            <!-- Student & Report Selector -->
-            <div class="report-card-wrapper">
-              <div class="report-card-selector">
-                <div class="form-group-report">
-                  <label><i class="bi bi-person"></i> Select Student</label>
-                  <select
-                    id="reportCardStudentSelect"
-                    onchange="updateReportCardPreview()"
-                  >
-                    <option value="">Choose a student...</option>
-                  </select>
-                </div>
-                <div class="form-group-report">
-                  <label><i class="bi bi-calendar3"></i> Term/Session</label>
-                  <input
-                    type="text"
-                    id="reportCardTerm"
-                    placeholder="e.g. 1st Term 2025-2026"
-                    value="1st Term 2025-2026"
-                  />
-                </div>
-              </div>
-
-              <div class="report-card-actions">
-                <button class="btn btn-primary" onclick="generateReportCard()">
-                  <i class="bi bi-printer"></i> View Report Card
-                </button>
-                <button class="btn btn-outline" onclick="printReportCard()">
-                  <i class="bi bi-printer-fill"></i> Print
-                </button>
-                <button
-                  class="btn btn-outline"
-                  onclick="downloadReportCardPDF()"
-                >
-                  <i class="bi bi-download"></i> Download PDF
-                </button>
-              </div>
-
-              <!-- Report Card Preview -->
-              <div id="reportCardPreview"></div>
-            </div>
-          </div>
-
-          <!-- ══════════════════════════════════════════
            VIEW: ALL SUBJECTS
       ══════════════════════════════════════════ -->
           <div class="view" id="view-all-subjects">
