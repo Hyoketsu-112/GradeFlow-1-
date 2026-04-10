@@ -1,0 +1,656 @@
+/* ============================================================
+   COMPREHENSIVE RESPONSIVE ENHANCEMENTS v2
+   Professional responsiveness with perfect visibility across all devices
+   ============================================================ */
+
+/* == UNIVERSAL IMPROVEMENTS == */
+* {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+html {
+  font-size: 16px;
+}
+
+/* Improved font scaling with clamp for all text */
+html {
+  --font-size-xs: clamp(0.7rem, 2vw, 0.85rem);
+  --font-size-sm: clamp(0.8rem, 2.1vw, 0.95rem);
+  --font-size-base: clamp(0.95rem, 2.2vw, 1rem);
+  --font-size-lg: clamp(1.1rem, 2.5vw, 1.25rem);
+  --font-size-xl: clamp(1.35rem, 3vw, 1.5rem);
+  --font-size-2xl: clamp(1.6rem, 3.5vw, 2rem);
+}
+
+/* == STAT CARDS IMPROVEMENTS == */
+.stat-card-value {
+  /* Remove truncation, allow wrapping for better visibility */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  font-size: clamp(1.75rem, 4vw, 2rem);
+  line-height: 1.2;
+}
+
+.stat-card-label {
+  font-size: var(--font-size-xs);
+  min-height: 1.2em;
+}
+
+.stat-card-sub {
+  font-size: var(--font-size-xs);
+}
+
+/* == TABLE IMPROVEMENTS == */
+.grade-table th {
+  font-size: var(--font-size-xs);
+  padding: 0.9rem 0.75rem;
+  min-height: 2.5em;
+}
+
+.grade-table td {
+  font-size: var(--font-size-sm);
+  padding: 0.8rem 0.75rem;
+  vertical-align: middle;
+  word-break: break-word;
+}
+
+.score-input {
+  width: 65px;
+  padding: 0.45rem 0.6rem;
+  font-size: var(--font-size-sm);
+  min-height: 2em;
+}
+
+/* == FORM INPUTS IMPROVEMENTS == */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea,
+.form-input {
+  font-size: 16px; /* Prevents iOS zoom on focus */
+  min-height: 44px; /* Touch target */
+  padding: 0.65rem 0.95rem;
+}
+
+/* == BUTTON IMPROVEMENTS == */
+.btn {
+  font-size: var(--font-size-sm);
+  padding: 0.65rem 1.2rem;
+  min-height: 44px;
+  min-width: 44px;
+  white-space: normal;
+  overflow: visible;
+}
+
+.btn-sm {
+  font-size: 0.8rem;
+  padding: 0.55rem 1rem;
+  min-height: 38px;
+}
+
+/* == PAGE HEADER IMPROVEMENTS == */
+.page-header-title {
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  line-height: 1.3;
+}
+
+/* == HEADING IMPROVEMENTS == */
+h1, h2, h3, h4, h5, h6 {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+h2 { font-size: clamp(1.5rem, 4.5vw, 2rem); }
+h3 { font-size: clamp(1.3rem, 4vw, 1.75rem); }
+h4 { font-size: clamp(1.1rem, 3vw, 1.5rem); }
+h5 { font-size: clamp(0.95rem, 2.5vw, 1.25rem); }
+h6 { font-size: clamp(0.85rem, 2vw, 1.05rem); }
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS WITH IMPROVED VISIBILITY
+   ============================================================ */
+
+/* -- LARGE DESKTOPS (1200px+) -- */
+@media (min-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .grade-table th,
+  .grade-table td {
+    padding: 1rem 0.9rem;
+  }
+}
+
+/* -- DESKTOPS (1024px - 1199px) -- */
+@media (max-width: 1199px) and (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.3rem;
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.3rem;
+  }
+
+  .grade-table {
+    font-size: 0.9rem;
+  }
+}
+
+/* -- TABLETS (768px - 1023px) -- */
+@media (max-width: 1023px) {
+  body {
+    font-size: 15px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .page-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .page-header-actions .btn {
+    flex: 1;
+    min-width: 90px;
+  }
+
+  .grade-table th {
+    padding: 0.85rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  .grade-table td {
+    padding: 0.75rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .score-input {
+    width: 60px;
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* Table horizontal scroll indicator */
+  .table-wrapper > div[style*="overflow-x"] {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(67, 97, 238, 0.3) transparent;
+  }
+
+  .table-wrapper > div[style*="overflow-x"]::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .table-wrapper > div[style*="overflow-x"]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-wrapper > div[style*="overflow-x"]::-webkit-scrollbar-thumb {
+    background: rgba(67, 97, 238, 0.3);
+    border-radius: 3px;
+  }
+}
+
+/* -- MOBILE LANDSCAPE (640px - 767px) -- */
+@media (max-width: 767px) {
+  body {
+    font-size: 14.5px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.95rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .stat-card {
+    padding: 1.1rem 1.2rem;
+  }
+
+  .stat-card-value {
+    font-size: clamp(1.5rem, 5vw, 1.8rem);
+  }
+
+  .stat-card-icon {
+    font-size: 1.2rem;
+  }
+
+  .page-header-title {
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+  }
+
+  .page-header-actions {
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .btn,
+  button {
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+    min-height: 40px;
+  }
+
+  .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.85rem;
+  }
+
+  .table-toolbar {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .table-toolbar-search {
+    width: 100%;
+  }
+
+  .table-toolbar-right {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .grade-table {
+    font-size: 0.82rem;
+  }
+
+  .grade-table th {
+    padding: 0.75rem 0.6rem;
+    font-size: 0.68rem;
+  }
+
+  .grade-table td {
+    padding: 0.65rem 0.6rem;
+  }
+
+  .score-input {
+    width: 55px;
+    padding: 0.35rem 0.45rem;
+    font-size: 0.8rem;
+  }
+
+  .student-mini-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.65rem;
+  }
+
+  .student-name-cell {
+    gap: 0.5rem;
+  }
+
+  /* Better horizontal scroll on mobile */
+  .grade-table {
+    min-width: 100%;
+  }
+}
+
+/* -- SMALL PHONES (480px - 639px) -- */
+@media (max-width: 639px) {
+  body {
+    font-size: 14px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem 1.1rem;
+    min-height: auto;
+  }
+
+  .stat-card-value {
+    font-size: clamp(1.3rem, 4vw, 1.6rem);
+    word-break: break-word;
+  }
+
+  .stat-card-label {
+    font-size: 0.65rem;
+  }
+
+  .stat-card-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .page-header-title {
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+  }
+
+  .page-header-actions {
+    gap: 0.4rem;
+  }
+
+  .btn,
+  button {
+    font-size: 0.75rem;
+    padding: 0.55rem 0.9rem;
+    min-height: 38px;
+  }
+
+  .btn-sm {
+    font-size: 0.7rem;
+    padding: 0.45rem 0.75rem;
+    min-height: 36px;
+  }
+
+  .table-toolbar {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .table-toolbar-search input {
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .grade-table {
+    font-size: 0.79rem;
+    white-space: normal;
+  }
+
+  .grade-table th {
+    padding: 0.65rem 0.5rem;
+    font-size: 0.62rem;
+    word-break: break-word;
+  }
+
+  .grade-table td {
+    padding: 0.6rem 0.5rem;
+    word-break: break-word;
+  }
+
+  .score-input {
+    width: 50px;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .student-mini-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 0.6rem;
+  }
+
+  .student-name-cell {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .student-name {
+    flex: 0 1 100%;
+  }
+
+  /* Modal improvements on small screens */
+  .modal-box {
+    height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  /* Form labels should be visible */
+  label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 14px; /* Must be 16px+ or iOS zooms, but 14px is readable */
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+}
+
+/* -- EXTRA SMALL PHONES (< 480px) -- */
+@media (max-width: 479px) {
+  body {
+    font-size: 13px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .stat-card {
+    padding: 0.9rem 1rem;
+  }
+
+  .stat-card-value {
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+  }
+
+  .stat-card-label {
+    font-size: 0.6rem;
+  }
+
+  .stat-card-icon {
+    font-size: 1rem;
+  }
+
+  .page-header-title {
+    font-size: clamp(1rem, 2.8vw, 1.2rem);
+  }
+
+  .page-header-actions {
+    gap: 0.3rem;
+  }
+
+  .btn,
+  button {
+    font-size: 0.7rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .btn i {
+    font-size: 0.8rem;
+  }
+
+  .grade-table th {
+    padding: 0.55rem 0.4rem;
+    font-size: 0.58rem;
+  }
+
+  .grade-table td {
+    padding: 0.55rem 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .score-input {
+    width: 48px;
+    padding: 0.25rem 0.35rem;
+    font-size: 0.7rem;
+  }
+
+  .subject-tabs {
+    gap: 0.3rem;
+  }
+
+  .subject-chip {
+    font-size: 0.7rem;
+    padding: 0.45rem 0.8rem;
+  }
+
+  /* Better batch bar layout */
+  .batch-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .batch-bar .btn {
+    flex: 1;
+    min-width: 70px;
+  }
+}
+
+/* ============================================================
+   CONTENT VISIBILITY FIXES
+   ============================================================ */
+
+/* Ensure numbers are never truncated */
+.stat-card-value,
+.score-val,
+.total-val,
+.grade-val,
+.position-val {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Ensure all table content is visible */
+.grade-table tbody {
+  overflow-x: visible;
+  word-break: break-word;
+}
+
+/* Analytics numbers visible */
+.analytics-value,
+.metric-value,
+.chart-value {
+  font-size: inherit;
+  overflow: visible;
+  word-break: break-word;
+}
+
+/* Ensure modals are readable on mobile */
+@media (max-width: 640px) {
+  .modal-box {
+    max-height: 95vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-box h2,
+  .modal-box h3 {
+    word-break: break-word;
+  }
+
+  .modal-body input,
+  .modal-body textarea,
+  .modal-body select {
+    width: 100%;
+    font-size: 14px;
+    padding: 0.65rem;
+  }
+}
+
+/* ============================================================
+   SPACING & LAYOUT IMPROVEMENTS
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Reduce excessive padding */
+  .app-sidebar,
+  .sidebar {
+    width: 100vw;
+    left: -100vw;
+  }
+
+  .app-main {
+    padding: 1rem;
+  }
+
+  main {
+    padding: 0.9rem;
+  }
+
+  section {
+    margin-bottom: 1rem;
+  }
+
+  /* Card padding optimization */
+  .analytics-card,
+  .student-card {
+    padding: 1.1rem 1.1rem;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================ */
+
+/* Ensure focus states are visible on mobile */
+input:focus,
+button:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid rgba(67, 97, 238, 0.5);
+  outline-offset: 1px;
+}
+
+/* High contrast for dark mode */
+@media (prefers-color-scheme: dark) {
+  .grade-table th {
+    background: #1a1f3a;
+    color: #f0f2ff;
+  }
+
+  .grade-table td {
+    color: #d0d4ef;
+  }
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

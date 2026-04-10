@@ -1621,9 +1621,10 @@ body.on-landing {
   margin-top: 0.2rem;
   position: relative;
   z-index: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
 }
 .stat-card-sub {
   font-size: 0.78rem;

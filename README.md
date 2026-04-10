@@ -34,6 +34,7 @@ GradeFlow is a Progressive Web App (PWA) designed to streamline grade management
 **Or Deploy Your Own:**
 
 Deploy GradeFlow to Vercel with a single click:
+
 - Sign up at [vercel.com](https://vercel.com)
 - Import this GitHub repository
 - Auto-deploys on every push
