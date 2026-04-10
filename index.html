@@ -3738,7 +3738,7 @@
       id="pdf-template"
       style="
         width: 210mm;
-        padding: 15mm;
+        padding: 12mm;
         font-family: &quot;DM Sans&quot;, sans-serif;
         background: white;
         display: none;
@@ -3748,106 +3748,311 @@
         top: 0;
       "
     >
-      <div
-        style="
-          border: 2px solid #e2e8f0;
-          border-radius: 24px;
-          padding: 10mm;
-          background: white;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-        "
-      >
+      <div style="background: white">
+        <!-- ════ PREMIUM HEADER ════ -->
         <div
           style="
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 3px solid #4361ee;
-            padding-bottom: 1rem;
+            background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 45px -10px rgba(67, 97, 238, 0.25);
           "
         >
+          <!-- Decorative background pattern -->
           <div
             style="
-              width: 64px;
-              height: 64px;
-              flex-shrink: 0;
-              position: relative;
+              position: absolute;
+              top: -50%;
+              right: -10%;
+              width: 400px;
+              height: 400px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 50%;
+              z-index: 0;
+            "
+          ></div>
+          
+          <div style="position: relative; z-index: 1">
+            <!-- Logo & School Name -->
+            <div style="display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem">
+              <div style="width: 72px; height: 72px; flex-shrink: 0; position: relative">
+                <div
+                  class="pdf-school-icon"
+                  style="
+                    font-size: 2.8rem;
+                    background: rgba(255, 255, 255, 0.25);
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    backdrop-filter: blur(10px);
+                  "
+                >
+                  🏫
+                </div>
+                <img
+                  class="pdf-school-logo"
+                  src=""
+                  alt=""
+                  style="
+                    display: none;
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 16px;
+                    object-fit: contain;
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(255, 255, 255, 0.15);
+                    padding: 4px;
+                  "
+                />
+              </div>
+              <div>
+                <h1
+                  style="
+                    font-size: 1.8rem;
+                    font-weight: 900;
+                    color: white;
+                    margin: 0 0 0.25rem 0;
+                    letter-spacing: -0.5px;
+                  "
+                  class="pdf-schoolname"
+                >
+                  SCHOOL NAME
+                </h1>
+                <p
+                  class="pdf-motto"
+                  style="
+                    font-size: 0.9rem;
+                    color: rgba(255, 255, 255, 0.85);
+                    margin: 0;
+                    font-weight: 500;
+                  "
+                ></p>
+              </div>
+            </div>
+
+            <!-- Report Details -->
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                padding-top: 1.2rem;
+              "
+            >
+              <div>
+                <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 0.2rem">
+                  ACADEMIC REPORT CARD
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: white">
+                  <span class="pdf-term">Second Term</span> · <span class="pdf-session">2025/2026</span>
+                </div>
+              </div>
+              <div style="text-align: right">
+                <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; letter-spacing: 1px">
+                  Position
+                </div>
+                <div style="font-size: 1.8rem; font-weight: 900; color: white">
+                  <span class="pdf-position">—</span><span style="font-size: 0.9rem">/<span class="pdf-classsize">—</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ STUDENT INFO & STATS ════ -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem">
+          <!-- Student Info Card -->
+          <div
+            style="
+              background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+              border: 1px solid #e2e8f0;
+              border-radius: 16px;
+              padding: 1.3rem;
             "
           >
-            <div
-              class="pdf-school-icon"
-              style="
-                font-size: 2.5rem;
-                background: #eef1fd;
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #4361ee;
-              "
-            >
-              🏫
+            <div style="margin-bottom: 1rem">
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; font-weight: 700; margin-bottom: 0.3rem">
+                Student
+              </div>
+              <div style="font-size: 1.1rem; font-weight: 700; color: #0f172a" class="pdf-studentname">
+                —
+              </div>
             </div>
-            <img
-              class="pdf-school-logo"
-              src=""
-              alt=""
-              style="
-                display: none;
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                object-fit: contain;
-                position: absolute;
-                inset: 0;
-              "
-            />
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; font-weight: 700; margin-bottom: 0.3rem">
+                Class
+              </div>
+              <div style="font-size: 0.95rem; font-weight: 600; color: #334155" class="pdf-classname">
+                —
+              </div>
+            </div>
           </div>
-          <div style="flex: 1; text-align: center">
-            <h1
-              style="
-                font-size: 20px;
-                font-weight: 800;
-                color: #0f172a;
-                margin-bottom: 0.2rem;
-              "
-              class="pdf-schoolname"
-            >
-              SCHOOL NAME
-            </h1>
-            <p
-              class="pdf-motto"
-              style="font-size: 12px; color: #6b7699; margin-bottom: 0.2rem"
-            ></p>
-            <p style="font-size: 14px; color: #475569; letter-spacing: 1px">
-              ACADEMIC REPORT SHEET
-            </p>
-            <p style="font-size: 13px; color: #4361ee; font-weight: 600">
-              <span class="pdf-term">Second Term</span> ·
-              <span class="pdf-session">2025/2026</span>
-            </p>
+
+          <!-- Overall Performance Card -->
+          <div
+            style="
+              background: linear-gradient(135deg, rgba(67, 97, 238, 0.08) 0%, rgba(114, 9, 183, 0.08) 100%);
+              border: 1px solid rgba(67, 97, 238, 0.2);
+              border-radius: 16px;
+              padding: 1.3rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+            "
+          >
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px; color: #4361ee; font-weight: 700; margin-bottom: 0.5rem">
+              Overall Performance
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 0.5rem">
+              <div style="font-size: 2.2rem; font-weight: 900; color: #4361ee" class="pdf-overall">
+                —
+              </div>
+              <div style="font-size: 0.85rem; color: #6b7699; font-weight: 500">
+                Class Average: <strong class="pdf-classavg">—</strong>%
+              </div>
+            </div>
           </div>
-          <div style="width: 64px"></div>
         </div>
+
+        <!-- ════ SUBJECTS TABLE (PREMIUM) ════ -->
+        <div style="margin-bottom: 2rem">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem">
+            Subject Performance
+          </div>
+          <table
+            style="
+              width: 100%;
+              border-collapse: collapse;
+              font-size: 11px;
+              background: white;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+            "
+          >
+            <thead>
+              <tr style="background: linear-gradient(90deg, #4361ee 0%, #7209b7 100%); color: white">
+                <th style="padding: 0.9rem 0.8rem; text-align: left; font-weight: 700">Subject</th>
+                <th style="padding: 0.9rem 0.6rem; text-align: center; font-weight: 700; font-size: 10px">Test</th>
+                <th style="padding: 0.9rem 0.6rem; text-align: center; font-weight: 700; font-size: 10px">Prac</th>
+                <th style="padding: 0.9rem 0.6rem; text-align: center; font-weight: 700; font-size: 10px">Exam</th>
+                <th style="padding: 0.9rem 0.6rem; text-align: center; font-weight: 700">Total</th>
+                <th style="padding: 0.9rem 0.6rem; text-align: center; font-weight: 700">Grade</th>
+                <th style="padding: 0.9rem 0.8rem; text-align: left; font-weight: 700">Remark</th>
+              </tr>
+            </thead>
+            <tbody class="pdf-subjectrows" style="background: white"></tbody>
+          </table>
+        </div>
+
+        <!-- ════ TEACHER'S COMMENT ════ -->
         <div
           style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%);
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid #4361ee;
+            border-radius: 12px;
             padding: 1.2rem;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
           "
         >
-          <div>
-            <div style="margin-bottom: 0.6rem">
-              <span style="font-weight: 700; color: #4361ee"
-                >Student Name:</span
-              >
+          <div style="font-size: 0.8rem; font-weight: 700; color: #4361ee; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem">
+            Teacher's Comment
+          </div>
+          <div style="font-size: 0.95rem; color: #334155; line-height: 1.6; font-weight: 500" class="pdf-remark">
+            —
+          </div>
+        </div>
+
+        <!-- ════ SIGNATURES SECTION ════ -->
+        <div
+          style="
+            border-top: 2px solid #e2e8f0;
+            padding-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+          "
+        >
+          <div style="text-align: center">
+            <div
+              style="
+                border-bottom: 2px solid #1e293b;
+                margin-bottom: 0.5rem;
+                height: 32px;
+              "
+            ></div>
+            <div style="font-size: 0.8rem; color: #475569; font-weight: 600">
+              Class Teacher
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.3rem">
+              Signature & Date
+            </div>
+          </div>
+          <div style="text-align: center">
+            <div
+              style="
+                border-bottom: 2px solid #1e293b;
+                margin-bottom: 0.5rem;
+                height: 32px;
+              "
+            ></div>
+            <div style="font-size: 0.8rem; color: #475569; font-weight: 600">
+              Principal/Head
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.3rem">
+              Signature & Date
+            </div>
+          </div>
+          <div style="text-align: center">
+            <div
+              style="
+                border-bottom: 2px solid #1e293b;
+                margin-bottom: 0.5rem;
+                height: 32px;
+              "
+            ></div>
+            <div style="font-size: 0.8rem; color: #475569; font-weight: 600">
+              Parent/Guardian
+            </div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.3rem">
+              Signature & Date
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ FOOTER ════ -->
+        <div
+          style="
+            text-align: center;
+            margin-top: 1.8rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.75rem;
+          "
+        >
+          <p style="margin: 0">
+            <strong style="color: #4361ee">GradeFlow</strong> — Built for Nigerian Teachers · 100% Offline · Free to Start
+          </p>
+          <p style="margin: 0.3rem 0 0 0; color: #94a3b8">
+            Generated on <span style="font-weight: 600">pdf-template</span> · Secure & Confidential
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ AI COMMENT MODAL -->
+    <div class="modal-overlay" id="aiCommentModal">
               <span class="pdf-studentname" style="font-weight: 600">—</span>
             </div>
             <div>

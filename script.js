@@ -1532,45 +1532,59 @@
     const tbody = template.querySelector(".pdf-subjectrows");
     tbody.innerHTML = "";
     const bgColors = {
-      A: "#dcfce7",
-      B: "#e0e7ff",
-      C: "#fef3c7",
-      D: "#fed7aa",
-      E: "#fecaca",
+      A: "#ecfdf5",
+      B: "#eff6ff",
+      C: "#fffbeb",
+      D: "#fefce8",
+      E: "#f5f3ff",
+      F: "#fef2f2",
+      "—": "#f9fafb",
     };
     const textColors = {
-      A: "#166534",
-      B: "#312e81",
-      C: "#92400e",
-      D: "#9a3412",
-      E: "#991b1b",
+      A: "#047857",
+      B: "#0369a1",
+      C: "#b45309",
+      D: "#7c2d12",
+      E: "#6d28d9",
+      F: "#991b1b",
+      "—": "#4b5563",
     };
-    student.subjects.forEach((sub) => {
+    const borderColors = {
+      A: "#86efac",
+      B: "#7dd3fc",
+      C: "#fcd34d",
+      D: "#fde047",
+      E: "#c4b5fd",
+      F: "#fca5a5",
+      "—": "#e5e7eb",
+    };
+    student.subjects.forEach((sub, i) => {
       const c = computeSubject(sub);
       const gr = gradeResult(c.total);
       const tr = document.createElement("tr");
+      tr.style.background = i % 2 === 0 ? "#fafbfc" : "#ffffff";
       const cells = [
-        { text: sub.name, align: "left" },
+        { text: sub.name, align: "left", fw: "600" },
         { text: c.total ?? "—", align: "center", fw: "600" },
         { text: gr.r, align: "center", fw: "600" },
       ];
       cells.forEach((cell) => {
         const td = document.createElement("td");
-        td.style.cssText = `padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:${cell.align};${cell.fw ? "font-weight:" + cell.fw + ";" : ""}`;
+        td.style.cssText = `padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:${cell.align};color:#334155;${cell.fw ? "font-weight:" + cell.fw + ";" : ""}`;
         td.textContent = cell.text;
         tr.appendChild(td);
       });
       const tdGrade = document.createElement("td");
       tdGrade.style.cssText =
-        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:center;";
+        "padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:center;";
       const span = document.createElement("span");
-      span.style.cssText = `padding:.2rem .8rem;border-radius:40px;font-weight:700;font-size:11px;background:${bgColors[gr.g] || "#f1f5f9"};color:${textColors[gr.g] || "#475569"};`;
+      span.style.cssText = `padding:.3rem .85rem;border-radius:6px;font-weight:700;font-size:12px;background:${bgColors[gr.g] || "#f9fafb"};color:${textColors[gr.g] || "#4b5563"};border:1.5px solid ${borderColors[gr.g] || "#e5e7eb"};letter-spacing:0.5px;`;
       span.textContent = gr.g;
       tdGrade.appendChild(span);
       tr.appendChild(tdGrade);
       const tdRemark = document.createElement("td");
       tdRemark.style.cssText =
-        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;color:#6b7699;font-size:11px;";
+        "padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:left;color:#64748b;font-size:11px;font-weight:500;";
       tdRemark.textContent = gr.r;
       tr.appendChild(tdRemark);
       tbody.appendChild(tr);
@@ -1654,25 +1668,34 @@
       const comp = computeSubject(sub);
       const gr = gradeResult(comp.total);
       const bgColors = {
-        A: "#d1fae5",
-        B: "#dbeafe",
-        C: "#fed7aa",
-        D: "#fef9c3",
-        E: "#ede9fe",
-        F: "#fee2e2",
-        "—": "#f1f5f9",
+        A: "#ecfdf5",
+        B: "#eff6ff",
+        C: "#fffbeb",
+        D: "#fefce8",
+        E: "#f5f3ff",
+        F: "#fef2f2",
+        "—": "#f9fafb",
       };
       const textColors = {
-        A: "#064e3b",
-        B: "#1e3a5f",
-        C: "#7c2d12",
-        D: "#713f12",
-        E: "#4c1d95",
-        F: "#7f1d1d",
-        "—": "#475569",
+        A: "#047857",
+        B: "#0369a1",
+        C: "#b45309",
+        D: "#7c2d12",
+        E: "#6d28d9",
+        F: "#991b1b",
+        "—": "#4b5563",
+      };
+      const borderColors = {
+        A: "#86efac",
+        B: "#7dd3fc",
+        C: "#fcd34d",
+        D: "#fde047",
+        E: "#c4b5fd",
+        F: "#fca5a5",
+        "—": "#e5e7eb",
       };
       const tr = document.createElement("tr");
-      tr.style.background = i % 2 === 0 ? "#f8fafc" : "#ffffff";
+      tr.style.background = i % 2 === 0 ? "#fafbfc" : "#ffffff";
       const cells = [
         { text: sub.name, align: "left", fw: "600" },
         { text: sub.test ?? "—", align: "center" },
@@ -1682,21 +1705,21 @@
       ];
       cells.forEach((cell) => {
         const td = document.createElement("td");
-        td.style.cssText = `padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:${cell.align};${cell.fw ? "font-weight:" + cell.fw + ";" : ""}`;
+        td.style.cssText = `padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:${cell.align};color:#334155;${cell.fw ? "font-weight:" + cell.fw + ";" : ""}`;
         td.textContent = cell.text;
         tr.appendChild(td);
       });
       const tdGrade = document.createElement("td");
       tdGrade.style.cssText =
-        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:center;";
+        "padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:center;";
       const span = document.createElement("span");
-      span.style.cssText = `padding:.2rem .8rem;border-radius:40px;font-weight:700;font-size:11px;background:${bgColors[gr.g] || "#f1f5f9"};color:${textColors[gr.g] || "#475569"};`;
+      span.style.cssText = `padding:.3rem .85rem;border-radius:6px;font-weight:700;font-size:12px;background:${bgColors[gr.g] || "#f9fafb"};color:${textColors[gr.g] || "#4b5563"};border:1.5px solid ${borderColors[gr.g] || "#e5e7eb"};letter-spacing:0.5px;`;
       span.textContent = gr.g;
       tdGrade.appendChild(span);
       tr.appendChild(tdGrade);
       const tdRemark = document.createElement("td");
       tdRemark.style.cssText =
-        "padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;color:#6b7699;font-size:11px;";
+        "padding:0.85rem 0.8rem;border-bottom:1px solid #e5e7eb;text-align:left;color:#64748b;font-size:11px;font-weight:500;";
       tdRemark.textContent = gr.r;
       tr.appendChild(tdRemark);
       tbody.appendChild(tr);
