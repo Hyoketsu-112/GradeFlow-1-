@@ -1596,9 +1596,19 @@
         scale: 2,
         backgroundColor: "#ffffff",
         useCORS: true,
+        logging: false,
+        allowTaint: true,
       });
+      if (!canvas) {
+        console.error("Canvas generation failed");
+        return null;
+      }
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
+      if (!jsPDF) {
+        console.error("jsPDF not available");
+        return null;
+      }
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -1606,12 +1616,14 @@
       });
       pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
       const pdfBlob = pdf.output("blob");
-      document.body.removeChild(template);
       return pdfBlob;
     } catch (e) {
-      console.error(e);
-      document.body.removeChild(template);
+      console.error("PDF Generation Error:", e);
       return null;
+    } finally {
+      if (document.body.contains(template)) {
+        document.body.removeChild(template);
+      }
     }
   };
 
@@ -1731,9 +1743,19 @@
         scale: 2,
         backgroundColor: "#ffffff",
         useCORS: true,
+        logging: false,
+        allowTaint: true,
       });
+      if (!canvas) {
+        showToast("Error: Failed to render PDF. Please try again.", "error");
+        return;
+      }
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
+      if (!jsPDF) {
+        showToast("Error: PDF library not loaded. Please refresh and try again.", "error");
+        return;
+      }
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -1748,10 +1770,13 @@
         : ` · ${_rem} free PDF${_rem === 1 ? "" : "s"} left this term`;
       showToast(`✅ PDF generated for ${student.name}${_remLabel}`, "success");
     } catch (e) {
-      console.error(e);
-      showToast("PDF generation failed. Please try again.", "error");
+      console.error("PDF Generation Error:", e);
+      showToast("Error generating PDF: " + (e.message || "Unknown error. Check console."), "error");
+    } finally {
+      if (document.body.contains(template)) {
+        document.body.removeChild(template);
+      }
     }
-    document.body.removeChild(template);
   };
 
   window.exportAllPDFs = async function () {
