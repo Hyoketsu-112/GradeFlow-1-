@@ -1990,13 +1990,21 @@
               <div class="report-card-selector">
                 <div class="form-group-report">
                   <label><i class="bi bi-person"></i> Select Student</label>
-                  <select id="reportCardStudentSelect" onchange="updateReportCardPreview()">
+                  <select
+                    id="reportCardStudentSelect"
+                    onchange="updateReportCardPreview()"
+                  >
                     <option value="">Choose a student...</option>
                   </select>
                 </div>
                 <div class="form-group-report">
                   <label><i class="bi bi-calendar3"></i> Term/Session</label>
-                  <input type="text" id="reportCardTerm" placeholder="e.g. 1st Term 2025-2026" value="1st Term 2025-2026" />
+                  <input
+                    type="text"
+                    id="reportCardTerm"
+                    placeholder="e.g. 1st Term 2025-2026"
+                    value="1st Term 2025-2026"
+                  />
                 </div>
               </div>
 
@@ -2007,7 +2015,10 @@
                 <button class="btn btn-outline" onclick="printReportCard()">
                   <i class="bi bi-printer-fill"></i> Print
                 </button>
-                <button class="btn btn-outline" onclick="downloadReportCardPDF()">
+                <button
+                  class="btn btn-outline"
+                  onclick="downloadReportCardPDF()"
+                >
                   <i class="bi bi-download"></i> Download PDF
                 </button>
               </div>
@@ -2029,10 +2040,19 @@
             </div>
 
             <!-- Subject Filter -->
-            <div class="report-card-wrapper" style="margin-bottom: 2rem;">
-              <div class="form-group-report" style="width: 100%; margin-bottom: 1rem;">
-                <label><i class="bi bi-funnel"></i> Filter by Subject (Optional)</label>
-                <select id="subjectsFilterSelect" onchange="updateAllSubjectsView()">
+            <div class="report-card-wrapper" style="margin-bottom: 2rem">
+              <div
+                class="form-group-report"
+                style="width: 100%; margin-bottom: 1rem"
+              >
+                <label
+                  ><i class="bi bi-funnel"></i> Filter by Subject
+                  (Optional)</label
+                >
+                <select
+                  id="subjectsFilterSelect"
+                  onchange="updateAllSubjectsView()"
+                >
                   <option value="">Show all subjects</option>
                 </select>
               </div>
@@ -2040,10 +2060,12 @@
 
             <!-- All Subjects Grid -->
             <div id="allSubjectsGrid" class="all-subjects-grid">
-              <div class="report-card-empty" style="grid-column: 1/-1;">
+              <div class="report-card-empty" style="grid-column: 1/-1">
                 <div class="report-card-empty-icon">📋</div>
                 <div class="report-card-empty-title">No Subjects Found</div>
-                <div class="report-card-empty-text">Add subjects to the class to see them here</div>
+                <div class="report-card-empty-text">
+                  Add subjects to the class to see them here
+                </div>
               </div>
             </div>
           </div>

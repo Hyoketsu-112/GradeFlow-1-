@@ -44,14 +44,17 @@ function populateSubjectsFilterSelect() {
 window.generateReportCard = function () {
   const cls = classes.find((c) => c.id === activeClassId);
   const studentId = document.getElementById("reportCardStudentSelect").value;
-  const term = document.getElementById("reportCardTerm").value || "Current Term";
+  const term =
+    document.getElementById("reportCardTerm").value || "Current Term";
 
   if (!cls || !studentId) {
     showToast("Please select a student", "error");
     return;
   }
 
-  const student = (allStudents[activeClassId] || []).find((s) => s.id === studentId);
+  const student = (allStudents[activeClassId] || []).find(
+    (s) => s.id === studentId,
+  );
   if (!student) {
     showToast("Student not found", "error");
     return;
@@ -70,7 +73,8 @@ window.generateReportCard = function () {
       totalCount++;
     }
   });
-  const overallAvg = totalCount > 0 ? Math.round(totalScore / totalCount) : null;
+  const overallAvg =
+    totalCount > 0 ? Math.round(totalScore / totalCount) : null;
   const overallGrade = gradeResult(overallAvg);
 
   // Build subject rows
@@ -104,7 +108,8 @@ window.generateReportCard = function () {
         const c = computeSubject(sub);
         return a + (c.total !== null ? c.total : 0);
       }, 0);
-      const avgScore = s.subjects.length > 0 ? totalScore / s.subjects.length : 0;
+      const avgScore =
+        s.subjects.length > 0 ? totalScore / s.subjects.length : 0;
       if (avgScore > 0) {
         sum += avgScore;
         count++;
@@ -190,7 +195,13 @@ window.generateReportCard = function () {
         </div>
         <div class="report-card-remarks-text">
           ${overallGrade.r} • Class Average: ${classAvg}% • Overall Performance: ${
-            overallAvg >= 70 ? "Excellent" : overallAvg >= 60 ? "Good" : overallAvg >= 50 ? "Fair" : "Needs Improvement"
+            overallAvg >= 70
+              ? "Excellent"
+              : overallAvg >= 60
+                ? "Good"
+                : overallAvg >= 50
+                  ? "Fair"
+                  : "Needs Improvement"
           }
         </div>
       </div>
@@ -240,7 +251,9 @@ window.downloadReportCardPDF = async function () {
     return;
   }
 
-  const student = (allStudents[activeClassId] || []).find((s) => s.id === studentId);
+  const student = (allStudents[activeClassId] || []).find(
+    (s) => s.id === studentId,
+  );
   if (!student) return;
 
   try {
@@ -270,7 +283,7 @@ window.downloadReportCardPDF = async function () {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const pageWidth = pdf.internal.pageSize.getWidth();
     const ratio = pageWidth / canvas.width;
-    const imgHeight = (canvas.height * ratio);
+    const imgHeight = canvas.height * ratio;
 
     let heightLeft = imgHeight;
     let position = 0;
