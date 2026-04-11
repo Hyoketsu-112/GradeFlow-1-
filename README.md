@@ -2,7 +2,7 @@
 
 **A Fast, Offline-First Grading Platform for Nigerian Schools**
 
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
 ![Status](https://img.shields.io/badge/status-Active%20Development-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-Proprietary-red.svg)
 ![PWA](https://img.shields.io/badge/PWA-Enabled-purple.svg)
@@ -16,6 +16,7 @@ GradeFlow is a Progressive Web App (PWA) designed to streamline grade management
 **Key Stats:**
 
 - ✅ **Phase 2 Complete**: Role-based dashboards, permission guards, real data integration
+- ✨ **Latest**: Report Card page, Student Registry with rankings, beautiful PDF redesign
 - 📱 **Works Offline**: Fully functional without internet connectivity
 - 🔐 **Secure**: Password hashing, session management, encrypted backups
 - 📊 **Analytics**: Subject-level performance, ranking, trend analysis
@@ -79,6 +80,8 @@ npm test
 - ✅ **Automatic Calculations**: Totals, averages, rankings computed instantly
 - ✅ **Custom Grading Scales**: Define A-F ranges per school
 - ✅ **Multi-Class Support**: Unlimited classes and students
+- ✅ **Student Registry**: Master student list with search, filtering, and real-time position calculations
+- ✅ **Report Card Pages**: Dedicated pages for viewing compiled student reports with aggregate scores
 
 ### Dashboards & Analytics
 
@@ -90,10 +93,11 @@ npm test
 
 ### Reporting & Export
 
-- ✅ **PDF Reports**: Individual student report cards with school branding
+- ✅ **PDF Reports**: Beautiful, professional report cards with premium gradient headers and school branding
 - ✅ **Excel Export**: Class broadsheets for archival and printing
 - ✅ **CSV Import**: Bulk student and score entry
 - ✅ **WhatsApp Share**: Send results directly to parents
+- ✅ **Report Card View**: Compiled student performance with grand totals and averages
 
 ### Teaching Tools
 
@@ -116,7 +120,8 @@ npm test
 - ✅ **Works Offline**: Service worker caches all assets
 - ✅ **Installable**: One-click install on iOS, Android, desktop
 - ✅ **Auto Sync**: Updates when connectivity returns
-- ✅ **Notifications**: Offline/online status indicators
+- ✅ **Notifications**: Minimal, non-intrusive offline/online status indicators
+- ✅ **Clean UI**: Optimized banner placement for distraction-free workflow
 
 ---
 
@@ -136,7 +141,7 @@ npm test
 
 **Export Libraries:**
 
-- jsPDF + html2canvas for PDF generation
+- jsPDF + html2canvas for beautiful, professional PDF generation (with improved stability)
 - SheetJS for Excel export
 - Chart.js for analytics visualization
 
