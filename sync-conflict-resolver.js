@@ -1,6 +1,6 @@
 /**
  * 🔄 Conflict Resolver
- * 
+ *
  * Resolves conflicts between local and remote data
  * Week 19-20 Implementation
  */
@@ -11,14 +11,14 @@ class ConflictResolver {
    */
   static detectConflict(local, remote) {
     // No local = use remote
-    if (!local) return { conflict: false, resolution: 'use_remote' };
+    if (!local) return { conflict: false, resolution: "use_remote" };
 
     // No remote = keep local
-    if (!remote) return { conflict: false, resolution: 'use_local' };
+    if (!remote) return { conflict: false, resolution: "use_local" };
 
     // Same timestamp = same record
     if (local.updated_at === remote.updated_at) {
-      return { conflict: false, resolution: 'no_conflict' };
+      return { conflict: false, resolution: "no_conflict" };
     }
 
     // Different timestamps = conflict
@@ -26,7 +26,7 @@ class ConflictResolver {
       conflict: true,
       local_updated_at: local.updated_at,
       remote_updated_at: remote.updated_at,
-      newer: remote.updated_at > local.updated_at ? 'remote' : 'local'
+      newer: remote.updated_at > local.updated_at ? "remote" : "local",
     };
   }
 
@@ -34,30 +34,30 @@ class ConflictResolver {
    * Resolve by last-write-wins (timestamp comparison)
    */
   static resolveByTimestamp(local, remote) {
-    if (!remote) return { resolved: true, winner: 'local', value: local };
-    if (!local) return { resolved: true, winner: 'remote', value: remote };
+    if (!remote) return { resolved: true, winner: "local", value: local };
+    if (!local) return { resolved: true, winner: "remote", value: remote };
 
     if (remote.updated_at > local.updated_at) {
       return {
         resolved: true,
-        winner: 'remote',
+        winner: "remote",
         value: remote,
-        reason: 'remote timestamp newer'
+        reason: "remote timestamp newer",
       };
     } else if (local.updated_at > remote.updated_at) {
       return {
         resolved: true,
-        winner: 'local',
+        winner: "local",
         value: local,
-        reason: 'local timestamp newer'
+        reason: "local timestamp newer",
       };
     } else {
       // Timestamps equal - keep local (deterministic)
       return {
         resolved: true,
-        winner: 'local',
+        winner: "local",
         value: local,
-        reason: 'timestamps equal, preferring local'
+        reason: "timestamps equal, preferring local",
       };
     }
   }
@@ -80,16 +80,17 @@ class ConflictResolver {
 
     // Use newer value for each component
     const merged = {
-      ...remote,  // Start with remote
+      ...remote, // Start with remote
       test: localTest !== remoteTest ? remoteTest : localTest,
-      practical: localPractical !== remotePractical ? remotePractical : localPractical,
+      practical:
+        localPractical !== remotePractical ? remotePractical : localPractical,
       exam: localExam !== remoteExam ? remoteExam : localExam,
       updated_at: Math.max(local.updated_at, remote.updated_at),
       _merge_info: {
-        test_from: localTest !== remoteTest ? 'remote' : 'local',
-        practical_from: localPractical !== remotePractical ? 'remote' : 'local',
-        exam_from: localExam !== remoteExam ? 'remote' : 'local'
-      }
+        test_from: localTest !== remoteTest ? "remote" : "local",
+        practical_from: localPractical !== remotePractical ? "remote" : "local",
+        exam_from: localExam !== remoteExam ? "remote" : "local",
+      },
     };
 
     return { merged: true, value: merged };
@@ -114,15 +115,15 @@ class ConflictResolver {
    */
   static getStrategy(entityType) {
     const strategies = {
-      'scores': 'merge_components',        // Component-level merge
-      'attendance': 'last_write_wins',     // Last write wins
-      'materials': 'last_write_wins',
-      'quizzes': 'last_write_wins',
-      'classes': 'last_write_wins',
-      'audit_logs': 'no_conflict'          // Never conflict (append-only)
+      scores: "merge_components", // Component-level merge
+      attendance: "last_write_wins", // Last write wins
+      materials: "last_write_wins",
+      quizzes: "last_write_wins",
+      classes: "last_write_wins",
+      audit_logs: "no_conflict", // Never conflict (append-only)
     };
 
-    return strategies[entityType] || 'last_write_wins';
+    return strategies[entityType] || "last_write_wins";
   }
 
   /**
@@ -132,20 +133,20 @@ class ConflictResolver {
     const strategy = this.getStrategy(entityType);
 
     switch (strategy) {
-      case 'merge_components':
-        if (entityType === 'scores') {
+      case "merge_components":
+        if (entityType === "scores") {
           return this.mergeScores(local, remote);
-        } else if (entityType === 'attendance') {
+        } else if (entityType === "attendance") {
           return this.mergeAttendance(local, remote);
         }
         break;
 
-      case 'last_write_wins':
+      case "last_write_wins":
         return this.resolveByTimestamp(local, remote);
 
-      case 'no_conflict':
+      case "no_conflict":
         // Append-only, always add both
-        return { merged: true, value: local, note: 'append_only' };
+        return { merged: true, value: local, note: "append_only" };
 
       default:
         return this.resolveByTimestamp(local, remote);
@@ -157,22 +158,22 @@ class ConflictResolver {
    */
   static analyzeSeverity(local, remote) {
     if (!local || !remote) {
-      return { severity: 'low', type: 'missing_record' };
+      return { severity: "low", type: "missing_record" };
     }
 
     // Check if critical fields differ
     const differentCount = Object.keys(local).filter(
-      key => local[key] !== remote[key] && !key.startsWith('_')
+      (key) => local[key] !== remote[key] && !key.startsWith("_"),
     ).length;
 
     if (differentCount === 0) {
-      return { severity: 'none', type: 'identical' };
+      return { severity: "none", type: "identical" };
     } else if (differentCount === 1) {
-      return { severity: 'low', type: 'single_field' };
+      return { severity: "low", type: "single_field" };
     } else if (differentCount <= 3) {
-      return { severity: 'medium', type: 'multiple_fields' };
+      return { severity: "medium", type: "multiple_fields" };
     } else {
-      return { severity: 'high', type: 'major_differences' };
+      return { severity: "high", type: "major_differences" };
     }
   }
 
@@ -189,25 +190,25 @@ class ConflictResolver {
       conflict: {
         local: {
           value: local,
-          updated_at: local?.updated_at
+          updated_at: local?.updated_at,
         },
         remote: {
           value: remote,
-          updated_at: remote?.updated_at
-        }
+          updated_at: remote?.updated_at,
+        },
       },
       resolution: {
         strategy: this.getStrategy(queueEntry.entity_type),
         winner: resolution.winner,
         value: resolution.value,
-        reason: resolution.reason
+        reason: resolution.reason,
       },
-      severity: this.analyzeSeverity(local, remote)
+      severity: this.analyzeSeverity(local, remote),
     };
   }
 }
 
 // Export for use
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = ConflictResolver;
 }

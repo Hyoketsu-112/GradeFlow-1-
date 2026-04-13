@@ -82,7 +82,11 @@ class SyncEngineTests {
     } catch (error) {
       console.log(`❌ FAIL\n   Error: ${error.message}\n`);
       this.failCount++;
-      this.results.push({ test: test.name, status: "FAIL", error: error.message });
+      this.results.push({
+        test: test.name,
+        status: "FAIL",
+        error: error.message,
+      });
     }
   }
 
@@ -248,7 +252,7 @@ class SyncEngineTests {
     for (let i = 0; i < delays.length; i++) {
       if (delays[i] !== expected[i]) {
         throw new Error(
-          `Backoff[${i}]: expected ${expected[i]}ms, got ${delays[i]}ms`
+          `Backoff[${i}]: expected ${expected[i]}ms, got ${delays[i]}ms`,
         );
       }
     }
@@ -334,9 +338,7 @@ class SyncEngineTests {
    */
   assertEqual(actual, expected, message) {
     if (actual !== expected) {
-      throw new Error(
-        `${message}: expected ${expected}, got ${actual}`
-      );
+      throw new Error(`${message}: expected ${expected}, got ${actual}`);
     }
   }
 

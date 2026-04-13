@@ -57,7 +57,7 @@ class SyncManager {
     this.syncInterval = setInterval(() => {
       if (this.isOnline && !this.isSyncing) {
         this.performSync().catch((err) =>
-          console.error("❌ Periodic sync failed:", err)
+          console.error("❌ Periodic sync failed:", err),
         );
       }
     }, interval);
@@ -148,21 +148,26 @@ class SyncManager {
         successCount++;
 
         console.log(
-          `  ✅ Synced: ${entry.entity_type} ${entry.operation} #${entry.entity_id}`
+          `  ✅ Synced: ${entry.entity_type} ${entry.operation} #${entry.entity_id}`,
         );
       } catch (error) {
         await this.queue.markFailed(entry.id, error.message);
         failureCount++;
 
         console.error(
-          `  ❌ Failed: ${entry.entity_type} #${entry.entity_id} - ${error.message}`
+          `  ❌ Failed: ${entry.entity_type} #${entry.entity_id} - ${error.message}`,
         );
       }
 
-      this.emit("sync:progress", { synced: successCount, failed: failureCount });
+      this.emit("sync:progress", {
+        synced: successCount,
+        failed: failureCount,
+      });
     }
 
-    console.log(`  📊 Upload complete: ${successCount} succeeded, ${failureCount} failed`);
+    console.log(
+      `  📊 Upload complete: ${successCount} succeeded, ${failureCount} failed`,
+    );
   }
 
   /**
@@ -237,7 +242,7 @@ class SyncManager {
     }
 
     console.log(
-      `  📊 Download complete: ${totalChanges} records, ${totalConflicts} conflicts resolved`
+      `  📊 Download complete: ${totalChanges} records, ${totalConflicts} conflicts resolved`,
     );
   }
 
@@ -259,7 +264,7 @@ class SyncManager {
           if (conflict.conflict) {
             conflictCount++;
             console.log(
-              `    ⚖️ Conflict in ${table}:${remote.id} - ${conflict.newer} wins`
+              `    ⚖️ Conflict in ${table}:${remote.id} - ${conflict.newer} wins`,
             );
 
             // Resolve conflict
@@ -275,7 +280,7 @@ class SyncManager {
         }
       } catch (error) {
         console.error(
-          `  ⚠️ Error merging ${table}:${remote.id} - ${error.message}`
+          `  ⚠️ Error merging ${table}:${remote.id} - ${error.message}`,
         );
       }
     }
@@ -301,7 +306,7 @@ class SyncManager {
         }
 
         console.log(
-          `  🔄 Retrying ${entry.entity_type} #${entry.entity_id} (attempt ${entry.attempts + 1})`
+          `  🔄 Retrying ${entry.entity_type} #${entry.entity_id} (attempt ${entry.attempts + 1})`,
         );
 
         await this.queue.markSyncing(entry.id);
@@ -319,20 +324,20 @@ class SyncManager {
           await this.queue.markPermanentFailure(entry.id);
           permanentFailures++;
           console.error(
-            `  💀 Permanent failure for ${entry.entity_type} #${entry.entity_id} after ${newAttempts} attempts`
+            `  💀 Permanent failure for ${entry.entity_type} #${entry.entity_id} after ${newAttempts} attempts`,
           );
         } else {
           // Mark as failed for next retry
           await this.queue.markFailed(entry.id, error.message);
           console.error(
-            `  ⚠️ Retry failed for ${entry.entity_type} #${entry.entity_id}: ${error.message}`
+            `  ⚠️ Retry failed for ${entry.entity_type} #${entry.entity_id}: ${error.message}`,
           );
         }
       }
     }
 
     console.log(
-      `  📊 Retry complete: ${retriedCount} succeeded, ${permanentFailures} permanent failures`
+      `  📊 Retry complete: ${retriedCount} succeeded, ${permanentFailures} permanent failures`,
     );
   }
 
@@ -383,7 +388,7 @@ class SyncManager {
     // Try to sync immediately if online
     if (this.isOnline && !this.isSyncing) {
       this.performSync().catch((err) =>
-        console.error("❌ Immediate sync failed:", err)
+        console.error("❌ Immediate sync failed:", err),
       );
     }
 
@@ -400,7 +405,7 @@ class SyncManager {
 
     // Perform sync when coming online
     this.performSync().catch((err) =>
-      console.error("❌ Sync on reconnect failed:", err)
+      console.error("❌ Sync on reconnect failed:", err),
     );
   }
 
@@ -466,7 +471,9 @@ class SyncManager {
 
   off(event, callback) {
     if (this.listeners[event]) {
-      this.listeners[event] = this.listeners[event].filter((cb) => cb !== callback);
+      this.listeners[event] = this.listeners[event].filter(
+        (cb) => cb !== callback,
+      );
     }
   }
 

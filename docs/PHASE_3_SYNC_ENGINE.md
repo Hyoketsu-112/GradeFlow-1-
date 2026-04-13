@@ -11,6 +11,7 @@
 Enable GradeFlow to work seamlessly **offline** while maintaining data consistency across devices through intelligent conflict resolution and automatic synchronization when connectivity returns.
 
 **The Problem We're Solving:**
+
 - Teachers take attendance in offline classrooms (no WiFi)
 - Students submit work offline then sync when connected
 - Multiple devices need synchronized state
@@ -58,6 +59,7 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
 ### Day 1-2: IndexedDB Setup
 
 **Schema Design:**
+
 ```javascript
 // Database: "gradeflow-v1"
 // Stores:
@@ -75,6 +77,7 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
 ```
 
 **Tasks:**
+
 - [x] Design IndexedDB schema
 - [ ] Implement database init
 - [ ] Create query helpers (get, insert, update, delete)
@@ -83,6 +86,7 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
 ### Day 3-4: Sync Queue Design
 
 **Queue Entry Structure:**
+
 ```javascript
 {
   id: 'uuid',
@@ -100,6 +104,7 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
 ```
 
 **Responsibilities:**
+
 - [ ] Add to queue (local operation)
 - [ ] Process queue (sync operations)
 - [ ] Track status (pending → syncing → synced)
@@ -108,6 +113,7 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
 ### Day 5: Conflict Detection
 
 **Scenarios:**
+
 1. **Last-Write-Wins**: Timestamp comparison
    - Local updated_at > remote updated_at → use local
    - Remote updated_at > local updated_at → use remote
@@ -119,20 +125,21 @@ Enable GradeFlow to work seamlessly **offline** while maintaining data consisten
    - If both changed → compare timestamps
 
 **Detection Strategy:**
+
 ```javascript
 function detectConflict(local, remote) {
   // If no remote, no conflict
-  if (!remote) return 'no_conflict';
-  
+  if (!remote) return "no_conflict";
+
   // If no local, use remote
-  if (!local) return 'use_remote';
-  
+  if (!local) return "use_remote";
+
   // If timestamps match → same record
-  if (local.updated_at === remote.updated_at) return 'no_conflict';
-  
+  if (local.updated_at === remote.updated_at) return "no_conflict";
+
   // Compare timestamps
-  if (remote.updated_at > local.updated_at) return 'remote_newer';
-  if (local.updated_at > remote.updated_at) return 'local_newer';
+  if (remote.updated_at > local.updated_at) return "remote_newer";
+  if (local.updated_at > remote.updated_at) return "local_newer";
 }
 ```
 
@@ -143,32 +150,34 @@ function detectConflict(local, remote) {
 ### Day 1-2: Sync Manager
 
 **Core Responsibilities:**
+
 ```javascript
 class SyncManager {
   // Initialization
   async init() {}
-  
+
   // Online/Offline detection
   onOnline() {}
   onOffline() {}
-  
+
   // Local operations (add to queue)
   async createScore(data) {}
   async updateScore(id, data) {}
   async deleteScore(id) {}
-  
+
   // Sync operations (push to cloud)
   async syncToCloud() {}
-  
+
   // Download operations (pull from cloud)
   async syncFromCloud() {}
-  
+
   // Status tracking
   getStatus() {} // returns: synced|syncing|offline|error
 }
 ```
 
 **Flow:**
+
 ```
 User Action (create score)
     ↓
@@ -190,17 +199,18 @@ When online again:
 ### Day 3-4: Conflict Resolution
 
 **Implementation:**
+
 ```javascript
 class ConflictResolver {
   // Compare local vs remote
   async checkConflict(entity) {}
-  
+
   // Last-write-wins
   resolveByTimestamp(local, remote) {}
-  
+
   // Component merge (for complex entities)
   mergeScores(local, remote) {}
-  
+
   // Manual fallback
   requestUserChoice(local, remote) {}
 }
@@ -209,6 +219,7 @@ class ConflictResolver {
 ### Day 5: UI Integration & Testing
 
 **Status Indicators:**
+
 ```javascript
 // States:
 // - synced ✓ (green) - All data synced
@@ -218,7 +229,7 @@ class ConflictResolver {
 // - paused ⏸ (gray) - User paused sync
 
 // Show:
-// - Queue size: "3 pending" 
+// - Queue size: "3 pending"
 // - Last sync: "3 minutes ago"
 // - Current operation: "Syncing 42 scores..."
 ```
@@ -278,6 +289,7 @@ class ConflictResolver {
 ## 🚀 Implementation Strategy
 
 ### Phase 1: Core Infrastructure (Days 1-3)
+
 ```
 ✓ IndexedDB initialization
 ✓ Sync queue creation & management
@@ -285,6 +297,7 @@ class ConflictResolver {
 ```
 
 ### Phase 2: Sync Logic (Days 4-7)
+
 ```
 ✓ Online/offline detection
 ✓ Sync to cloud (push)
@@ -293,6 +306,7 @@ class ConflictResolver {
 ```
 
 ### Phase 3: Conflict Resolution (Days 8-9)
+
 ```
 ✓ Conflict detection
 ✓ Automatic resolution (timestamp-based)
@@ -301,6 +315,7 @@ class ConflictResolver {
 ```
 
 ### Phase 4: UI & Polish (Day 10)
+
 ```
 ✓ Status indicators
 ✓ Queue visualization
@@ -313,18 +328,21 @@ class ConflictResolver {
 ## 🧪 Test Scenarios
 
 ### Basic Operations
+
 - [ ] Create score offline → stored in IndexedDB
 - [ ] Update score offline → queued
 - [ ] Delete score offline → queued
 - [ ] Go online → all synced to Supabase
 
 ### Conflict Scenarios
+
 - [ ] Update same score locally and remotely → timestamp wins
 - [ ] Delete locally, update remotely → user choice
 - [ ] Merge score components (test, practical, exam)
 - [ ] Retry failed sync with exponential backoff
 
 ### Edge Cases
+
 - [ ] Rapid online/offline switches
 - [ ] Sync fails mid-operation
 - [ ] Local storage quota exceeded
@@ -333,6 +351,7 @@ class ConflictResolver {
 - [ ] Network timeout (retry logic)
 
 ### Performance
+
 - [ ] Sync 1000 scores
 - [ ] IndexedDB query performance
 - [ ] Memory usage with large datasets
@@ -406,14 +425,14 @@ class ConflictResolver {
 
 ## 🛠️ Technology Stack
 
-| Component | Choice | Why |
-|-----------|--------|-----|
-| Offline Cache | IndexedDB | Built-in browser, ~100MB, no server |
-| Sync Engine | Custom | Full control, minimal dependencies |
-| Conflict Resolution | Timestamp-based | Simple, deterministic, scales |
-| Retry Strategy | Exponential Backoff | 1s → 2s → 4s → 8s → 1h |
-| Status Management | Event Emitter | Decoupled, reactive |
-| Testing | Jest + integration tests | Comprehensive coverage |
+| Component           | Choice                   | Why                                 |
+| ------------------- | ------------------------ | ----------------------------------- |
+| Offline Cache       | IndexedDB                | Built-in browser, ~100MB, no server |
+| Sync Engine         | Custom                   | Full control, minimal dependencies  |
+| Conflict Resolution | Timestamp-based          | Simple, deterministic, scales       |
+| Retry Strategy      | Exponential Backoff      | 1s → 2s → 4s → 8s → 1h              |
+| Status Management   | Event Emitter            | Decoupled, reactive                 |
+| Testing             | Jest + integration tests | Comprehensive coverage              |
 
 ---
 
@@ -436,6 +455,7 @@ Week 20 (5 days):
 ## ✅ Week 19-20 Deliverables
 
 **Code:**
+
 - [x] sync-indexeddb.js
 - [x] sync-manager.js
 - [x] sync-queue.js
@@ -445,18 +465,21 @@ Week 20 (5 days):
 - [x] sync-tests.js
 
 **Documentation:**
+
 - [x] PHASE_3_SYNC_ENGINE.md (this file)
 - [x] Implementation guide
 - [x] Test scenarios
 - [x] Troubleshooting
 
 **Testing:**
+
 - [x] Unit tests
 - [x] Integration tests
 - [x] Conflict resolution tests
 - [x] Performance tests
 
 **Commit:**
+
 - [x] Push to phase3/cloud-sync branch
 - [x] Create PR to develop
 - [x] Documentation in docs/
@@ -494,4 +517,3 @@ Week 20 (5 days):
 **Status**: Ready to implement  
 **Last Updated**: April 13, 2026  
 **Owner**: Sync Team
-
