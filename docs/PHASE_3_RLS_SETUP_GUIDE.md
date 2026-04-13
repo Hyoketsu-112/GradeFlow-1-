@@ -97,7 +97,7 @@ VALUES (
   '00000000-0000-0000-0000-000000000001'::uuid
 ) ON CONFLICT DO NOTHING;
 
--- Student user  
+-- Student user
 INSERT INTO users (id, email, name, role, school_id)
 VALUES (
   '22222222-0000-0000-0000-000000000001'::uuid,
@@ -126,43 +126,39 @@ VALUES (
 
 ```javascript
 // Initialize Supabase client
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_ANON_KEY,
 );
 
 // Sign in as student
 await supabase.auth.signInWithPassword({
-  email: 'student@test.com',
-  password: 'Test123!' // Set a password first in Supabase
+  email: "student@test.com",
+  password: "Test123!", // Set a password first in Supabase
 });
 
 // Try to query ALL schools (should only see their own)
-const { data, error } = await supabase
-  .from('schools')
-  .select('*');
+const { data, error } = await supabase.from("schools").select("*");
 
-console.log('Schools visible to student:', data.length); // Should be 1, not all
+console.log("Schools visible to student:", data.length); // Should be 1, not all
 ```
 
 #### Test 2: Student Can't Insert Scores
 
 ```javascript
 // Still signed in as student
-const { data, error } = await supabase
-  .from('scores')
-  .insert([
-    {
-      student_id: 'SOME_UUID',
-      subject_id: 'math',
-      test: 18,
-      practical: 15,
-      exam: 55
-    }
-  ]);
+const { data, error } = await supabase.from("scores").insert([
+  {
+    student_id: "SOME_UUID",
+    subject_id: "math",
+    test: 18,
+    practical: 15,
+    exam: 55,
+  },
+]);
 
-console.log('Insert error:', error?.message); // Should have RLS error
+console.log("Insert error:", error?.message); // Should have RLS error
 ```
 
 #### Test 3: Teacher Can Insert Scores
@@ -192,34 +188,34 @@ console.log('Score inserted:', data); // Should succeed
 **File**: `tests/rls-test.js`
 
 ```javascript
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 
 const TEST_CASES = [
   {
-    name: 'Student cannot see other school users',
-    user: 'student@test.com',
-    query: 'users',
+    name: "Student cannot see other school users",
+    user: "student@test.com",
+    query: "users",
     shouldSucceed: true,
-    shouldSeeRows: 1  // Only themselves
+    shouldSeeRows: 1, // Only themselves
   },
   {
-    name: 'Student cannot insert scores',
-    user: 'student@test.com',
-    operation: 'insert:scores',
-    shouldSucceed: false // RLS should block
+    name: "Student cannot insert scores",
+    user: "student@test.com",
+    operation: "insert:scores",
+    shouldSucceed: false, // RLS should block
   },
   {
-    name: 'Teacher can insert scores',
-    user: 'teacher@test.com',
-    operation: 'insert:scores',
-    shouldSucceed: true
+    name: "Teacher can insert scores",
+    user: "teacher@test.com",
+    operation: "insert:scores",
+    shouldSucceed: true,
   },
   {
-    name: 'Admin can delete any user',
-    user: 'admin@test.com',
-    operation: 'delete:users',
-    shouldSucceed: true
-  }
+    name: "Admin can delete any user",
+    user: "admin@test.com",
+    operation: "delete:users",
+    shouldSucceed: true,
+  },
 ];
 
 // Run all tests
@@ -270,7 +266,7 @@ After applying policies, verify:
 
 ```sql
 -- Check RLS status for all tables
-SELECT 
+SELECT
   tablename,
   rowsecurity,
   (SELECT COUNT(*) FROM pg_policies WHERE pg_policies.tablename = pg_tables.tablename) as policy_count
@@ -280,6 +276,7 @@ ORDER BY tablename;
 ```
 
 **Expected Output**:
+
 ```
  tablename      | rowsecurity | policy_count
  school         | t           | 2
@@ -303,11 +300,12 @@ ORDER BY tablename;
 **Cause**: Service role key not being used for administrative tasks
 
 **Solution**:
+
 ```javascript
 // Use SERVICE_ROLE key for admin operations
 const supabase = createClient(
   SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY  // ← Use this, not anon key
+  SUPABASE_SERVICE_ROLE_KEY, // ← Use this, not anon key
 );
 ```
 
@@ -316,6 +314,7 @@ const supabase = createClient(
 **Cause**: Policy SQL didn't execute properly
 
 **Solution**:
+
 1. Check SQL Editor for error messages
 2. Look for Postgres errors like:
    - `column "..." does not exist`
@@ -327,6 +326,7 @@ const supabase = createClient(
 **Cause**: `SELECT` policy on `scores` is too permissive
 
 **Check**:
+
 ```sql
 SELECT * FROM pg_policies WHERE tablename = 'scores' LIMIT 5;
 ```
@@ -367,6 +367,7 @@ SELECT * FROM pg_policies WHERE tablename = 'scores' LIMIT 5;
 These helper functions are created by PHASE_3_RLS_POLICIES.sql:
 
 ### `is_admin()`
+
 Check if current user is admin in their school
 
 ```sql
@@ -374,6 +375,7 @@ SELECT is_admin(); -- Returns TRUE/FALSE
 ```
 
 ### `get_user_school_id()`
+
 Get current user's school
 
 ```sql
@@ -391,14 +393,14 @@ These make policies cleaner and more maintainable.
 ✅ Prevents direct database access from bypassing auth  
 ✅ Enforces multi-tenancy (school isolation)  
 ✅ Role-based data access (student/teacher/admin)  
-✅ Audit trail of policy denials  
+✅ Audit trail of policy denials
 
 ### What RLS Does NOT Protect
 
 ❌ API layer bugs (always validate on backend)  
 ❌ SQL injection if queries not parameterized  
 ❌ Service role key if exposed in code  
-❌ JWT token if sent unencrypted  
+❌ JWT token if sent unencrypted
 
 ---
 
@@ -417,7 +419,7 @@ These make policies cleaner and more maintainable.
 ✅ **Week 17**: Schema + Auth setup  
 🟡 **Week 18**: RLS policies (YOU ARE HERE)  
 ⏳ **Week 19**: Sync engine with RLS  
-⏳ **Week 20**: Multi-device workings  
+⏳ **Week 20**: Multi-device workings
 
 ---
 

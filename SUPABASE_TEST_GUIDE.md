@@ -8,19 +8,23 @@
 ## ✅ Quick Testing Guide (5 minutes)
 
 ### Step 1: Install Dependencies
+
 ```bash
 npm install @supabase/supabase-js dotenv
 ```
 
 ### Step 2: Create Verification Script
+
 Already created: `verify-supabase.js`
 
 ### Step 3: Run The Script
+
 ```bash
 node verify-supabase.js
 ```
 
 **Expected Output**:
+
 ```
 ✓ Supabase connection successful!
 ✓ Total users in database: 4
@@ -36,6 +40,7 @@ node verify-supabase.js
 ## 🔍 Manual Verification Steps (If script fails)
 
 ### Check 1: Credentials Are Being Read
+
 ```bash
 # Windows PowerShell
 echo $env:SUPABASE_URL
@@ -49,6 +54,7 @@ echo $env:SUPABASE_ANON_KEY
 Go to **Supabase Dashboard → Authentication → Users**
 
 You should see 4 users:
+
 - ✅ teacher@test.com
 - ✅ student@test.com
 - ✅ admin@test.com
@@ -78,7 +84,8 @@ WHERE schemaname = 'public'
 ORDER BY tablename;
 ```
 
-**Expected**: 
+**Expected**:
+
 ```
  tablename    | rowsecurity | policyname
  schools      | t           | schools_users_can_view_their_school
@@ -99,39 +106,39 @@ If policyname is **NULL** → RLS policies NOT applied (run PHASE_3_RLS_POLICIES
 
 ```javascript
 // Install: npm install @supabase/supabase-js
-const { createClient } = require('@supabase/supabase-js');
+const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
-  'YOUR_SUPABASE_URL',  // From .env.local
-  'YOUR_ANON_KEY'       // From .env.local
+  "YOUR_SUPABASE_URL", // From .env.local
+  "YOUR_ANON_KEY", // From .env.local
 );
 
 // Sign in as student
 await supabase.auth.signInWithPassword({
-  email: 'student@test.com',
-  password: 'YourPassword123'  // Use the actual password
+  email: "student@test.com",
+  password: "YourPassword123", // Use the actual password
 });
 
 // Query: Student should only see 1 school (their own)
-const { data: schools } = await supabase.from('schools').select('*');
-console.log('Schools visible:', schools.length); // Expected: 1
+const { data: schools } = await supabase.from("schools").select("*");
+console.log("Schools visible:", schools.length); // Expected: 1
 
 // Query: Student should only see their own scores
-const { data: scores } = await supabase.from('scores').select('*');
-console.log('Scores visible:', scores.length); // Expected: Only their own
+const { data: scores } = await supabase.from("scores").select("*");
+console.log("Scores visible:", scores.length); // Expected: Only their own
 
 // Try INSERT: Should be blocked by RLS
-const { error } = await supabase.from('scores').insert([
+const { error } = await supabase.from("scores").insert([
   {
-    student_id: 'dummy',
-    school_id: 'dummy',
-    subject_id: 'math',
+    student_id: "dummy",
+    school_id: "dummy",
+    subject_id: "math",
     test: 18,
     practical: 15,
-    exam: 55
-  }
+    exam: 55,
+  },
 ]);
-console.log('Insert error (expected):', error?.message);
+console.log("Insert error (expected):", error?.message);
 // Expected error: "new row violates row-level security policy"
 ```
 
@@ -160,17 +167,17 @@ await supabase.auth.signOut();
 
 // Sign in as admin
 await supabase.auth.signInWithPassword({
-  email: 'admin@test.com',
-  password: 'YourPassword123'
+  email: "admin@test.com",
+  password: "YourPassword123",
 });
 
 // Admin should see all users
-const { data: allUsers } = await supabase.from('users').select('*');
-console.log('Users visible to admin:', allUsers.length); // Expected: 4+
+const { data: allUsers } = await supabase.from("users").select("*");
+console.log("Users visible to admin:", allUsers.length); // Expected: 4+
 
 // Admin should see all schools
-const { data: allSchools } = await supabase.from('schools').select('*');
-console.log('Schools visible to admin:', allSchools.length); // Expected: all
+const { data: allSchools } = await supabase.from("schools").select("*");
+console.log("Schools visible to admin:", allSchools.length); // Expected: all
 ```
 
 ---
@@ -178,35 +185,41 @@ console.log('Schools visible to admin:', allSchools.length); // Expected: all
 ## 🚨 Troubleshooting
 
 ### Problem: "Invalid login credentials"
+
 **Solution**: Make sure password matches what you set when creating accounts in Supabase Auth
 
 ### Problem: "new row violates row-level security policy"
+
 **Solution**: ✅ This is GOOD! RLS is working properly, blocking without permission.
 
 ### Problem: "policy not found" or "undefined function"
+
 **Solutions**:
-1. Did you run PHASE_3_RLS_POLICIES.sql? 
+
+1. Did you run PHASE_3_RLS_POLICIES.sql?
 2. Did you run it on the right database?
 3. Check SQL Editor for errors when running policies
 
 ### Problem: "Cannot read property 'length' of null"
+
 **Solution**: Check your .env.local is loading correctly (use script above)
 
 ### Problem: "Student inserted a score successfully" (should have failed)
+
 **Solution**: Your RLS policies are NOT active. Run PHASE_3_RLS_POLICIES.sql in Supabase SQL Editor.
 
 ---
 
 ## 📊 What Each Test Proves
 
-| Test | Proves |
-|------|--------|
-| ✓ Connection works | Supabase setup correct |
-| ✓ 4 accounts exist | User creation working |
-| ✓ Student sees 1 school | Multi-tenancy working |
-| ✓ Student INSERT blocked | RLS policies active |
-| ✓ Teacher INSERT works | Role-based permissions |
-| ✓ Admin sees all data | Admin bypass working |
+| Test                     | Proves                 |
+| ------------------------ | ---------------------- |
+| ✓ Connection works       | Supabase setup correct |
+| ✓ 4 accounts exist       | User creation working  |
+| ✓ Student sees 1 school  | Multi-tenancy working  |
+| ✓ Student INSERT blocked | RLS policies active    |
+| ✓ Teacher INSERT works   | Role-based permissions |
+| ✓ Admin sees all data    | Admin bypass working   |
 
 ---
 
@@ -262,6 +275,7 @@ Your App ← Returns only allowed data
 ## ✅ Success Criteria
 
 When you see **all green checkmarks** ✓:
+
 - Supabase connection verified
 - All 4 test accounts exist
 - RLS policies blocking unauthorized access
