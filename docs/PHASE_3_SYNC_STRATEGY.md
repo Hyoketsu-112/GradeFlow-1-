@@ -2,13 +2,14 @@
 
 **Status**: 📋 Design Phase  
 **Timeline**: Week 19-20 of Phase 3  
-**Owner**: Sync/Backend Team  
+**Owner**: Sync/Backend Team
 
 ---
 
 ## 🎯 Objective
 
 Build a **resilient offline-first sync engine** that:
+
 - ✅ Works fully offline with local IndexedDB
 - ✅ Syncs to Supabase when online
 - ✅ Resolves conflicts automatically
@@ -48,29 +49,32 @@ Build a **resilient offline-first sync engine** that:
 ## 🗂️ Local Storage Strategy
 
 ### IndexedDB Schema
+
 ```javascript
 // Open or create database
-const db = await openDatabase('gradeflow', 1, {
+const db = await openDatabase("gradeflow", 1, {
   // Object stores for each entity
-  users: { keyPath: 'id' },
-  classes: { keyPath: 'id', indexes: ['school_id'] },
-  students: { keyPath: 'id', indexes: ['class_id'] },
-  scores: { keyPath: 'id', indexes: ['student_id', 'subject_id'] },
-  attendance: { keyPath: 'id', indexes: ['student_id', 'date'] },
-  materials: { keyPath: 'id', indexes: ['class_id'] },
-  quizzes: { keyPath: 'id', indexes: ['class_id'] },
-  
+  users: { keyPath: "id" },
+  classes: { keyPath: "id", indexes: ["school_id"] },
+  students: { keyPath: "id", indexes: ["class_id"] },
+  scores: { keyPath: "id", indexes: ["student_id", "subject_id"] },
+  attendance: { keyPath: "id", indexes: ["student_id", "date"] },
+  materials: { keyPath: "id", indexes: ["class_id"] },
+  quizzes: { keyPath: "id", indexes: ["class_id"] },
+
   // Sync tracking
-  sync_queue: { 
-    keyPath: 'id', 
-    indexes: ['entity_type', 'status', 'created_at'] 
+  sync_queue: {
+    keyPath: "id",
+    indexes: ["entity_type", "status", "created_at"],
   },
-  sync_metadata: { keyPath: 'id' }
+  sync_metadata: { keyPath: "id" },
 });
 ```
 
 ### Sync Queue Table
+
 Track all pending changes for sync:
+
 ```javascript
 {
   id: 'sync_123',
@@ -123,11 +127,12 @@ if (remote.updated_at > local.updated_at) {
 } else {
   // Local is newer, keep it and queue for re-sync
   useLocal(local);
-  addToSyncQueue('update', local);
+  addToSyncQueue("update", local);
 }
 ```
 
 **For Scores specifically**:
+
 - Each score component (test, prac, exam) has `updated_at`
 - Merges by component (doesn't overwrite whole record)
 - Example: If test changed remotely and practical changed locally, merge both
@@ -136,9 +141,14 @@ if (remote.updated_at > local.updated_at) {
 // Merge scores
 const merged = {
   ...remote,
-  test: local.test_updated_at > remote.test_updated_at ? local.test : remote.test,
-  practical: local.prac_updated_at > remote.prac_updated_at ? local.practical : remote.practical,
-  exam: local.exam_updated_at > remote.exam_updated_at ? local.exam : remote.exam,
+  test:
+    local.test_updated_at > remote.test_updated_at ? local.test : remote.test,
+  practical:
+    local.prac_updated_at > remote.prac_updated_at
+      ? local.practical
+      : remote.practical,
+  exam:
+    local.exam_updated_at > remote.exam_updated_at ? local.exam : remote.exam,
 };
 ```
 
@@ -147,6 +157,7 @@ const merged = {
 ## 📱 Sync Status UI
 
 ### Status Indicator
+
 ```html
 <!-- In sidebar/header -->
 <div id="syncStatus" class="sync-badge">
@@ -156,6 +167,7 @@ const merged = {
 ```
 
 ### States
+
 ```javascript
 // Online, all synced
 { status: 'synced', icon: '✓', color: 'green', msg: 'All synced' }
@@ -174,6 +186,7 @@ const merged = {
 ```
 
 ### Detailed Panel (Settings)
+
 ```
 Sync Status Dashboard:
 ├─ Overall Status: ✓ All synced
@@ -189,16 +202,17 @@ Sync Status Dashboard:
 ## 🔁 Retry Logic
 
 ### Exponential Backoff
+
 ```javascript
 const backoffDelays = [
-  1000,      // 1 second
-  2000,      // 2 seconds
-  4000,      // 4 seconds
-  8000,      // 8 seconds
-  16000,     // 16 seconds
-  60000,     // 1 minute
-  300000,    // 5 minutes
-  3600000,   // 1 hour
+  1000, // 1 second
+  2000, // 2 seconds
+  4000, // 4 seconds
+  8000, // 8 seconds
+  16000, // 16 seconds
+  60000, // 1 minute
+  300000, // 5 minutes
+  3600000, // 1 hour
 ];
 
 function getRetryDelay(retryCount) {
@@ -207,6 +221,7 @@ function getRetryDelay(retryCount) {
 ```
 
 ### Max Retries
+
 - Max 8 retries = ~2 hours total
 - After that, item marked as "stalled"
 - User can manually retry from sync dashboard
@@ -216,17 +231,19 @@ function getRetryDelay(retryCount) {
 ## 🔐 Offline Data Isolation
 
 ### Per-User Sync
+
 - Each user has own IndexedDB partition
 - Only syncs their school's data
 - RLS policies enforced server-side
 
 ### Clearing Sync Queue
+
 ```javascript
 // When user logs out
 async function logOut() {
   // Option 1: Clear local cache (fresh on next login)
-  await db.clear('sync_queue');
-  
+  await db.clear("sync_queue");
+
   // Option 2: Keep local cache (restore on next login)
   // - User can work offline, sync when back online
 }
@@ -239,15 +256,15 @@ async function logOut() {
 ```javascript
 // For monitoring and debugging
 const syncMetrics = {
-  totalChanges: 1245,        // All-time
-  syncedChanges: 1200,       // Successfully synced
-  pendingChanges: 12,        // Queued
-  failedChanges: 33,         // Need retry
-  syncDuration: 2340,        // ms
-  conflictsResolved: 5,      // Auto-resolved
-  manualRetries: 2,          // User-initiated
+  totalChanges: 1245, // All-time
+  syncedChanges: 1200, // Successfully synced
+  pendingChanges: 12, // Queued
+  failedChanges: 33, // Need retry
+  syncDuration: 2340, // ms
+  conflictsResolved: 5, // Auto-resolved
+  manualRetries: 2, // User-initiated
   lastSyncAt: 1681234567,
-  networkLatency: 145,       // ms to Supabase
+  networkLatency: 145, // ms to Supabase
 };
 ```
 
