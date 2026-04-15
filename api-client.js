@@ -61,6 +61,9 @@
       };
     }
 
+    // Get current timestamp for login tracking
+    const now = new Date().toISOString();
+
     const res = await fetch(`${supabaseUrl}/rest/v1/users?on_conflict=email`, {
       method: "POST",
       headers: _jsonHeaders(
@@ -74,23 +77,28 @@
         email,
         name,
         organization: organization || org || null,
+        last_login: now,
+        updated_at: now,
       }),
     });
 
     if (!res.ok) {
       const err = await _safeJson(res);
-      return {
-        ok: false,
-        provider: "supabase",
+      console.warn("⚠️ Supabase login sync warning:", {
         status: res.status,
-        message:
-          err?.message ||
-          err?.hint ||
-          "Supabase upsert failed. Check users table columns and RLS policies.",
-        error: err,
+        message: err?.message || err?.hint,
+      });
+      // Don't fail login just because cloud sync failed
+      // User can still use app offline
+      return {
+        ok: true,
+        provider: "supabase",
+        synced: false,
+        partialSync: true,
       };
     }
 
+    console.log("✅ Login synced to cloud with timestamp:", now);
     return { ok: true, provider: "supabase", synced: true };
   }
 
