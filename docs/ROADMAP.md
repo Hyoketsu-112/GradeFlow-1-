@@ -30,18 +30,18 @@
 
 **Goals**:
 
-- Supabase project fully deployed and tested
+- Firebase project fully deployed and tested
 - Cloud database schema finalized
 - Data migration tool working end-to-end
 - User feedback integrated
 
 **Deliverables**:
 
-- [ ] Supabase PostgreSQL database with RLS policies
+- [ ] Firebase Auth + Firestore security rules
 - [ ] Complete data model schema (9 tables, 20+ fields)
-- [ ] Migration tool: local → Supabase
+- [ ] Migration tool: local → Firebase
 - [ ] IndexedDB layer for offline caching
-- [ ] Basic Supabase authentication
+- [ ] Basic Firebase authentication
 - [ ] Zero data loss in 100 test migrations
 
 **Success Metrics**:

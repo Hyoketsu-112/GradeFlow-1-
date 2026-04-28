@@ -11,6 +11,8 @@
   let allAttendance = {}; // { classId: { date: { studentId: 'P'|'A'|'L' } } }
   let allQuizzes = {}; // { classId: [ quiz ] }
   let termHistory = {}; // { classId: [ { id, term, session, savedAt, students, subjects } ] }
+  let parentEnrollments = []; // [{ id, childCode, childName, classId, className, studentId, relationship, status }]
+  let selectedParentEnrollmentId = "";
 
   let activeClassId = null;
   let activeSubjectId = null;
@@ -515,12 +517,19 @@
     safeSave(userKey("classes"), JSON.stringify(classes));
     safeSave(userKey("students"), JSON.stringify(allStudents));
     safeSave(userKey("settings"), JSON.stringify(settings));
+    safeSave(_parentEnrollmentsKey(), JSON.stringify(parentEnrollments));
+    safeSave(_selectedParentEnrollmentKey(), selectedParentEnrollmentId || "");
     if (window.GradeFlowAPI) {
       window.GradeFlowAPI.saveUserData({
         email: currentUser.email,
+        name: currentUser.name,
+        org: currentUser.org,
+        role: currentUser.role,
         classes,
         allStudents,
         settings,
+        parentEnrollments,
+        selectedParentEnrollmentId,
       }).catch(() => {});
     }
   }
@@ -540,6 +549,184 @@
     if (!currentUser) return;
     safeSave(userKey("quizzes"), JSON.stringify(allQuizzes));
   }
+
+  function _parentEnrollmentsKey() {
+    return userKey("parentEnrollments");
+  }
+
+  function _selectedParentEnrollmentKey() {
+    return userKey("selectedParentEnrollmentId");
+  }
+
+  function _generateEnrollmentCode(seed = "") {
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const bytes = new Uint8Array(6);
+    if (window.crypto?.getRandomValues) {
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = Math.floor(Math.random() * alphabet.length);
+      }
+    }
+    const randomPart = Array.from(bytes)
+      .map((byte) => alphabet[byte % alphabet.length])
+      .join("");
+    const seedPart = String(seed || "")
+      .replace(/[^a-z0-9]/gi, "")
+      .toUpperCase()
+      .slice(0, 3);
+    return seedPart ? `GF-${seedPart}-${randomPart}` : `GF-${randomPart}`;
+  }
+
+  function _normalizeParentEnrollment(enrollment) {
+    if (!enrollment) return null;
+    const childCode = String(
+      enrollment.childCode || enrollment.code || enrollment.parentCode || "",
+    )
+      .trim()
+      .toUpperCase();
+    return {
+      id:
+        enrollment.id ||
+        `pe_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      childCode,
+      childName: String(enrollment.childName || enrollment.name || "").trim(),
+      classId: enrollment.classId || "",
+      className: enrollment.className || "",
+      studentId: enrollment.studentId || "",
+      relationship:
+        String(enrollment.relationship || "Parent/Guardian").trim() ||
+        "Parent/Guardian",
+      enrolledAt:
+        enrollment.enrolledAt ||
+        enrollment.createdAt ||
+        new Date().toISOString(),
+      linkedAt: enrollment.linkedAt || enrollment.matchedAt || "",
+      status:
+        enrollment.status || (enrollment.studentId ? "linked" : "pending"),
+      notes: enrollment.notes || "",
+    };
+  }
+
+  function _persistParentEnrollments() {
+    if (!currentUser) return;
+    safeSave(_parentEnrollmentsKey(), JSON.stringify(parentEnrollments));
+    safeSave(_selectedParentEnrollmentKey(), selectedParentEnrollmentId || "");
+  }
+
+  function _ensureStudentParentCodes() {
+    let changed = false;
+    classes.forEach((cls) => {
+      (allStudents[cls.id] || []).forEach((student) => {
+        if (!student.parentCode) {
+          student.parentCode = _generateEnrollmentCode(
+            `${cls.id}${student.id || ""}${student.name || ""}`,
+          );
+          changed = true;
+        }
+      });
+    });
+    return changed;
+  }
+
+  function _findStudentByParentCode(childCode) {
+    const normalized = String(childCode || "")
+      .trim()
+      .toUpperCase();
+    if (!normalized) return null;
+    for (const cls of classes) {
+      const student = (allStudents[cls.id] || []).find(
+        (entry) =>
+          String(entry.parentCode || "")
+            .trim()
+            .toUpperCase() === normalized,
+      );
+      if (student) {
+        return {
+          classId: cls.id,
+          className: cls.name,
+          student,
+        };
+      }
+    }
+    return null;
+  }
+
+  function _resolveParentEnrollment(enrollment) {
+    const normalized = _normalizeParentEnrollment(enrollment);
+    if (!normalized) return null;
+    const byCode = _findStudentByParentCode(normalized.childCode);
+    if (byCode) {
+      const ranked = rankStudents(allStudents[byCode.classId] || []);
+      const rankedStudent = ranked.find(
+        (entry) => entry.id === byCode.student.id,
+      );
+      return {
+        ...normalized,
+        childName: byCode.student.name || normalized.childName,
+        classId: byCode.classId,
+        className: byCode.className,
+        studentId: byCode.student.id,
+        status: "linked",
+        linkedAt: normalized.linkedAt || new Date().toISOString(),
+        matched: true,
+        student: byCode.student,
+        overall: computeStudentOverall(byCode.student),
+        ranking: rankedStudent?.pos || null,
+        subjects: byCode.student.subjects || [],
+      };
+    }
+    if (normalized.studentId && normalized.classId) {
+      const cls = classes.find((entry) => entry.id === normalized.classId);
+      const student = (allStudents[normalized.classId] || []).find(
+        (entry) => entry.id === normalized.studentId,
+      );
+      if (student) {
+        const ranked = rankStudents(allStudents[normalized.classId] || []);
+        const rankedStudent = ranked.find((entry) => entry.id === student.id);
+        return {
+          ...normalized,
+          childName: student.name || normalized.childName,
+          className: cls?.name || normalized.className,
+          status: "linked",
+          matched: true,
+          student,
+          overall: computeStudentOverall(student),
+          ranking: rankedStudent?.pos || null,
+          subjects: student.subjects || [],
+        };
+      }
+    }
+    return normalized;
+  }
+
+  function _getResolvedParentEnrollments() {
+    return parentEnrollments.map(_resolveParentEnrollment).filter(Boolean);
+  }
+
+  function _getActiveParentEnrollment() {
+    const resolved = _getResolvedParentEnrollments();
+    if (!resolved.length) return null;
+    const selected = resolved.find(
+      (entry) => entry.id === selectedParentEnrollmentId,
+    );
+    return selected || resolved[0];
+  }
+
+  function _computeStudentAttendance(classId, studentId) {
+    if (!classId || !studentId) return null;
+    const classAttendance = allAttendance[classId] || {};
+    let total = 0;
+    let present = 0;
+    Object.values(classAttendance).forEach((dayRecord) => {
+      const status = dayRecord?.[studentId];
+      if (!status) return;
+      total++;
+      if (status === "P" || status === "L") present++;
+    });
+    return total > 0 ? Math.round((present / total) * 100) : null;
+  }
+
   function loadUserData() {
     const savedClasses = localStorage.getItem(userKey("classes"));
     const savedStudents = localStorage.getItem(userKey("students"));
@@ -561,6 +748,25 @@
     allQuizzes = savedQz ? JSON.parse(savedQz) : {};
     const savedTH = localStorage.getItem(userKey("termHistory"));
     termHistory = savedTH ? JSON.parse(savedTH) : {};
+    const savedParentEnrollments = localStorage.getItem(
+      _parentEnrollmentsKey(),
+    );
+    parentEnrollments = savedParentEnrollments
+      ? JSON.parse(savedParentEnrollments)
+      : [];
+    parentEnrollments = parentEnrollments
+      .map(_normalizeParentEnrollment)
+      .filter(Boolean);
+    selectedParentEnrollmentId =
+      localStorage.getItem(_selectedParentEnrollmentKey()) || "";
+    const studentCodesChanged = _ensureStudentParentCodes();
+    if (!selectedParentEnrollmentId && parentEnrollments.length) {
+      selectedParentEnrollmentId = parentEnrollments[0].id;
+    }
+    if (studentCodesChanged) {
+      safeSave(userKey("students"), JSON.stringify(allStudents));
+    }
+    _persistParentEnrollments();
   }
   function getDefaultClasses() {
     return [
@@ -782,6 +988,7 @@
       document.body.classList.remove("on-landing");
     }
   }
+  window.showPage = showPage;
 
   // ════════════════════════════════════════════════════
   //  VIEW SWITCHING
@@ -2535,17 +2742,23 @@
     const cfg = window.GradeFlowAPI.getConfig();
     if (cfg.provider === "nextjs") {
       el.textContent = cfg.baseUrl
-        ? `Provider: ${cfg.provider} · Base: ${cfg.baseUrl}`
-        : `Provider: ${cfg.provider} · Base not set`;
+        ? `Cloud provider: ${cfg.provider} · Base: ${cfg.baseUrl}`
+        : `Cloud provider: ${cfg.provider} · Base not set`;
       return;
     }
     if (cfg.provider === "supabase") {
       el.textContent = cfg.supabaseConfigured
-        ? "Provider: supabase · Credentials configured"
-        : "Provider: supabase · Credentials missing";
+        ? "Cloud provider: supabase · Credentials configured"
+        : "Cloud provider: supabase · Credentials missing";
       return;
     }
-    el.textContent = `Provider: ${cfg.provider}`;
+    if (cfg.provider === "firebase") {
+      el.textContent = cfg.firebaseConfigured
+        ? `Cloud provider: firebase · Project: ${cfg.firebaseProjectId || "configured"}`
+        : "Cloud provider: firebase · Config missing";
+      return;
+    }
+    el.textContent = `Cloud provider: ${cfg.provider}`;
   }
   window.openApiConfig = function () {
     if (!window.GradeFlowAPI) {
@@ -2553,23 +2766,29 @@
       return;
     }
     const providerRaw = prompt(
-      "Choose provider: local, supabase, or nextjs",
+      "Choose cloud provider: local, firebase, supabase, or nextjs",
       window.GradeFlowAPI.getConfig().provider || "local",
     );
     if (providerRaw === null) return;
     const firstInput = providerRaw.trim();
     let provider = firstInput.toLowerCase();
     // UX guard: many users paste URL first. Auto-detect common provider URLs.
+    if (provider.includes("firebase")) provider = "firebase";
     if (provider.includes("supabase.co")) provider = "supabase";
     if (provider.startsWith("http://") || provider.startsWith("https://")) {
       if (provider.includes("supabase.co")) {
         provider = "supabase";
+      } else if (provider.includes("firebase")) {
+        provider = "firebase";
       } else {
         provider = "nextjs";
       }
     }
-    if (!["local", "supabase", "nextjs"].includes(provider)) {
-      showToast("Invalid provider. Use: local, supabase, nextjs", "error");
+    if (!["local", "firebase", "supabase", "nextjs"].includes(provider)) {
+      showToast(
+        "Invalid provider. Use: local, firebase, supabase, nextjs",
+        "error",
+      );
       return;
     }
     window.GradeFlowAPI.setProvider(provider);
@@ -2608,11 +2827,48 @@
         localStorage.setItem("gf_supabase_key", (key || "").trim());
       }
     }
+    if (provider === "firebase") {
+      const existingFirebaseConfig =
+        window.GradeFlowAPI.getConfig().firebaseConfigured &&
+        window.GradeFlowAPI.firebaseConfig
+          ? JSON.stringify(window.GradeFlowAPI.firebaseConfig, null, 2)
+          : "";
+      const rawConfig = prompt(
+        "Paste Firebase web config JSON (apiKey, authDomain, projectId, appId)",
+        existingFirebaseConfig,
+      );
+      if (rawConfig === null) {
+        updateApiConfigSummary();
+        return;
+      }
+      const trimmedConfig = rawConfig.trim();
+      if (!trimmedConfig) {
+        showToast("Firebase config was not saved", "error");
+        updateApiConfigSummary();
+        return;
+      }
+      let firebaseConfig;
+      try {
+        firebaseConfig = JSON.parse(trimmedConfig);
+      } catch {
+        showToast("Firebase config must be valid JSON", "error");
+        updateApiConfigSummary();
+        return;
+      }
+      if (window.GradeFlowAPI.setFirebaseConfig) {
+        window.GradeFlowAPI.setFirebaseConfig(firebaseConfig);
+      } else {
+        localStorage.setItem(
+          "gf_firebase_config",
+          JSON.stringify(firebaseConfig),
+        );
+      }
+    }
     if (provider !== "nextjs") {
       window.GradeFlowAPI.setBaseUrl("");
     }
     updateApiConfigSummary();
-    showToast("API connector updated", "success");
+    showToast("Cloud connector updated", "success");
   };
   window.saveProfile = function () {
     if (!currentUser) return;
@@ -2817,9 +3073,13 @@
       return;
     }
     if (!allStudents[activeClassId]) allStudents[activeClassId] = [];
+    const parentCode = _generateEnrollmentCode(
+      `${activeClassId}${name}${Date.now()}`,
+    );
     allStudents[activeClassId].push({
       id: "s_" + Date.now(),
       name,
+      parentCode,
       subjects: cls.subjects.map((s) => ({
         id: s.id,
         name: s.name,
@@ -2854,8 +3114,228 @@
       email: user.email,
       role: normalizeRole(user.role),
       schoolCode: user.schoolCode || existing.schoolCode || "",
+      authProvider: user.authProvider || existing.authProvider || "local",
+      firebaseUid: user.firebaseUid || existing.firebaseUid || "",
+      photoURL: user.photoURL || existing.photoURL || "",
     };
     localStorage.setItem("gf_accounts", JSON.stringify(accounts));
+  }
+
+  async function _syncFirebaseCloudData(cloudLogin, email) {
+    if (!window.GradeFlowAPI || !cloudLogin || !cloudLogin.ok) return;
+    const apiConfig = window.GradeFlowAPI.getConfig
+      ? window.GradeFlowAPI.getConfig()
+      : { provider: "local" };
+    if (apiConfig.provider !== "firebase") return;
+
+    const cloudUserData = await window.GradeFlowAPI.getUserData({
+      user_id: cloudLogin.uid || email,
+      email,
+    }).catch(() => ({ ok: false }));
+    const remoteRoot = cloudUserData?.data || null;
+    const remoteData = remoteRoot?.data || remoteRoot;
+    const hasLocalClasses = (() => {
+      const rawClasses = localStorage.getItem(userKey("classes"));
+      if (!rawClasses) return false;
+      try {
+        const parsed = JSON.parse(rawClasses);
+        return Array.isArray(parsed) && parsed.length > 0;
+      } catch {
+        return true;
+      }
+    })();
+    if (!hasLocalClasses && remoteData) {
+      if (Array.isArray(remoteData.classes)) {
+        safeSave(userKey("classes"), JSON.stringify(remoteData.classes));
+      }
+      if (remoteData.allStudents) {
+        safeSave(userKey("students"), JSON.stringify(remoteData.allStudents));
+      }
+      if (remoteData.settings) {
+        safeSave(userKey("settings"), JSON.stringify(remoteData.settings));
+      }
+      if (Array.isArray(remoteData.parentEnrollments)) {
+        safeSave(
+          _parentEnrollmentsKey(),
+          JSON.stringify(remoteData.parentEnrollments),
+        );
+      }
+      if (remoteData.selectedParentEnrollmentId) {
+        safeSave(
+          _selectedParentEnrollmentKey(),
+          String(remoteData.selectedParentEnrollmentId),
+        );
+      }
+    }
+  }
+
+  function _readGoogleSignupForm({ nameId, orgId, roleId, consentId }) {
+    return {
+      name: document.getElementById(nameId)?.value?.trim() || "",
+      org: document.getElementById(orgId)?.value?.trim() || "",
+      role: normalizeRole(document.getElementById(roleId)?.value || "teacher"),
+      consent: Boolean(document.getElementById(consentId)?.checked),
+    };
+  }
+
+  function _normalizeGoogleRoleChoice(rawRole, fallbackRole = "teacher") {
+    const value = String(rawRole || "")
+      .trim()
+      .toLowerCase();
+    if (!value) return null;
+    if (value.includes("teacher")) return "teacher";
+    if (value.includes("parent")) return "parent";
+    if (value.includes("student")) return "student";
+    if (value === "admin") return "admin";
+    if (value === "staff") return "staff";
+    if (
+      value.includes("staff/admin") ||
+      (value.includes("staff") && value.includes("admin"))
+    ) {
+      return "staff";
+    }
+    const normalized = normalizeRole(value);
+    return ["teacher", "parent", "staff", "admin", "student"].includes(
+      normalized,
+    )
+      ? normalized
+      : null;
+  }
+
+  function _promptGoogleRole(defaultRole = "teacher") {
+    const answer = prompt(
+      "Are you coming in as teacher, parent, staff/admin, or student?",
+      defaultRole,
+    );
+    if (answer === null) return null;
+    const role = _normalizeGoogleRoleChoice(answer, defaultRole);
+    if (!role) {
+      showToast(
+        "Please choose: teacher, parent, staff/admin, or student.",
+        "error",
+      );
+      return null;
+    }
+    return role;
+  }
+
+  async function _processGoogleAuth(formData, options) {
+    const { mode = "login", closeAuthModal = false } = options || {};
+    const { name, org, role, consent } = formData || {};
+    if (!window.GradeFlowAPI || !window.GradeFlowAPI.loginWithGoogle) {
+      showToast("Google sign-in is unavailable right now.", "error");
+      return;
+    }
+    if (mode === "signup" && !consent) {
+      showToast("Please accept Terms and Privacy Policy to continue", "error");
+      return;
+    }
+
+    const googleRole = _promptGoogleRole(
+      role || portalSelectedRole || "teacher",
+    );
+    if (googleRole === null) {
+      return;
+    }
+
+    const cloudLogin = await window.GradeFlowAPI.loginWithGoogle({
+      role: googleRole,
+      org: org || "My School",
+    }).catch((e) => ({
+      ok: false,
+      message: e?.message || "Google sign-in failed",
+    }));
+
+    if (!cloudLogin || cloudLogin.ok === false) {
+      showToast(
+        `Google sign-in failed: ${cloudLogin?.message || "Please try again."}`,
+        "error",
+      );
+      return;
+    }
+
+    const email = String(
+      cloudLogin.email ||
+        cloudLogin.userEmail ||
+        cloudLogin.user?.email ||
+        cloudLogin.profile?.email ||
+        cloudLogin.user?.providerData?.find((entry) => entry?.email)?.email ||
+        cloudLogin.data?.email ||
+        "",
+    )
+      .toLowerCase()
+      .trim();
+    if (!email) {
+      showToast("Google sign-in did not return an email address.", "error");
+      return;
+    }
+
+    const apiConfigAfterGoogle = window.GradeFlowAPI?.getConfig
+      ? window.GradeFlowAPI.getConfig()
+      : { provider: "local", firebaseConfigured: false };
+    if (
+      apiConfigAfterGoogle.firebaseConfigured &&
+      apiConfigAfterGoogle.provider !== "firebase" &&
+      window.GradeFlowAPI?.setProvider
+    ) {
+      window.GradeFlowAPI.setProvider("firebase");
+      if (typeof updateApiConfigSummary === "function") {
+        updateApiConfigSummary();
+      }
+    }
+
+    const accounts = JSON.parse(localStorage.getItem("gf_accounts") || "{}");
+    const existing = accounts[email] || {};
+    const displayName =
+      name ||
+      cloudLogin.name ||
+      cloudLogin.userName ||
+      cloudLogin.user?.displayName ||
+      cloudLogin.profile?.name ||
+      existing.name ||
+      email.split("@")[0] ||
+      "Google User";
+    const resolvedOrg =
+      existing.org || org || cloudLogin.organization || "My School";
+    const resolvedRole = normalizeRole(
+      existing.role || googleRole || role || cloudLogin.role || "teacher",
+    );
+
+    currentUser = {
+      ...existing,
+      name: displayName,
+      org: resolvedOrg,
+      email,
+      role: resolvedRole,
+      schoolCode: existing.schoolCode || "",
+      authProvider: "google",
+      firebaseUid: cloudLogin.uid || existing.firebaseUid || "",
+      photoURL: cloudLogin.photoURL || existing.photoURL || "",
+    };
+
+    saveUserToStorage(currentUser);
+    localStorage.setItem("gf_current_user", email);
+
+    if (mode === "signup" && consent) {
+      _setConsentAccepted(email);
+    }
+
+    await _syncFirebaseCloudData(cloudLogin, email).catch(() => {});
+
+    loadUserData();
+    if (closeAuthModal) closeModal("authModal");
+
+    if (!_hasConsent(email)) {
+      openConsentModal(true);
+      showToast(
+        "Please review and accept Terms/Privacy to continue.",
+        "warning",
+      );
+      return;
+    }
+
+    enterDashboard();
+    showToast(`✅ Welcome, ${currentUser.name.split(" ")[0]}!`, "success");
   }
   function _loginAttemptKey(email) {
     return `gf_login_attempts_${email}`;
@@ -2942,7 +3422,13 @@
   };
 
   window.openAuthModal = function (mode) {
-    showMainLogin(mode || "login");
+    const modal = document.getElementById("authModal");
+    if (!modal) {
+      console.error("authModal not found");
+      return;
+    }
+    modal.classList.add("active");
+    switchAuthTab(mode || "login");
   };
 
   window.switchRouteAuthTab = function (mode) {
@@ -3068,13 +3554,14 @@
         org: org || "My School",
         email: normalizedEmail,
         role: normalizeRole(role),
+        pass,
       }).catch((e) => ({
         ok: false,
         message: e?.message || "Cloud signup failed",
       }));
       if (cloudSignUp && cloudSignUp.ok === false) {
         showToast(
-          `Cloud sync warning: ${cloudSignUp.message || "Supabase signup failed"}`,
+          `Cloud sync warning: ${cloudSignUp.message || "Cloud signup failed"}`,
           "warning",
         );
       }
@@ -3112,6 +3599,40 @@
       consentId: "routeSignupConsent",
     });
     await _processSignup(formData, { closeAuthModal: false });
+  };
+
+  window.handleGoogleLogin = async function () {
+    await _processGoogleAuth({}, { mode: "login", closeAuthModal: true });
+  };
+
+  window.handleRouteGoogleLogin = async function () {
+    await _processGoogleAuth({}, { mode: "login", closeAuthModal: false });
+  };
+
+  window.handleGoogleSignup = async function () {
+    const formData = _readGoogleSignupForm({
+      nameId: "su-name",
+      orgId: "su-org",
+      roleId: "su-role",
+      consentId: "su-consent",
+    });
+    await _processGoogleAuth(formData, {
+      mode: "signup",
+      closeAuthModal: true,
+    });
+  };
+
+  window.handleRouteGoogleSignup = async function () {
+    const formData = _readGoogleSignupForm({
+      nameId: "routeSignupName",
+      orgId: "routeSignupOrg",
+      roleId: "routeSignupRole",
+      consentId: "routeSignupConsent",
+    });
+    await _processGoogleAuth(formData, {
+      mode: "signup",
+      closeAuthModal: false,
+    });
   };
 
   async function _processLogin(formData, options) {
@@ -3163,12 +3684,69 @@
     }
     localStorage.setItem("gf_current_user", email);
     if (window.GradeFlowAPI) {
-      const cloudLogin = await window.GradeFlowAPI.login({ email }).catch(
+      const cloudPayload = {
+        email,
+        pass,
+        name: currentUser.name,
+        org: currentUser.org,
+        role: currentUser.role,
+      };
+      const apiConfig = window.GradeFlowAPI.getConfig
+        ? window.GradeFlowAPI.getConfig()
+        : { provider: "local" };
+      let cloudLogin = await window.GradeFlowAPI.login(cloudPayload).catch(
         (e) => ({ ok: false, message: e?.message || "Cloud login failed" }),
       );
+      if (
+        apiConfig.provider === "firebase" &&
+        cloudLogin &&
+        cloudLogin.ok === false
+      ) {
+        const cloudSignup = await window.GradeFlowAPI.signUp(
+          cloudPayload,
+        ).catch((e) => ({
+          ok: false,
+          message: e?.message || "Cloud signup failed",
+        }));
+        if (cloudSignup && cloudSignup.ok) {
+          cloudLogin = cloudSignup;
+        }
+      }
+      if (apiConfig.provider === "firebase" && cloudLogin && cloudLogin.ok) {
+        const cloudUserData = await window.GradeFlowAPI.getUserData({
+          user_id: cloudLogin.uid || email,
+          email,
+        }).catch(() => ({ ok: false }));
+        const remoteRoot = cloudUserData?.data || null;
+        const remoteData = remoteRoot?.data || remoteRoot;
+        const hasLocalClasses = (() => {
+          const rawClasses = localStorage.getItem(userKey("classes"));
+          if (!rawClasses) return false;
+          try {
+            const parsed = JSON.parse(rawClasses);
+            return Array.isArray(parsed) && parsed.length > 0;
+          } catch {
+            return true;
+          }
+        })();
+        if (!hasLocalClasses && remoteData) {
+          if (Array.isArray(remoteData.classes)) {
+            safeSave(userKey("classes"), JSON.stringify(remoteData.classes));
+          }
+          if (remoteData.allStudents) {
+            safeSave(
+              userKey("students"),
+              JSON.stringify(remoteData.allStudents),
+            );
+          }
+          if (remoteData.settings) {
+            safeSave(userKey("settings"), JSON.stringify(remoteData.settings));
+          }
+        }
+      }
       if (cloudLogin && cloudLogin.ok === false) {
         showToast(
-          `Cloud sync warning: ${cloudLogin.message || "Supabase login failed"}`,
+          `Cloud sync warning: ${cloudLogin.message || "Cloud login failed"}`,
           "warning",
         );
       }
@@ -4242,62 +4820,97 @@ Please send payment and setup details. Thank you.`);
     const statsEl = document.getElementById("parentStatsGrid");
     const performanceEl = document.getElementById("parentPerformanceGrid");
     const communicationEl = document.getElementById("parentCommunicationLog");
+    const childListEl = document.getElementById("parentChildList");
+    const enrollmentHintEl = document.getElementById("parentEnrollmentHint");
 
     if (
       !titleEl ||
       !subtitleEl ||
       !statsEl ||
       !performanceEl ||
-      !communicationEl
+      !communicationEl ||
+      !childListEl
     )
       return;
 
-    // Placeholder: Use first student from first class as "child"
-    // TODO: Replace with real parent→child enrollment linkage in v3
-    let child = null;
-    let childRanking = null;
-    let childClassId = null;
+    const resolvedEnrollments = _getResolvedParentEnrollments();
+    const activeEnrollment = _getActiveParentEnrollment();
+    const firstName = (currentUser.name || "Parent").split(" ")[0];
+    titleEl.textContent =
+      resolvedEnrollments.length > 1
+        ? `${firstName}'s Children`
+        : `${firstName}'s Academic Journey`;
+    subtitleEl.textContent = resolvedEnrollments.length
+      ? `${currentUser.org || "Your School"} · ${resolvedEnrollments.length} linked child${resolvedEnrollments.length === 1 ? "" : "ren"}`
+      : `${currentUser.org || "Your School"} · Link a child code to view real progress`;
 
-    for (const cls of classes) {
-      const students = allStudents[cls.id] || [];
-      if (students.length > 0) {
-        child = students[0];
-        childClassId = cls.id;
-        break;
-      }
+    if (enrollmentHintEl) {
+      enrollmentHintEl.textContent = resolvedEnrollments.length
+        ? "Add more children with the code shared by the school."
+        : "Enter the school-issued child code to link a real student profile.";
     }
 
-    if (!child) {
-      performanceEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;"><div class="empty-icon">👨‍👩‍👧</div><p>No child records found. Contact school to set up enrollment.</p></div>`;
-      statsEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;">Awaiting enrollment</div>`;
-      communicationEl.innerHTML = `<div style="padding:2rem; color:var(--muted); text-align:center;">No communications yet</div>`;
+    childListEl.innerHTML = resolvedEnrollments.length
+      ? resolvedEnrollments
+          .map((entry) => {
+            const isActive = activeEnrollment?.id === entry.id;
+            const attendance = entry.matched
+              ? _computeStudentAttendance(entry.classId, entry.studentId)
+              : null;
+            return `<div class="child-card ${isActive ? "active" : ""}" onclick="selectParentEnrollment('${entry.id}')">
+              <div class="child-card-left">
+                <div class="child-card-name">${esc(entry.childName || "Linked child")} <span class="status-badge ${entry.matched ? "complete" : "pending"}">${entry.matched ? "Linked" : "Pending"}</span></div>
+                <div class="child-card-average">${esc(entry.className || "Awaiting school match")} • Code ${esc(entry.childCode || "—")} • ${esc(entry.relationship || "Parent/Guardian")}</div>
+                <div class="child-card-average">${entry.matched ? `Position: ${entry.ranking ? `#${entry.ranking}` : "—"}${attendance !== null ? ` • Attendance: ${attendance}%` : ""}` : "Waiting for school to match this code"}</div>
+              </div>
+              <div class="child-card-right">
+                <button class="btn btn-xs btn-outline" onclick="event.stopPropagation(); copyParentCode('${entry.id}')">Copy code</button>
+                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); removeParentEnrollment('${entry.id}')">Remove</button>
+              </div>
+            </div>`;
+          })
+          .join("")
+      : `<div class="empty-state parent-empty-state"><div class="empty-icon">👨‍👩‍👧</div><h3>No children linked yet</h3><p>Enter the child code shared by the school to see grades, attendance, and communications.</p></div>`;
+
+    if (!activeEnrollment) {
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Linked children</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Pending</div>
+          <div class="stat-label">Child code status</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">—</div>
+          <div class="stat-label">Attendance</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">—</div>
+          <div class="stat-label">Subjects</div>
+        </div>
+      `;
+      performanceEl.innerHTML = `<div class="empty-state"><div class="empty-icon">👨‍👩‍👧</div><h3>No child records found</h3><p>Link a child code from the school to load the real academic dashboard.</p></div>`;
+      communicationEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💬</div><h3>No communications yet</h3><p>School announcements will appear here once a child is linked.</p></div>`;
       return;
     }
 
-    // Real child data
-    const childName = child.name;
-    const childOverall = computeStudentOverall(child);
-    const ranked = rankStudents(allStudents[childClassId] || []);
-    const rank = ranked.find((s) => s.id === child.id);
-    childRanking = rank?.pos || null;
+    const child = activeEnrollment.student || null;
+    const childOverall =
+      activeEnrollment.overall ?? computeStudentOverall(child);
+    const childRanking = activeEnrollment.ranking || null;
+    const childAttendanceRate = activeEnrollment.matched
+      ? _computeStudentAttendance(
+          activeEnrollment.classId,
+          activeEnrollment.studentId,
+        )
+      : null;
+    const childSubjectCount =
+      activeEnrollment.subjects?.length || child?.subjects?.length || 0;
 
-    // Attendance for child
-    let childPresent = 0;
-    let childTotal = 0;
-    const classAttendance = allAttendance[childClassId] || {};
-    Object.values(classAttendance).forEach((dayRecord) => {
-      if (dayRecord[child.id]) {
-        childTotal++;
-        if (dayRecord[child.id] === "P") childPresent++;
-      }
-    });
-    const childAttendanceRate =
-      childTotal > 0 ? Math.round((childPresent / childTotal) * 100) : 0;
-
-    const childSubjectCount = (child.subjects || []).length;
-
-    titleEl.textContent = `${childName}'s Academic Progress`;
-    subtitleEl.textContent = `${currentUser.org || "Your School"} – Parent Portal`;
+    titleEl.textContent = `${activeEnrollment.childName || "Linked child"}'s Academic Progress`;
+    subtitleEl.textContent = `${currentUser.org || "Your School"} · ${activeEnrollment.className || "Parent Portal"}`;
 
     statsEl.innerHTML = `
       <div class="stat-card">
@@ -4309,7 +4922,7 @@ Please send payment and setup details. Thank you.`);
         <div class="stat-label">Class Position</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">${childAttendanceRate}${childTotal > 0 ? "%" : "—"}</div>
+        <div class="stat-value">${childAttendanceRate !== null ? childAttendanceRate + "%" : "—"}</div>
         <div class="stat-label">Attendance</div>
       </div>
       <div class="stat-card">
@@ -4319,7 +4932,8 @@ Please send payment and setup details. Thank you.`);
     `;
 
     // Child's real subject performance
-    const subjectCards = child.subjects
+    const childSubjects = activeEnrollment.subjects || child?.subjects || [];
+    const subjectCards = childSubjects
       .map((sub) => {
         const comp = computeSubject(sub);
         const gr = gradeResult(comp.total);
@@ -4337,14 +4951,15 @@ Please send payment and setup details. Thank you.`);
 
     performanceEl.innerHTML =
       subjectCards ||
-      `<div style="padding:1rem; color:var(--muted); text-align:center;">No grades recorded yet</div>`;
+      `<div class="empty-state"><div class="empty-icon">📘</div><h3>No grades recorded yet</h3><p>The child profile is linked, but there are no recorded grades yet.</p></div>`;
 
     // Communications (simplified—real implementation would fetch from backend)
-    communicationEl.innerHTML = `
+    communicationEl.innerHTML = activeEnrollment.matched
+      ? `
       <div class="communication-item">
         <div class="communication-item-left">
-          <div class="communication-item-subject">Mid-Term Results Released</div>
-          <div class="communication-item-date">School Announcement • 2 days ago</div>
+          <div class="communication-item-subject">${esc(activeEnrollment.childName || "Your child")} progress update</div>
+          <div class="communication-item-date">${esc(activeEnrollment.className || "Linked class")} • Current term</div>
         </div>
         <div class="communication-item-right">
           <i class="bi bi-chevron-right"></i>
@@ -4352,8 +4967,8 @@ Please send payment and setup details. Thank you.`);
       </div>
       <div class="communication-item">
         <div class="communication-item-left">
-          <div class="communication-item-subject">Holiday Schedule 2026</div>
-          <div class="communication-item-date">Important Notice • 1 week ago</div>
+          <div class="communication-item-subject">Attendance summary</div>
+          <div class="communication-item-date">${childAttendanceRate !== null ? `${childAttendanceRate}% attendance this term` : "Attendance data not yet available"}</div>
         </div>
         <div class="communication-item-right">
           <i class="bi bi-chevron-right"></i>
@@ -4361,15 +4976,98 @@ Please send payment and setup details. Thank you.`);
       </div>
       <div class="communication-item">
         <div class="communication-item-left">
-          <div class="communication-item-subject">Tuition Payment Reminder</div>
-          <div class="communication-item-date">Bursar's Office • 10 days ago</div>
+          <div class="communication-item-subject">School announcements</div>
+          <div class="communication-item-date">Messages from the school will show here</div>
         </div>
         <div class="communication-item-right">
           <i class="bi bi-chevron-right"></i>
         </div>
       </div>
-    `;
+    `
+      : `<div class="empty-state"><div class="empty-icon">💬</div><h3>Communication pending</h3><p>Link a child first so school updates can be tied to a real profile.</p></div>`;
   }
+
+  window.selectParentEnrollment = function (id) {
+    selectedParentEnrollmentId = id || "";
+    _persistParentEnrollments();
+    renderParentDashboard();
+  };
+
+  window.copyParentCode = async function (id) {
+    const enrollment = _getResolvedParentEnrollments().find(
+      (entry) => entry.id === id,
+    );
+    if (!enrollment?.childCode) {
+      showToast("Child code not available yet", "error");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(enrollment.childCode);
+      showToast("Child code copied", "success");
+    } catch {
+      showToast("Copy failed. Please copy the code manually.", "error");
+    }
+  };
+
+  window.removeParentEnrollment = function (id) {
+    const enrollment = parentEnrollments.find((entry) => entry.id === id);
+    if (!enrollment) return;
+    if (!confirm(`Remove ${enrollment.childName || "this child"}?`)) return;
+    parentEnrollments = parentEnrollments.filter((entry) => entry.id !== id);
+    if (selectedParentEnrollmentId === id) {
+      selectedParentEnrollmentId = parentEnrollments[0]?.id || "";
+    }
+    _persistParentEnrollments();
+    renderParentDashboard();
+    showToast("Child link removed", "info");
+  };
+
+  window.linkParentChild = function () {
+    const codeInput = document.getElementById("parentEnrollmentCode");
+    const nameInput = document.getElementById("parentEnrollmentName");
+    const relationInput = document.getElementById(
+      "parentEnrollmentRelationship",
+    );
+    const code = String(codeInput?.value || "")
+      .trim()
+      .toUpperCase();
+    const childName = String(nameInput?.value || "").trim();
+    const relationship = relationInput?.value || "Parent/Guardian";
+    if (!code) {
+      showToast("Enter the child code provided by the school", "error");
+      return;
+    }
+    if (parentEnrollments.some((entry) => entry.childCode === code)) {
+      showToast("That child is already linked", "info");
+      return;
+    }
+    const match = _findStudentByParentCode(code);
+    const enrollment = _normalizeParentEnrollment({
+      id: `pe_${Date.now()}`,
+      childCode: code,
+      childName: match?.student?.name || childName,
+      classId: match?.classId || "",
+      className: match?.className || "",
+      studentId: match?.student?.id || "",
+      relationship,
+      enrolledAt: new Date().toISOString(),
+      linkedAt: match ? new Date().toISOString() : "",
+      status: match ? "linked" : "pending",
+    });
+    parentEnrollments.unshift(enrollment);
+    selectedParentEnrollmentId = enrollment.id;
+    _persistParentEnrollments();
+    renderParentDashboard();
+    if (codeInput) codeInput.value = "";
+    if (nameInput) nameInput.value = "";
+    if (relationInput) relationInput.value = "Parent/Guardian";
+    showToast(
+      match
+        ? `Linked ${enrollment.childName || "child"} successfully`
+        : "Child link saved and waiting for a school match",
+      match ? "success" : "warning",
+    );
+  };
 
   function enterDashboard() {
     ensureCurrentUserRole();
@@ -4616,9 +5314,10 @@ Please send payment and setup details. Thank you.`);
   //  OFFLINE DETECTION
   // ════════════════════════════════════════════════════
   function updateOnlineStatus() {
-    document
-      .getElementById("offlineBanner")
-      .classList.toggle("show", !navigator.onLine);
+    const banner = document.getElementById("offlineBanner");
+    if (banner) {
+      banner.classList.toggle("show", !navigator.onLine);
+    }
   }
   window.addEventListener("online", updateOnlineStatus);
   window.addEventListener("offline", updateOnlineStatus);

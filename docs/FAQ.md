@@ -108,7 +108,7 @@ Go to **Analytics** tab:
 
 **Coming (Phase 3)**: Cloud backup option
 
-- Encrypted storage on Supabase
+- Encrypted storage on Firebase Firestore
 - Automatic sync
 - Multi-device access
 

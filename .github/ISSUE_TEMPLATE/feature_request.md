@@ -61,7 +61,7 @@ Which phase should this go in?
 
 Does this require:
 
-- [ ] Backend changes (Phase 3+ with Supabase)
+- [ ] Backend changes (Phase 3+ with Firebase)
 - [ ] New external integration?
 - [ ] Database changes?
 - [ ] UI redesign?

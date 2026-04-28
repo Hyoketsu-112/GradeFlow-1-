@@ -1,0 +1,3053 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GradeFlow · World-Class Academic Grade Compiler</title>
+    <meta
+      name="description"
+      content="The most powerful grade management platform for Nigerian teachers. Unlimited classes, auto-grading, beautiful PDFs, offline-first."
+    />
+    <link rel="icon" href="/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.svg" />
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#4361ee" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="GradeFlow" />
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <div id="page-landing" class="page active">
+      <nav class="land-nav">
+        <a class="land-nav-brand" href="#page-landing">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="currentColor"></rect>
+            <path d="M6 17 L12 7 L18 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M8.5 13.5 H15.5" stroke="white" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+          GradeFlow
+        </a>
+        <ul class="land-nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#how">How it works</a></li>
+        </ul>
+        <div class="land-nav-actions">
+          <button class="btn btn-outline" onclick="openAuthModal('login')">Log in</button>
+          <button class="btn btn-primary" onclick="openAuthModal('signup')">Start free</button>
+        </div>
+      </nav>
+
+      <section class="land-hero">
+        <div class="hero-glow"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+          <div class="hero-badge"><span class="dot"></span> Offline-first grading for schools</div>
+          <h1 class="hero-title">Run grades, reports, and attendance from one <span class="accent">fast</span> workspace.</h1>
+          <p class="hero-sub">GradeFlow keeps teachers moving with class management, parent updates, reports, and analytics in one app, with optional Firebase sync when you want cloud access.</p>
+        <div class="hero-cta">
+          <button class="btn btn-lg btn-google-light" onclick="openAuthModal('signup')">
+            <i class="bi bi-rocket-takeoff-fill"></i> Start free today
+          </button>
+          <button class="btn btn-lg btn-ghost-light" onclick="document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })">
+            <i class="bi bi-stars"></i> See Pro pricing
+          </button>
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">🧮</div>
+            <h3>Auto grading</h3>
+            <p>Test, practical, and exam scores are combined instantly with totals, averages, rankings, and grade remarks.</p>
+        <div class="footer-brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <article class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>CBT quizzes</h3>
+            <p>Create quizzes, auto-mark them, and reuse question banks for quick revision or tests.</p>
+            <span class="feature-badge feature-badge--gold">Pro</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">☁️</div>
+            <h3>Firebase sync</h3>
+        <div class="footer-links">
+          <a href="#features" class="text-muted">Features</a>
+          <a href="#pricing" class="text-muted">Pricing</a>
+          <a href="#testimonials" class="text-muted">Testimonials</a>
+          <a href="#how" class="text-muted">How it works</a>
+              <h3 class="how-step-title">Create your account</h3>
+        <div class="footer-copy">
+            </div>
+          <strong>The Dev Forge</strong>
+              <div class="how-step-icon">2️⃣</div>
+              <h3 class="how-step-title">Add your class</h3>
+              <p class="how-step-copy">Create subjects, import students, and organize the school term in one place.</p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-icon">3️⃣</div>
+              <h3 class="how-step-title">Enter scores</h3>
+              <p class="how-step-copy">Type the scores once and GradeFlow handles totals, grades, rankings, and remarks.</p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-icon">4️⃣</div>
+              <h3 class="how-step-title">Export & share</h3>
+              <p class="how-step-copy">Download PDFs, export broadsheets, or share updates with parents when you’re done.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="land-section land-section--pricing" id="pricing">
+        <div class="land-section-inner">
+          <div class="section-label">Pricing</div>
+          <h2 class="section-title">Simple, honest pricing.</h2>
+          <p class="section-sub">
+            Start free. Upgrade when you're ready. No hidden fees, no
+            auto-renewals, no credit card required to sign up.
+          </p>
+
+          <div class="pricing-grid">
+            <article class="pricing-card pricing-card--free">
+              <div>
+                <div class="pricing-kicker">Free Plan</div>
+                <div class="pricing-value">
+                  ₦0 <span>forever</span>
+                </div>
+                <p class="pricing-copy">Perfect for getting started. No card needed.</p>
+              </div>
+              <hr class="pricing-divider" />
+              <ul class="pricing-list">
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Up to <strong>2 classes</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Up to <strong>35 students</strong> total</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span><strong>3 PDF</strong> report cards per term</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Auto grade computation</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Live analytics dashboard</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Attendance tracking</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>WhatsApp result sharing</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>Broadsheet export</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>Excel / CSV import</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>AI teacher comments</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>CBT Quizzes</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>Term History &amp; Progress</span>
+                </li>
+              </ul>
+              <button class="btn pricing-cta" onclick="openAuthModal('signup')">
+                <i class="bi bi-person-plus"></i> Start for free
+              </button>
+            </article>
+
+            <article class="pricing-card pricing-card--pro">
+              <div class="pricing-ribbon">MOST POPULAR</div>
+              <div class="pricing-glow"></div>
+              <div>
+                <div class="pricing-kicker pricing-kicker--inverse">Pro Plan</div>
+                <div class="pricing-value pricing-value--inverse">
+                  ₦5,000 <span>/ term</span>
+                </div>
+                <p class="pricing-copy pricing-copy--inverse">Everything unlimited. All features. One fixed price per term.</p>
+              </div>
+              <hr class="pricing-divider pricing-divider--inverse" />
+              <ul class="pricing-list pricing-list--inverse">
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span><strong>Unlimited</strong> classes &amp; subjects</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span><strong>Unlimited</strong> students</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span><strong>Unlimited</strong> PDF report cards</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>Broadsheet export (Excel)</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>Excel / CSV student import</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>AI-generated teacher comments</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>CBT Quizzes with auto-marking</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>Term History &amp; Progress tracking</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>Class Materials storage</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse">
+                  <i class="bi bi-check-circle-fill"></i><span>All future features</span>
+                </li>
+              </ul>
+              <button class="btn btn--inverse pricing-cta pricing-cta--inverse" onclick="openAuthModal('signup')">
+                <i class="bi bi-stars"></i> Get Pro — ₦5,000/term
+              </button>
+              <p class="pricing-note pricing-note--inverse">Pay via WhatsApp or email after signing up.</p>
+            </article>
+
+            <article class="pricing-card pricing-card--school">
+              <div class="pricing-ribbon pricing-ribbon--school">BEST VALUE</div>
+              <div>
+                <div class="pricing-kicker pricing-kicker--school">School Plan</div>
+                <div class="pricing-value pricing-value--school">
+                  ₦25,000 <span>/ term</span>
+                </div>
+                <p class="pricing-copy">For schools with multiple teachers. One payment, everyone covered.</p>
+              </div>
+              <div class="pricing-callout">
+                <i class="bi bi-calculator-fill"></i> &nbsp;Up to 20 teachers at ₦1,250 each — vs ₦5,000 individually. <strong>Save 75%.</strong>
+              </div>
+              <hr class="pricing-divider" />
+              <ul class="pricing-list">
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Up to <strong>20 teacher accounts</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Everything in Pro for <strong>every teacher</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Single <strong>school access code</strong> — share with staff</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Managed by school admin — add or remove teachers anytime</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i><span>Need more than 20 seats? We'll quote custom pricing</span>
+                </li>
+              </ul>
+              <button class="btn btn-lg pricing-cta pricing-cta--school" onclick="openAuthModal('signup')">
+                <i class="bi bi-building-fill-check"></i> Get School Plan
+              </button>
+              <p class="pricing-note">Sign up, then contact us via WhatsApp to set up your school.</p>
+            </article>
+          </div>
+
+          <div class="pricing-faq">
+            <div class="pricing-faq__title">
+              <i class="bi bi-question-circle-fill"></i>
+              <span>How does payment work?</span>
+            </div>
+            <p class="pricing-faq__copy">
+              <strong>Pro (individual):</strong> Sign up, go to <strong>Settings → Plan &amp; Subscription</strong>, tap <strong>Upgrade Now</strong>, and send ₦5,000 via WhatsApp or email. Your account is activated within minutes.<br /><br /><strong>School Plan:</strong> Contact us via WhatsApp with your school name and number of teachers. Pay ₦25,000 and we'll generate a school access code. Share the code with your teachers — they enter it in their Settings to unlock Pro immediately. No card, no PayStack, no middleman.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ TESTIMONIALS ═══ -->
+      <section class="land-section" id="testimonials">
+        <div class="section-label">Testimonials</div>
+        <h2 class="section-title">Teachers love it.</h2>
+        <p class="section-sub">
+          Real feedback from Nigerian teachers who switched to GradeFlow.
+        </p>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <p>
+              "I used to spend every Saturday computing grades manually. Now I'm
+              done in under an hour. GradeFlow is a miracle for class teachers."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">A</div>
+              <div>
+                <div class="testimonial-name">Mrs. Adaeze Okonkwo</div>
+                <div class="testimonial-role">
+                  Class Teacher · Greenfield Academy, Lagos
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "The PDF report cards are so professional that parents actually
+              compliment the school now. I've been teaching 15 years and this is
+              the best tool I've ever used."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">K</div>
+              <div>
+                <div class="testimonial-name">Mr. Kunle Adesoye</div>
+                <div class="testimonial-role">
+                  Head of Department · Victory College, Ibadan
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "The broadsheet feature alone saved me 4 hours of work this term.
+              I exported the whole school's results to Excel in one click and
+              sent it to the principal."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">C</div>
+              <div>
+                <div class="testimonial-name">Mr. Chukwuemeka Eze</div>
+                <div class="testimonial-role">
+                  Form Master · Hillcrest Secondary School, Enugu
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "I work in a school with poor internet. The fact that GradeFlow
+              works completely offline is a game-changer. I can grade anywhere —
+              even in the classroom."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">F</div>
+              <div>
+                <div class="testimonial-name">Miss Fatima Ibrahim</div>
+                <div class="testimonial-role">
+                  Mathematics Teacher · Al-Noor Academy, Abuja
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "The AI teacher comment feature is incredible. I used to spend
+              hours writing the same comments over and over. Now it generates
+              personalised ones for every student in seconds."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">B</div>
+              <div>
+                <div class="testimonial-name">Mrs. Blessing Okafor</div>
+                <div class="testimonial-role">
+                  Junior Secondary Teacher · Harmony School, Port Harcourt
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>
+              "₦5,000 per term is honestly nothing compared to the hours I save.
+              I use it for 3 classes and 120+ students. Worth every naira."
+            </p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">T</div>
+              <div>
+                <div class="testimonial-name">Mr. Taiwo Adesanya</div>
+                <div class="testimonial-role">
+                  Senior Teacher · Crown Heights School, Ogun
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ CTA ═══ -->
+      <div class="land-cta-section">
+        <h2>Stop computing grades manually.</h2>
+        <p>
+          Join Nigerian teachers already using GradeFlow to reclaim their
+          weekends. Start free — no card, no commitment.
+        </p>
+        <div class="hero-cta mt-0">
+          <button
+            class="btn btn-lg btn-google-light"
+            onclick="openAuthModal('signup')"
+          >
+            <i class="bi bi-rocket-takeoff-fill"></i> Start free today
+          </button>
+          <button
+            class="btn btn-lg btn-ghost-light"
+            onclick="
+              document
+                .getElementById('pricing')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            <i class="bi bi-stars"></i> See Pro pricing
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ FOOTER ═══ -->
+      <footer class="land-footer">
+        <div class="footer-brand">
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" rx="6" fill="#4361ee" />
+            <path
+              d="M6 17 L12 7 L18 17"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8.5 13.5 H15.5"
+              stroke="white"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+          GradeFlow
+        </div>
+        <div class="footer-links">
+          <a href="#features" class="text-muted">Features</a>
+          <a href="#pricing" class="text-muted">Pricing</a>
+          <a href="#testimonials" class="text-muted">Testimonials</a>
+          <a href="#how" class="text-muted">How it works</a>
+        </div>
+        <div class="footer-copy">
+          Built with ❤️ by
+          <strong>The Dev Forge</strong>
+          &nbsp;·&nbsp; Your data never leaves your device &nbsp;·&nbsp; 100%
+          offline PWA
+        </div>
+      </footer>
+    </div>
+
+    <!-- ============================================================ MAIN LOGIN PAGE -->
+    <div id="page-login" class="page">
+      <section class="route-auth-page">
+        <div class="route-auth-brand">
+          <div class="route-auth-badge">Secure Portal Access</div>
+          <h1>GradeFlow Access</h1>
+          <p>
+            Sign in to continue to your school workspace. Teachers can also
+            create new accounts from here.
+          </p>
+          <div class="route-auth-points">
+            <div><i class="bi bi-shield-check"></i> Session hardening</div>
+            <div><i class="bi bi-cloud-check"></i> Optional cloud sync</div>
+            <div><i class="bi bi-wifi-off"></i> Offline-first workflow</div>
+          </div>
+          <div class="route-auth-links">
+            <button class="btn btn-sm" onclick="showPage('landing')">
+              <i class="bi bi-arrow-left"></i> Back to landing
+            </button>
+            <button class="btn btn-sm btn-outline" onclick="showPortalLogin()">
+              <i class="bi bi-grid-3x3-gap-fill"></i> School portal login
+            </button>
+          </div>
+        </div>
+
+        <div class="route-auth-panel">
+          <div class="auth-tabs route-tabs">
+            <button
+              class="auth-tab active"
+              id="routeLoginTab"
+              onclick="switchRouteAuthTab('login')"
+            >
+              Log in
+            </button>
+            <button
+              class="auth-tab"
+              id="routeSignupTab"
+              onclick="switchRouteAuthTab('signup')"
+            >
+              Sign up
+            </button>
+          </div>
+
+          <div id="routeLoginFields">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-input"
+                id="routeLoginEmail"
+                placeholder="you@school.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-input"
+                id="routeLoginPass"
+                placeholder="Enter your password"
+              />
+            </div>
+            <button
+              class="btn btn-primary w-full justify-center"
+              onclick="handleRouteLogin()"
+            >
+              <i class="bi bi-box-arrow-in-right"></i> Sign in
+            </button>
+            <button
+              class="btn btn-outline w-full justify-center btn-google-light mt-3"
+              onclick="handleRouteGoogleLogin()"
+            >
+              <i class="bi bi-google"></i> Sign in with Google
+            </button>
+          </div>
+
+          <div id="routeSignupFields" class="is-hidden">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="routeSignupName"
+                placeholder="e.g. Mrs. Adaeze Okonkwo"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">School Name</label>
+              <input
+                type="text"
+                class="form-input"
+                id="routeSignupOrg"
+                placeholder="e.g. Greenfield Academy"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select class="form-input" id="routeSignupRole">
+                <option value="teacher">Teacher</option>
+                <option value="staff">Admin & Staff</option>
+                <option value="student">Student</option>
+                <option value="parent">Parent</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-input"
+                id="routeSignupEmail"
+                placeholder="you@school.com"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-input"
+                id="routeSignupPass"
+                placeholder="At least 8 characters"
+              />
+            </div>
+            <label class="route-consent-row">
+              <input type="checkbox" id="routeSignupConsent" />
+              <span>
+                I agree to the
+                <a href="terms.html" target="_blank" rel="noopener noreferrer"
+                  >Terms</a
+                >
+                and
+                <a
+                  href="privacy-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Privacy Policy</a
+                >.
+              </span>
+            </label>
+            <button
+              class="btn btn-primary w-full justify-center"
+              onclick="handleRouteSignup()"
+            >
+              <i class="bi bi-person-check-fill"></i> Create account
+            </button>
+            <button
+              class="btn btn-outline w-full justify-center btn-google-light mt-3"
+              onclick="handleRouteGoogleSignup()"
+            >
+              <i class="bi bi-google"></i> Sign up with Google
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ SCHOOL PORTAL LOGIN PAGE -->
+    <div id="page-portal-login" class="page">
+      <section class="portal-page-wrap">
+        <div class="portal-brand-side">
+          <div class="portal-mark">GradeFlow Portal</div>
+          <h2>School Workspace Access</h2>
+          <p>
+            Select your portal access level and continue to your secure
+            dashboard.
+          </p>
+          <div class="portal-role-grid">
+            <button
+              class="portal-role-card active"
+              data-role="staff"
+              onclick="setPortalRole('staff')"
+            >
+              <i class="bi bi-briefcase-fill icon-gold"></i>
+              <span>Admin & Staff</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="teacher"
+              onclick="setPortalRole('teacher')"
+            >
+              <i class="bi bi-person-video3"></i>
+              <span>Teachers</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="student"
+              onclick="setPortalRole('student')"
+            >
+              <i class="bi bi-mortarboard-fill icon-accent"></i>
+              <span>Students</span>
+            </button>
+            <button
+              class="portal-role-card"
+              data-role="parent"
+              onclick="setPortalRole('parent')"
+            >
+              <i class="bi bi-people-fill icon-rose"></i>
+              <span>Parents</span>
+            </button>
+          </div>
+          <button class="btn btn-sm" onclick="showPage('landing')">
+            <i class="bi bi-arrow-left"></i> Back to landing
+          </button>
+
+        <div class="portal-login-side">
+          <div class="portal-login-header">
+            <div class="portal-login-kicker">Secure Login</div>
+            <h3>Welcome Back</h3>
+            <p id="portalRoleHint">Sign in as Admin & Staff</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username or Email</label>
+            <input
+              type="email"
+              class="form-input"
+              id="portalEmail"
+              placeholder="you@school.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-input"
+              id="portalPass"
+              placeholder="Enter password"
+            />
+          </div>
+          <button
+            class="btn btn-primary w-full justify-center"
+            onclick="handlePortalLogin()"
+          >
+            <i class="bi bi-box-arrow-in-right"></i> Sign in to dashboard
+          </button>
+          <div class="portal-login-links">
+            <button
+              class="btn btn-sm btn-outline"
+              onclick="showMainLogin('login')"
+            >
+              Main Login
+            </button>
+            <button class="btn btn-sm" onclick="showMainLogin('signup')">
+              Create Account
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ ROLE HOME PAGE -->
+    <div id="page-role-home" class="page">
+      <section class="role-home-wrap">
+        <div class="role-home-head">
+          <div class="role-home-kicker">Portal Dashboard</div>
+          <h2 id="roleHomeTitle">Welcome</h2>
+          <p id="roleHomeSubtitle">Your role workspace is ready.</p>
+        </div>
+        <div class="role-home-grid" id="roleHomeCards"></div>
+        <div class="role-home-actions">
+          <button
+            class="btn btn-primary"
+            id="roleHomeTeacherBtn"
+            onclick="openTeacherWorkspace()"
+          >
+            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ ADMIN DASHBOARD PAGE -->
+    <div id="page-admin-dashboard" class="page">
+      <section class="admin-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Admin Dashboard</div>
+          <h2 id="adminDashboardTitle">School Overview</h2>
+          <p id="adminDashboardSubtitle">
+            Manage staff, classes, and oversight approvals.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="adminStatsGrid">
+          <!-- Stats: total teachers, classes, pending approvals, avg attendance -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Teacher Oversight</h3>
+          <div class="teacher-list" id="adminTeacherList">
+            <!-- Teacher list with completion status -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Pending Approvals</h3>
+          <div class="approval-queue" id="adminApprovalQueue">
+            <!-- Approval items -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn btn-primary" onclick="openTeacherWorkspace()">
+            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ STUDENT DASHBOARD PAGE -->
+    <div id="page-student-dashboard" class="page">
+      <section class="student-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">My Performance</div>
+          <h2 id="studentDashboardTitle">Your Academic Progress</h2>
+          <p id="studentDashboardSubtitle">
+            Track your grades, assignments, and attendance.
+          </p>
+        </div>
+
+        <div class="dashboard-stats" id="studentStatsGrid">
+          <!-- Stats: overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Subject Performance</h3>
+          <div class="performance-grid" id="studentPerformanceGrid">
+            <!-- Subject averages and grades -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Assignments</h3>
+          <div class="assignment-list" id="studentAssignmentList">
+            <!-- Assignment items with due dates -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ PARENT DASHBOARD PAGE -->
+    <div id="page-parent-dashboard" class="page">
+      <section class="parent-dashboard-wrap">
+        <div class="dashboard-header">
+          <div class="dashboard-kicker">Child Progress</div>
+          <h2 id="parentDashboardTitle">Your Child's Academic Journey</h2>
+          <p id="parentDashboardSubtitle">
+            Monitor grades, attendance, and school communications.
+          </p>
+        </div>
+
+        <div class="dashboard-section parent-enrollment-section">
+          <h3>Link a child</h3>
+          <div class="parent-enrollment-panel">
+            <div class="parent-enrollment-copy">
+              <p>
+                Enter the school-issued child code to load the real student
+                profile. You can link more than one child and switch between
+                them here.
+              </p>
+              <p id="parentEnrollmentHint" class="parent-enrollment-hint">
+                Enter the school-issued child code to link a real student
+                profile.
+              </p>
+            </div>
+            <div class="parent-enrollment-form">
+              <div class="form-group">
+                <label for="parentEnrollmentName">Child name</label>
+                <input
+                  class="form-input"
+                  id="parentEnrollmentName"
+                  type="text"
+                  placeholder="Optional if the code already matches"
+                />
+              </div>
+              <div class="form-group">
+                <label for="parentEnrollmentCode">Child code</label>
+                <input
+                  class="form-input"
+                  id="parentEnrollmentCode"
+                  type="text"
+                  placeholder="Enter the code from school"
+                />
+              </div>
+              <div class="form-group">
+                <label for="parentEnrollmentRelationship">Relationship</label>
+                <select class="form-input" id="parentEnrollmentRelationship">
+                  <option>Parent/Guardian</option>
+                  <option>Mother</option>
+                  <option>Father</option>
+                  <option>Sibling</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" onclick="linkParentChild()">
+                <i class="bi bi-link-45deg"></i> Link child
+              </button>
+            </div>
+          </div>
+          <div class="parent-child-list" id="parentChildList"></div>
+        </div>
+
+        <div class="dashboard-stats" id="parentStatsGrid">
+          <!-- Stats: child's overall average, subjects, attendance rate -->
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Class Performance Summary</h3>
+          <div class="child-performance" id="parentPerformanceGrid">
+            <!-- Child's subject grades and rankings -->
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Recent Communications</h3>
+          <div class="communication-log" id="parentCommunicationLog">
+            <!-- School announcements and messages -->
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              showPage('role-home');
+              renderRoleHome();
+            "
+          >
+            <i class="bi bi-arrow-left"></i> Back to Portal
+          </button>
+          <button class="btn" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i> Log out
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page">
+      <!-- Sidebar -->
+      <aside class="app-sidebar" id="appSidebar">
+        <div class="sidebar-header">
+      <div class="modal-box modal-box-narrow">
+          <span class="sidebar-brand">GradeFlow</span>
+          <button
+            class="sidebar-toggle"
+            onclick="toggleSidebar()"
+            title="Collapse sidebar"
+          >
+            <i class="bi bi-layout-sidebar-reverse" id="sidebarToggleIcon"></i>
+        <div class="consent-box">
+          <div class="wa-preview-label">
+
+        <div class="sidebar-user" id="sidebarUser">
+          <div id="waMessagePreview" class="wa-message-preview"></div>
+        <nav class="sidebar-nav">
+          <div
+            class="sidebar-nav-item active"
+            onclick="switchView('grades')"
+            <span class="text-muted text-75">(optional)</span>
+          </label>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('analytics')"
+            id="nav-analytics"
+          >
+            <i class="bi bi-graph-up-arrow"></i><span>Analytics</span>
+          </div>
+          <div
+            class="btn btn-primary btn-whatsapp-green"
+            id="nav-students"
+          >
+            <i class="bi bi-people-fill"></i><span>Students</span>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('materials')"
+            id="nav-materials"
+          >
+            <i class="bi bi-folder2-open"></i><span>Materials</span>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('attendance')"
+            id="nav-attendance"
+          >
+            <i class="bi bi-calendar-check-fill"></i><span>Attendance</span>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('cbt')"
+            id="nav-cbt"
+          >
+            <i class="bi bi-patch-question-fill"></i><span>CBT Quizzes</span>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('history')"
+            id="nav-history"
+          >
+            <i class="bi bi-clock-history"></i><span>Term History</span>
+          </div>
+          <div
+            class="sidebar-nav-item"
+            onclick="switchView('settings')"
+            id="nav-settings"
+          >
+            <i class="bi bi-gear-fill"></i><span>Settings</span>
+          </div>
+        </nav>
+
+        <!-- Classes -->
+        <div class="sidebar-section-label">Your Classes</div>
+        <div class="sidebar-classes" id="sidebarClassList"></div>
+        <div class="sidebar-new-class">
+          <button
+            class="btn btn-sm w-full justify-center"
+            onclick="openAddClassModal()"
+          >
+            <i class="bi bi-plus-lg"></i><span>New Class</span>
+          </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+          <button class="sidebar-footer-item" onclick="toggleDarkMode()">
+            <i class="bi bi-moon-stars-fill" id="themeIcon"></i
+            ><span id="themeLabel">Dark mode</span>
+          </button>
+          <button class="sidebar-footer-item" onclick="logOut()">
+            <i class="bi bi-box-arrow-right"></i><span>Log out</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main body -->
+      <div class="app-body">
+        <!-- Topbar -->
+        <header class="app-topbar">
+          <button
+            class="btn btn-icon btn-outline"
+            onclick="toggleMobileSidebar()"
+            id="mobileMenuBtn"
+            class="btn btn-icon btn-outline is-hidden"
+          >
+            <i class="bi bi-list"></i>
+          </button>
+          <span class="topbar-title" id="topbarTitle">Grade Sheet</span>
+          <span class="topbar-breadcrumb" id="topbarBreadcrumb"></span>
+          <div class="topbar-actions">
+            <div class="topbar-search">
+              <i class="bi bi-search"></i>
+              <input
+                type="text"
+                id="globalSearch"
+                placeholder="Search student..."
+                oninput="filterStudents(this.value)"
+              />
+            </div>
+            <button
+              class="btn btn-sm"
+              onclick="exportExcel()"
+              title="Export to Excel"
+            >
+              <i class="bi bi-file-earmark-spreadsheet"></i>
+            </button>
+            <input
+              type="file"
+              id="excelUpload"
+              accept=".csv,.xlsx,.xls"
+              class="is-hidden"
+              onchange="handleExcelUpload(this.files)"
+            />
+            <button
+              class="btn btn-sm"
+              onclick="document.getElementById('excelUpload').click()"
+              title="Import Excel"
+            >
+              <i class="bi bi-upload"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Main scroll area -->
+        <main class="app-main" id="appMain">
+          <!-- ── STATS ROW (always visible) ── -->
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card accent-1">
+              <div class="stat-card-icon">
+                <i class="bi bi-collection-fill"></i>
+              </div>
+              <div class="stat-card-label">Total Classes</div>
+              <div class="stat-card-value" id="statClasses">0</div>
+              <div class="stat-card-sub">across all subjects</div>
+            </div>
+            <div class="stat-card accent-2">
+              <div class="stat-card-icon">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <div class="stat-card-label">Total Students</div>
+              <div class="stat-card-value" id="statStudents">0</div>
+              <div class="stat-card-sub">all classes combined</div>
+            </div>
+            <div class="stat-card accent-3">
+              <div class="stat-card-icon">
+                <i class="bi bi-bar-chart-fill"></i>
+              </div>
+              <div class="stat-card-label">Class Average</div>
+              <div class="stat-card-value" id="statAvg">--</div>
+              <div class="stat-card-sub">current class</div>
+            </div>
+            <div class="stat-card accent-4">
+              <div class="stat-card-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <div class="stat-card-label">Pass Rate</div>
+              <div class="stat-card-value" id="statPass">--</div>
+              <div class="stat-card-sub">score ≥ 40</div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: GRADE SHEET
+      ══════════════════════════════════════════ -->
+          <div class="view active" id="view-grades">
+            <div class="page-header">
+              <h2 class="page-header-title" id="activeClassName">
+                <i class="bi bi-folder2"></i> Select a class
+              </h2>
+              <div class="page-header-actions">
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="openAddStudentModal()"
+                >
+                  <i class="bi bi-person-plus-fill"></i> Add Student
+                </button>
+                <button class="btn btn-sm" onclick="openAddSubjectModal()">
+                  <i class="bi bi-journal-plus"></i> Add Subject
+                </button>
+                <button
+                  class="btn btn-sm btn-success"
+                  onclick="exportAllPDFs()"
+                >
+                  <i class="bi bi-file-pdf-fill"></i> All PDFs
+                </button>
+                <button
+                  class="btn btn-sm btn-emerald"
+                  onclick="exportBroadsheet()"
+                  title="Export master broadsheet for this class"
+                >
+                  <i class="bi bi-file-earmark-spreadsheet-fill"></i> Broadsheet
+                </button>
+              </div>
+            </div>
+
+            <!-- Subject tabs -->
+            <div class="subject-tabs" id="subjectTabs"></div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+              <div class="table-toolbar">
+                <div class="table-toolbar-search">
+                  <i class="bi bi-search"></i>
+                  <input
+                    type="text"
+                    placeholder="Search students..."
+                    oninput="filterStudents(this.value)"
+                  />
+                </div>
+                <div class="table-toolbar-right">
+                  <button
+                    class="btn btn-sm"
+                    onclick="sortByScore()"
+                    id="sortBtn"
+                  >
+                    <i class="bi bi-sort-down"></i> Sort
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    onclick="toggleTableView()"
+                    id="viewToggleBtn"
+                    title="Toggle card view"
+                  >
+                    <i class="bi bi-grid"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-accent-soft"
+                    onclick="saveTermSnapshot()"
+                    title="Archive this term's results to Term History"
+                  >
+                    <i class="bi bi-floppy-fill"></i> Save Term
+                  </button>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="grade-table" id="gradeTable">
+                  <thead>
+                    <tr>
+                      <th class="table-col-check">
+                        <input
+                          type="checkbox"
+                          id="masterCheck"
+                          onchange="selectAll(this)"
+                          class="check-input"
+                        />
+                      </th>
+                      <th class="sortable" onclick="sortByName()">
+                        Student
+                        <i class="bi bi-chevron-expand icon-xs"></i>
+                      </th>
+                      <th>
+                        Test
+                        <span class="text-muted text-xs">/20</span>
+                      </th>
+                      <th>
+                        Practical
+                        <span class="text-muted text-xs">/20</span>
+                      </th>
+                      <th>
+                        Exam
+                        <span class="text-muted text-xs">/60</span>
+                      </th>
+                      <th>Total</th>
+                      <th>Grade</th>
+                      <th>Remark</th>
+                      <th>Position</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scoreBody">
+                    <tr>
+                      <td colspan="10">
+                        <div class="empty-state">
+                          <div class="empty-icon">📋</div>
+                          <h3>No class selected</h3>
+                          <p>
+                            Select a class from the sidebar or create a new one
+                            to get started.
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Batch bar -->
+            <div class="batch-bar" id="batchBar">
+              <span id="batchCount" class="font-bold text-85"></span>
+              <button
+                class="btn btn-sm btn-primary"
+                onclick="exportSelectedPDFs()"
+              >
+                <i class="bi bi-file-pdf-fill"></i> PDF for selected
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="deleteSelectedStudents()"
+              >
+                <i class="bi bi-trash-fill"></i> Delete selected
+              </button>
+              <button
+                class="btn btn-sm btn-ghost-strong"
+                onclick="clearSelection()"
+              >
+                <i class="bi bi-x"></i> Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: ANALYTICS
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-analytics">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-graph-up-arrow"></i> Analytics
+              </h2>
+              <div class="page-header-actions">
+                <span id="analyticsClassName" class="badge-pill"></span>
+              </div>
+            </div>
+
+            <div class="analytics-grid">
+              <!-- Grade distribution -->
+              <div class="analytics-card">
+                <h3>
+                  <i class="bi bi-bar-chart-fill icon-accent"></i>
+                  Grade Distribution
+                </h3>
+                <div id="gradeDist"></div>
+              </div>
+
+              <!-- Top performers -->
+              <div class="analytics-card">
+                <h3>
+                  <i class="bi bi-trophy-fill icon-gold"></i>
+                  Top Performers
+                </h3>
+                <div id="topPerformers"></div>
+              </div>
+
+              <!-- Score chart -->
+              <div class="analytics-card grid-span-full">
+                <h3>
+                  <i class="bi bi-graph-up icon-emerald"></i>
+                  Score Overview
+                  <span class="text-muted text-sm font-normal">— current subject</span>
+                </h3>
+                <canvas id="scoreChart" height="100"></canvas>
+              </div>
+            </div>
+
+            <!-- Subject averages -->
+            <div class="analytics-card mb-6">
+              <h3>
+                <i class="bi bi-journals icon-sky"></i> Subject
+                Averages
+              </h3>
+              <div id="subjectAverages"></div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: STUDENTS
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-students">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-people-fill"></i> Student Cards
+              </h2>
+              <div class="page-header-actions">
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="openAddStudentModal()"
+                >
+                  <i class="bi bi-person-plus-fill"></i> Add Student
+                </button>
+              </div>
+            </div>
+            <div class="students-grid" id="studentsGrid">
+              <div class="empty-state grid-span-full">
+                <div class="empty-icon">👥</div>
+                <h3>No students yet</h3>
+                <p>Select a class and add students to see their cards here.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: SETTINGS
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-settings">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-gear-fill"></i> Settings
+              </h2>
+            </div>
+
+            <!-- Subscription / Plan -->
+            <div class="settings-section settings-section--accent">
+              <h3>
+                <i class="bi bi-stars icon-accent"></i> Plan
+                &amp; Subscription
+              </h3>
+              <div id="subscriptionPanel">
+                <div class="settings-muted-line">
+                  Loading...
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="settings-section settings-section--accent">
+                Profile
+              </h3>
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="settingName"
+                  placeholder="e.g. Mrs. Adaeze Okonkwo"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">School Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="settingSchool"
+                  placeholder="e.g. Greenfield Academy"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input
+                  type="email"
+                  class="form-input"
+                  id="settingEmail"
+                  placeholder="you@email.com"
+                />
+              </div>
+              <button class="btn btn-primary" onclick="saveProfile()">
+                <i class="bi bi-check2"></i> Save Profile
+              </button>
+            </div>
+
+            <!-- Report Card Settings -->
+            <div class="settings-section">
+              <h3>
+                <i class="bi bi-file-pdf-fill icon-rose"></i>
+                Report Card Settings
+              </h3>
+              <div class="form-group">
+                <label class="form-label"
+                  >School Full Name (for PDF header)</label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  id="settingPdfSchool"
+                  placeholder="e.g. MARYLAND CONVENT PRIVATE SCHOOL (MCPS)"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Academic Term</label>
+                <select class="form-input form-select" id="settingTerm">
+                  <option>First Term</option>
+                  <option selected>Second Term</option>
+                  <option>Third Term</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Academic Session</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="settingSession"
+                  placeholder="e.g. 2025/2026"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label"
+                  >School Motto / Tagline (optional)</label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  id="settingMotto"
+                  placeholder="e.g. Excellence in Education"
+                />
+              </div>
+              <button class="btn btn-primary" onclick="saveReportSettings()">
+                <i class="bi bi-check2"></i> Save Report Settings
+              </button>
+            </div>
+
+            <!-- Grade Scale -->
+            <div class="settings-section">
+              <h3>
+                <i class="bi bi-list-ol icon-emerald"></i>
+                Custom Grade Scale
+              </h3>
+              <p class="settings-note">
+                Set the minimum score for each grade. Changes apply to all
+                grades and report cards instantly.
+              </p>
+              <div class="gs-editor">
+                <div class="gs-row">
+                  <span class="grade-pill g-A">A</span
+                  ><span class="gs-row-label">Excellent — min score</span
+                  ><input
+                    type="number"
+                    class="form-input gs-input"
+                    id="gsMin_A"
+                    min="1"
+                    max="99"
+                    value="70"
+                    oninput="updateGradeScalePreview()"
+                  /><span class="gs-pct">%</span>
+                </div>
+                <div class="gs-row">
+                  <span class="grade-pill g-B">B</span
+                  ><span class="gs-row-label">Very Good — min score</span
+                  ><input
+                    type="number"
+                    class="form-input gs-input"
+                    id="gsMin_B"
+                    min="1"
+                    max="99"
+                    value="60"
+                    oninput="updateGradeScalePreview()"
+                  /><span class="gs-pct">%</span>
+                </div>
+                <div class="gs-row">
+                  <span class="grade-pill g-C">C</span
+                  ><span class="gs-row-label">Good — min score</span
+                  ><input
+                    type="number"
+                    class="form-input gs-input"
+                    id="gsMin_C"
+                    min="1"
+                    max="99"
+                    value="50"
+                    oninput="updateGradeScalePreview()"
+                  /><span class="gs-pct">%</span>
+                </div>
+                <div class="gs-row">
+                  <span class="grade-pill g-D">D</span
+                  ><span class="gs-row-label">Fair — min score</span
+                  ><input
+                    type="number"
+                    class="form-input gs-input"
+                    id="gsMin_D"
+                    min="1"
+                    max="99"
+                    value="45"
+                    oninput="updateGradeScalePreview()"
+                  /><span class="gs-pct">%</span>
+                </div>
+                <div class="gs-row">
+                  <span class="grade-pill g-E">E</span
+                  ><span class="gs-row-label">Pass — min score</span
+                  ><input
+                    type="number"
+                    class="form-input gs-input"
+                    id="gsMin_E"
+                    min="1"
+                    max="99"
+                    value="40"
+                    oninput="updateGradeScalePreview()"
+                  /><span class="gs-pct">%</span>
+                </div>
+                <div class="gs-row row-disabled">
+                  <span class="grade-pill g-F">F</span
+                  ><span class="gs-row-label">Fail — below E minimum</span
+                  ><span class="text-muted text-sm">Auto</span>
+                </div>
+              </div>
+              <div id="gradeScalePreview" class="my-4"></div>
+              <div class="row-sm">
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="saveGradeScale()"
+                >
+                  <i class="bi bi-check2"></i> Save Grade Scale
+                </button>
+                <button class="btn btn-sm" onclick="resetGradeScale()">
+                  <i class="bi bi-arrow-counterclockwise"></i> Reset to Default
+                </button>
+              </div>
+            </div>
+
+            <!-- School Logo -->
+            <div class="settings-section">
+              <h3>
+                <i class="bi bi-image-fill icon-accent"></i>
+                School Logo (PDF)
+              </h3>
+              <p class="settings-note">
+                Upload your school crest — it appears on every PDF report card
+                instead of the default icon.
+              </p>
+              <div class="align-center-gap">
+                <div class="logo-frame">
+                  <i class="bi bi-image logo-placeholder-icon"></i>
+                  <img
+                    id="logoPreview"
+                    src=""
+                    alt="Logo"
+                    class="logo-preview"
+                  />
+                </div>
+                <div class="logo-actions">
+                  <input
+                    type="file"
+                    id="logoFileInput"
+                    accept="image/*"
+                    class="is-hidden"
+                    onchange="handleLogoUpload(this)"
+                  />
+                  <button
+                    class="btn btn-primary btn-sm"
+                    onclick="document.getElementById('logoFileInput').click()"
+                  >
+                    <i class="bi bi-upload"></i> Upload Logo
+                  </button>
+                  <button class="btn btn-sm btn-danger is-hidden" id="logoRemoveBtn" onclick="removeLogo()">
+                    <i class="bi bi-trash3"></i> Remove Logo
+                  </button>
+                  <span class="text-muted text-75">PNG, JPG or SVG · Max 600KB</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="settings-section">
+              <h3>
+                <i class="bi bi-sliders icon-gold"></i>
+                Preferences
+              </h3>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Dark Mode</div>
+                  <div class="settings-row-desc">Switch to dark theme</div>
+                </div>
+                  <div class="settings-section settings-section--accent">
+                <label class="toggle"
+                  ><input
+                    type="checkbox"
+                    id="darkToggle"
+                    onchange="toggleDarkMode()" /><span
+                    class="toggle-slider"
+                  ></span
+                ></label>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Auto-save</div>
+                  <div class="settings-row-desc">
+                    Save data automatically as you type
+                  </div>
+                </div>
+                <label class="toggle"
+                  ><input type="checkbox" id="autosaveToggle" checked /><span
+                    class="toggle-slider"
+                  ></span
+                ></label>
+              </div>
+            </div>
+
+            <!-- Danger zone -->
+            <div class="settings-section settings-section--danger">
+              <h3>
+                <i class="bi bi-exclamation-triangle-fill icon-danger"></i>
+                Danger Zone
+              </h3>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Clear All Data</div>
+                  <div class="settings-row-desc">
+                    Delete all classes, students and scores
+                  </div>
+                </div>
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="confirmClearData()"
+                >
+                  <i class="bi bi-trash3-fill"></i> Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Backup & Restore section (moved out of danger zone, prominent) -->
+            <div class="settings-section settings-section--accent">
+              <h3>
+                <i class="bi bi-safe2-fill icon-accent"></i>
+                Backup &amp; Restore
+              </h3>
+              <p class="settings-note">
+                Your data lives only on this device. Regular backups protect you
+                if your browser storage is cleared. The backup file includes all
+                classes, students, scores, attendance, quizzes,
+                <strong>and term history</strong>. You can export encrypted
+                backups with your own passphrase.
+              </p>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Download Full Backup</div>
+                  <div class="settings-row-desc">
+                    Saves everything to a <code>.json</code> file on your device
+                  </div>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="exportBackup()">
+                  <i class="bi bi-download"></i> Backup Now
+                </button>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Restore from Backup</div>
+                  <div class="settings-row-desc">
+                    Replace current data with a previously saved backup file
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  id="backupInput"
+                  accept=".json"
+                  class="is-hidden"
+                  onchange="importBackup(this)"
+                />
+                <button
+                  class="btn btn-sm"
+                  onclick="document.getElementById('backupInput').click()"
+                >
+                  <i class="bi bi-upload"></i> Restore
+                </button>
+              </div>
+              <div class="info-banner">
+                <i class="bi bi-shield-check info-banner-icon"></i>
+                <span
+                  >Backups are stored only on your device. GradeFlow never sends
+                  your data to any server.</span
+                >
+              </div>
+              <div class="settings-row mt-3">
+                <div>
+                  <div class="settings-row-label">Legal & Consent</div>
+                  <div class="settings-row-desc">
+                    Review your Privacy Policy, Terms, and consent choices
+                  </div>
+                </div>
+                <div class="row-sm">
+                  <a
+                    href="privacy-policy.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-sm"
+                  >
+                    <i class="bi bi-shield-lock"></i> Privacy
+                  </a>
+                  <a
+                    href="terms.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-sm"
+                  >
+                    <i class="bi bi-file-earmark-text"></i> Terms
+                  </a>
+                  <button class="btn btn-sm" onclick="openConsentModal()">
+                    <i class="bi bi-check2-square"></i> Consent
+                  </button>
+                </div>
+              </div>
+              <div class="settings-row mt-6">
+                <div>
+                  <div class="settings-row-label">Cloud Connector</div>
+                  <div class="settings-row-desc" id="apiConfigSummary">
+                    Cloud provider: local
+                  </div>
+                </div>
+                <button class="btn btn-sm" onclick="openApiConfig()">
+                  <i class="bi bi-plug-fill"></i> Configure
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: CLASS MATERIALS
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-materials">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-folder2-open"></i> Class Materials
+              </h2>
+              <div class="page-header-actions">
+                <span id="materialsClassName" class="badge-pill mr-1"></span>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="openUploadMaterialModal()"
+                >
+                  <i class="bi bi-cloud-upload-fill"></i> Upload Material
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter bar -->
+            <div class="materials-filter-bar">
+              <button
+                class="mat-filter-btn active"
+                onclick="filterMaterials('all', this)"
+              >
+                All
+              </button>
+              <button
+                class="mat-filter-btn"
+                onclick="filterMaterials('word', this)"
+              >
+                <i class="bi bi-file-earmark-word-fill icon-word"></i>
+                Word
+              </button>
+              <button
+                class="mat-filter-btn"
+                onclick="filterMaterials('html', this)"
+              >
+                <i class="bi bi-filetype-html icon-html"></i> HTML
+              </button>
+              <button
+                class="mat-filter-btn"
+                onclick="filterMaterials('pdf', this)"
+              >
+                <i class="bi bi-file-earmark-pdf-fill icon-pdf"></i>
+                PDF
+              </button>
+              <button
+                class="mat-filter-btn"
+                onclick="filterMaterials('image', this)"
+              >
+                <i class="bi bi-image-fill icon-image"></i> Images
+              </button>
+              <button
+                class="mat-filter-btn"
+                onclick="filterMaterials('other', this)"
+              >
+                <i class="bi bi-file-earmark-fill"></i> Other
+              </button>
+              <div class="materials-search-wrap">
+                <i class="bi bi-search materials-search-icon"></i>
+                <input
+                  type="text"
+                  id="matSearch"
+                  placeholder="Search materials..."
+                  oninput="searchMaterials(this.value)"
+                  class="materials-search-input"
+                />
+              </div>
+            </div>
+
+            <!-- No class prompt -->
+            <div id="materialsNoClass" class="empty-state empty-state-lg is-hidden">
+              <div class="empty-icon">📂</div>
+              <h3>Select a class first</h3>
+              <p>
+                Choose a class from the sidebar to view and upload its
+                materials.
+              </p>
+            </div>
+
+            <!-- Materials grid -->
+            <div class="materials-grid" id="materialsGrid"></div>
+          </div>
+
+          <!-- ATTENDANCE VIEW -->
+          <div class="view" id="view-attendance">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-calendar-check-fill"></i> Attendance
+              </h2>
+              <div class="page-header-actions">
+                <span id="attendanceClassName" class="badge-pill mr-1"></span>
+                <input
+                  type="date"
+                  id="attendanceDate"
+                  class="form-input w-auto"
+                  onchange="renderAttendance()"
+                />
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="markAllPresent()"
+                >
+                  <i class="bi bi-check-all"></i> All Present
+                </button>
+                <button class="btn btn-sm" onclick="exportAttendanceExcel()">
+                  <i class="bi bi-file-earmark-excel"></i> Export
+                </button>
+              </div>
+            </div>
+            <div id="attendanceNoClass" class="empty-state empty-state-lg is-hidden">
+              <div class="empty-icon">📅</div>
+              <h3>Select a class first</h3>
+              <p>Choose a class from the sidebar to take attendance.</p>
+            </div>
+            <div id="attendanceContent" class="is-hidden">
+              <div id="attendanceSummaryBar"></div>
+              <div id="attendanceList" class="attendance-list"></div>
+            </div>
+          </div>
+
+          <!-- CBT VIEW -->
+          <div class="view" id="view-cbt">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-patch-question-fill"></i> CBT Quizzes
+              </h2>
+              <div class="page-header-actions">
+                <span id="cbtClassName" class="badge-pill mr-1"></span>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="openCreateQuizModal()"
+                >
+                  <i class="bi bi-plus-lg"></i> New Quiz
+                </button>
+              </div>
+            </div>
+            <div id="cbtNoClass" class="empty-state empty-state-lg is-hidden">
+              <div class="empty-icon">📝</div>
+              <h3>Select a class first</h3>
+              <p>Choose a class from the sidebar to create quizzes.</p>
+            </div>
+            <div id="cbtQuizList" class="cbt-quiz-list"></div>
+          </div>
+
+          <!-- ══════════════════════════════════════════
+           VIEW: TERM HISTORY
+      ══════════════════════════════════════════ -->
+          <div class="view" id="view-history">
+            <div class="page-header">
+              <h2 class="page-header-title">
+                <i class="bi bi-clock-history"></i> Term History
+              </h2>
+              <div class="page-header-actions">
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="saveTermSnapshot()"
+                >
+                  <i class="bi bi-floppy-fill"></i> Save Current Term
+                </button>
+                <button
+                  class="btn btn-sm btn-emerald"
+                  onclick="exportAllBroadsheets()"
+                  title="Export broadsheets for all classes"
+                >
+                  <i class="bi bi-file-earmark-spreadsheet-fill"></i> All
+                  Broadsheets
+                </button>
+              </div>
+            </div>
+
+            <!-- Info banner -->
+            <div class="info-banner mb-6">
+              <i class="bi bi-info-circle-fill info-banner-icon"></i>
+              <div class="info-banner-text">
+                <strong>How it works:</strong> After entering all grades for a
+                term, click <strong>"Save Current Term"</strong> to archive a
+                snapshot. Each term you save will appear here as a column — you
+                can instantly see if students improved (▲) or declined (▼)
+                across terms. You can also export any term's broadsheet as
+                Excel.
+              </div>
+            </div>
+
+            <!-- Dynamic content rendered by renderTermHistory() -->
+            <div id="termHistoryContent"></div>
+          </div>
+        </main>
+        <!-- /app-main -->
+      </div>
+      <!-- /app-body -->
+    </div>
+    <!-- /page-dashboard -->
+
+    <!-- ============================================================ MODALS -->
+
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay" id="authModal">
+      <div class="modal-box modal-box-narrow">
+        <button class="modal-close" onclick="closeModal('authModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="modal-emoji">🎓</div>
+          <div class="modal-title" id="authTitle">Welcome to GradeFlow</div>
+          <div class="modal-sub" id="authSubtitle">
+            Sign in to your teacher account
+          </div>
+        </div>
+        <div class="auth-tabs">
+          <button
+            class="auth-tab active"
+            id="loginTab"
+            onclick="switchAuthTab('login')"
+          >
+            Log in
+          </button>
+          <button
+            class="auth-tab"
+            id="signupTab"
+            onclick="switchAuthTab('signup')"
+          >
+            Sign up
+          </button>
+        </div>
+
+        <!-- Login fields -->
+        <div id="loginFields">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              class="form-input"
+              id="li-email"
+              placeholder="your@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-affix-wrap">
+              <input
+                type="password"
+                id="li-pass"
+                placeholder="Your password"
+                class="form-input input-affix-right"
+              />
+              <button
+                onclick="togglePassVis('li-pass', this)"
+                class="input-toggle-btn"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button
+            class="btn btn-primary w-full justify-center"
+            onclick="handleLogin()"
+          >
+            <i class="bi bi-box-arrow-in-right"></i> Log in
+          </button>
+          <button
+            class="btn btn-outline w-full btn-google-light justify-center mt-2"
+            onclick="handleGoogleLogin()"
+          >
+            <i class="bi bi-google"></i> Continue with Google
+          </button>
+          <p class="auth-note">
+            Don't have an account?
+            <a
+              href="#"
+              onclick="
+                switchAuthTab('signup');
+                return false;
+              "
+              class="auth-link"
+              >Sign up free</a
+            >
+          </p>
+        </div>
+
+        <!-- Signup fields -->
+        <div id="signupFields" class="is-hidden">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input
+              type="text"
+              class="form-input"
+              id="su-name"
+              placeholder="e.g. Mrs. Adaeze Okonkwo"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">School Name</label>
+            <input
+              type="text"
+              class="form-input"
+              id="su-org"
+              placeholder="e.g. Greenfield Academy"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              class="form-input"
+              id="su-email"
+              placeholder="you@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="form-input" id="su-role">
+              <option value="teacher">Teacher</option>
+              <option value="staff">Admin & Staff</option>
+              <option value="student">Student</option>
+              <option value="parent">Parent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"
+              >Password
+              <span class="text-muted text-75">(min. 8 characters)</span>
+            </label>
+            <div class="input-affix-wrap">
+              <input
+                type="password"
+                id="su-pass"
+                placeholder="Create a password"
+                class="form-input input-affix-right"
+              />
+              <button
+                onclick="togglePassVis('su-pass', this)"
+                class="input-toggle-btn"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+          <label
+            class="consent-label"
+          >
+            <input
+              type="checkbox"
+              id="su-consent"
+              class="consent-check"
+            />
+            <span>
+              I agree to the
+              <a
+                href="terms.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="auth-link"
+                >Terms</a
+              >
+              and
+              <a
+                href="privacy-policy.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="auth-link"
+                >Privacy Policy</a
+              >.
+            </span>
+          </label>
+          <button
+            class="btn btn-primary w-full justify-center"
+            onclick="handleSignup()"
+          >
+            <i class="bi bi-person-check-fill"></i> Create Account
+          </button>
+          <button
+            class="btn btn-outline w-full btn-google-light justify-center mt-2"
+            onclick="handleGoogleSignup()"
+          >
+            <i class="bi bi-google"></i> Sign up with Google
+          </button>
+          <p class="auth-note">
+            Already have an account?
+            <a
+              href="#"
+              onclick="
+                switchAuthTab('login');
+                return false;
+              "
+              class="auth-link"
+              >Log in</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD CLASS MODAL -->
+    <div class="modal-overlay" id="addClassModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('addClassModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">New Class</div>
+        <div class="modal-sub">Create a new class for your students</div>
+        <div class="form-group">
+          <label class="form-label">Class Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="newClassName"
+            placeholder="e.g. PRY 5 BLUE"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label"
+            >First Subject (you can add more later)</label
+          >
+          <input
+            type="text"
+            class="form-input"
+            id="newClassSubject"
+            placeholder="e.g. Mathematics"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Class Emoji</label>
+          <select class="form-input form-select" id="newClassEmoji">
+            <option value="📚">📚 Books</option>
+            <option value="🔵">🔵 Blue</option>
+            <option value="🔴">🔴 Red</option>
+            <option value="🟢">🟢 Green</option>
+            <option value="🟡">🟡 Yellow</option>
+            <option value="⚪">⚪ White</option>
+            <option value="🟣">🟣 Purple</option>
+            <option value="🌟">🌟 Star</option>
+            <option value="🎓">🎓 Cap</option>
+            <option value="🏆">🏆 Trophy</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmAddClass()">
+            <i class="bi bi-check2"></i> Create Class
+          </button>
+          <button class="btn" onclick="closeModal('addClassModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD STUDENT MODAL -->
+    <div class="modal-overlay" id="addStudentModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('addStudentModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Add Student</div>
+        <div class="modal-sub" id="addStudentSub">
+          Add a student to the active class
+        </div>
+        <div class="form-group">
+          <label class="form-label">Student Full Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="newStudentName"
+            placeholder="e.g. Abakpa Fortune Chukwuemeka"
+            onkeydown="if (event.key === 'Enter') confirmAddStudent();"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmAddStudent()">
+            <i class="bi bi-person-plus-fill"></i> Add Student
+          </button>
+          <button class="btn" onclick="closeModal('addStudentModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD SUBJECT MODAL -->
+    <div class="modal-overlay" id="addSubjectModal">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('addSubjectModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Add Subject</div>
+        <div class="modal-sub">
+          Add a new subject to the active class. All existing students will be
+          updated.
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="newSubjectName"
+            placeholder="e.g. Mathematics"
+            onkeydown="if (event.key === 'Enter') confirmAddSubject();"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmAddSubject()">
+            <i class="bi bi-journal-plus"></i> Add Subject
+          </button>
+          <button class="btn" onclick="closeModal('addSubjectModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE CLASS MODAL -->
+    <div class="modal-overlay" id="deleteClassModal">
+      <div class="modal-box modal-box-sm">
+        <button class="modal-close" onclick="closeModal('deleteClassModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-emoji modal-box-center">⚠️</div>
+        <div class="modal-title text-center">Delete Class?</div>
+        <p class="modal-sub text-center" id="deleteClassMsg">
+          This will permanently remove the class and all its students and
+          scores.
+        </p>
+        <div class="modal-actions justify-center">
+          <button class="btn btn-danger" onclick="confirmDeleteClass()">
+            <i class="bi bi-trash3-fill"></i> Yes, delete
+          </button>
+          <button class="btn" onclick="closeModal('deleteClassModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RENAME STUDENT MODAL -->
+    <div class="modal-overlay" id="renameStudentModal">
+      <div class="modal-box modal-box-sm">
+        <button class="modal-close" onclick="closeModal('renameStudentModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Rename Student</div>
+        <div class="form-group mt-4">
+          <label class="form-label">Full Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="renameStudentInput"
+            onkeydown="if (event.key === 'Enter') confirmRenameStudent();"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmRenameStudent()">
+            <i class="bi bi-check2"></i> Save
+          </button>
+          <button class="btn" onclick="closeModal('renameStudentModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT DETAIL MODAL -->
+    <div class="modal-overlay" id="studentDetailModal">
+      <div class="modal-box modal-lg">
+        <button class="modal-close" onclick="closeModal('studentDetailModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div id="studentDetailContent"></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD MATERIAL MODAL -->
+    <div class="modal-overlay" id="uploadMaterialModal">
+      <div class="modal-box modal-box-md">
+        <button class="modal-close" onclick="closeModal('uploadMaterialModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Upload Class Material</div>
+        <div class="modal-sub">
+          Add a document, web page, or file to the active class library.
+        </div>
+
+        <!-- Drop zone -->
+        <div
+          class="mat-dropzone"
+          id="matDropzone"
+          onclick="document.getElementById('matFileInput').click()"
+          ondragover="matDragOver(event)"
+          ondragleave="matDragLeave(event)"
+          ondrop="matDrop(event)"
+        >
+          <div class="mat-dropzone-icon">
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+          </div>
+          <div class="mat-dropzone-title">
+            Drop file here or click to browse
+          </div>
+          <div class="mat-dropzone-sub">
+            Supports <strong>.docx</strong>, <strong>.html</strong>,
+            <strong>.htm</strong>, <strong>.pdf</strong>, images, and any other
+            file
+          </div>
+          <div id="matDropzoneFile" class="mat-dropzone-selected is-hidden"></div>
+        </div>
+        <input
+          type="file"
+          id="matFileInput"
+          accept=".docx,.doc,.html,.htm,.pdf,.jpg,.jpeg,.png,.gif,.webp,.txt,.pptx,.xlsx,.csv"
+          class="is-hidden"
+          onchange="matFileSelected(this.files)"
+        />
+
+        <div class="modal-divider-row">
+          <div class="modal-divider-line"></div>
+          <span class="modal-divider-label">OR PASTE HTML / URL</span>
+          <div class="modal-divider-line"></div>
+        </div>
+
+        <!-- HTML paste tab -->
+        <div class="mat-input-tabs">
+          <button
+            class="mat-input-tab active"
+            id="matTabHtml"
+            onclick="switchMatInputTab('html')"
+          >
+            <i class="bi bi-code-slash"></i> Paste HTML
+          </button>
+          <button
+            class="mat-input-tab"
+            id="matTabUrl"
+            onclick="switchMatInputTab('url')"
+          >
+            <i class="bi bi-link-45deg"></i> Web URL
+          </button>
+        </div>
+        <div id="matHtmlSection">
+          <textarea
+            id="matHtmlInput"
+            class="form-input textarea-mono"
+            rows="5"
+            placeholder="Paste your HTML code here…"
+          ></textarea>
+        </div>
+        <div id="matUrlSection" class="is-hidden">
+          <input
+            type="url"
+            id="matUrlInput"
+            class="form-input"
+            placeholder="https://example.com/lesson.html"
+          />
+          <p class="helper-note mt-1">
+            <i class="bi bi-info-circle"></i> URL will be saved as a link —
+            click to open in a new tab.
+          </p>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="form-group">
+          <label class="form-label"
+            >Title
+            <span class="text-muted text-75">(auto-filled from file name)</span>
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="matTitle"
+            placeholder="e.g. Week 3 — Fractions Lesson"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label"
+            >Subject / Topic
+            <span class="text-muted text-75">(optional)</span>
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="matSubjectTag"
+            placeholder="e.g. Mathematics"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label"
+            >Description
+            <span class="text-muted text-75">(optional)</span>
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="matDesc"
+            placeholder="Brief note about this material…"
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="confirmUploadMaterial()">
+            <i class="bi bi-check2-circle"></i> Save Material
+          </button>
+          <button class="btn" onclick="closeModal('uploadMaterialModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATERIAL VIEWER MODAL -->
+    <div class="modal-overlay" id="materialViewerModal">
+      <div class="modal-box modal-box-flat">
+        <div class="mat-viewer-header">
+          <div class="mat-viewer-title" id="matViewerTitle">Material</div>
+          <div class="modal-row-end">
+            <button
+              class="btn btn-sm"
+              onclick="downloadCurrentMaterial()"
+              id="matViewerDownloadBtn"
+              title="Download"
+            >
+              <i class="bi bi-download"></i> Download
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              onclick="deleteCurrentMaterial()"
+              title="Delete material"
+            >
+              <i class="bi bi-trash3"></i>
+            </button>
+            <button
+              class="btn btn-sm"
+              onclick="closeModal('materialViewerModal')"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+        <div class="mat-viewer-meta" id="matViewerMeta"></div>
+        <div class="mat-viewer-body" id="matViewerBody">
+          <!-- content injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ PDF TEMPLATE (off-screen) -->
+    <div id="pdf-template" class="pdf-template-shell">
+      <div class="pdf-template-card">
+        <div class="pdf-template-header">
+          <div class="pdf-template-logo-wrap">
+            <div class="pdf-school-icon-shell">🏫</div>
+            <img class="pdf-school-logo pdf-school-logo-img" src="" alt="" />
+          </div>
+          <div class="pdf-template-title-wrap">
+            <h1 class="pdf-schoolname pdf-school-title">SCHOOL NAME</h1>
+            <p class="pdf-motto pdf-school-motto"></p>
+            <p class="pdf-school-caption">ACADEMIC REPORT SHEET</p>
+            <p class="pdf-school-session">
+              <span class="pdf-term">Second Term</span> ·
+              <span class="pdf-session">2025/2026</span>
+            </p>
+          </div>
+          <div class="pdf-template-header-spacer"></div>
+        </div>
+        <div class="pdf-meta-grid">
+          <div>
+            <div class="pdf-meta-row">
+              <span class="pdf-label">Student Name:</span>
+              <span class="pdf-studentname pdf-value">—</span>
+            </div>
+            <div>
+              <span class="pdf-label">Class:</span>
+              <span class="pdf-classname pdf-value">—</span>
+            </div>
+          </div>
+          <div>
+            <div class="pdf-meta-row">
+              <span class="pdf-label">Position:</span>
+              <span class="pdf-position pdf-value">—</span> out of
+              <span class="pdf-classsize">—</span>
+            </div>
+            <div>
+              <span class="pdf-label">Overall Average:</span>
+              <span class="pdf-overall pdf-value-strong">—</span>
+            </div>
+          </div>
+        </div>
+        <table class="pdf-table">
+          <thead>
+            <tr class="pdf-table-head">
+              <th class="pdf-th-left">Subject</th>
+              <th class="pdf-th">Test /20</th>
+              <th class="pdf-th">Prac /20</th>
+              <th class="pdf-th">Exam /60</th>
+              <th class="pdf-th">Total /100</th>
+              <th class="pdf-th">Grade</th>
+              <th class="pdf-th-right">Remark</th>
+            </tr>
+          </thead>
+          <tbody class="pdf-subjectrows"></tbody>
+        </table>
+        <div class="pdf-comment-row">
+          <div class="pdf-comment-pill">
+            <span class="pdf-label">Teacher's Comment:</span>
+            <span class="pdf-remark">—</span>
+          </div>
+          <div class="pdf-comment-pill-secondary">
+            <span class="pdf-label">Class Avg:</span>
+            <span class="pdf-classavg">—</span>%
+          </div>
+        </div>
+        <div class="pdf-sign-row">
+          <div class="pdf-sign-col pdf-sign-col-wide">
+            <div class="pdf-sign-line"></div>
+            <span class="pdf-sign-caption">Class Teacher</span>
+          </div>
+          <div class="pdf-sign-col pdf-sign-col-wide">
+            <div class="pdf-sign-line"></div>
+            <span class="pdf-sign-caption">Principal / Head Teacher</span>
+          </div>
+          <div class="pdf-sign-col pdf-sign-col-narrow">
+            <div class="pdf-sign-line"></div>
+            <span class="pdf-sign-caption">Date</span>
+          </div>
+        </div>
+        <div class="pdf-footer">
+          Generated by GradeFlow · Free for Nigerian teachers · Built by
+          Oshinaya Damilola
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ AI COMMENT MODAL -->
+    <div class="modal-overlay" id="aiCommentModal">
+      <div class="modal-box modal-box-md">
+        <button class="modal-close" onclick="closeModal('aiCommentModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="ai-modal-header">
+          <div class="ai-modal-icon">✨</div>
+          <div>
+            <div class="modal-title">AI Teacher Comment</div>
+            <div class="modal-sub" id="aiCommentStudentName">
+              Generating for student...
+            </div>
+          </div>
+        </div>
+        <div id="aiKeySection" class="is-hidden mt-3">
+          <div class="ai-key-banner">
+            <div class="ai-key-banner-title">
+              <i class="bi bi-info-circle"></i> One-time setup
+            </div>
+            <div class="ai-key-banner-text">
+              Enter your free Google Gemini API key in the session modal. The
+              key is kept only for this browser session and is not stored in
+              localStorage.
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAiKeyModal()">
+            <i class="bi bi-key-fill"></i> Enter API key
+          </button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comment tone</label>
+          <div class="tone-selector" id="aiToneSelector">
+            <button
+              class="ai-tone-btn active"
+              data-tone="encouraging"
+              onclick="selectTone(this)"
+            >
+              🌟 Encouraging
+            </button>
+            <button
+              class="ai-tone-btn"
+              data-tone="formal"
+              onclick="selectTone(this)"
+            >
+              📋 Formal
+            </button>
+            <button
+              class="ai-tone-btn"
+              data-tone="detailed"
+              onclick="selectTone(this)"
+            >
+              🔍 Detailed
+            </button>
+            <button
+              class="ai-tone-btn"
+              data-tone="brief"
+              onclick="selectTone(this)"
+            >
+              ⚡ Brief
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select
+            id="aiLanguageSelect"
+            class="form-input ai-language-select"
+          >
+            <option value="English">English</option>
+            <option value="Nigerian Pidgin">Nigerian Pidgin</option>
+            <option value="Yoruba">Yoruba</option>
+            <option value="Igbo">Igbo</option>
+            <option value="Hausa">Hausa</option>
+          </select>
+        </div>
+        <div id="aiCommentResult" class="is-hidden">
+          <label class="form-label"
+            >Generated comment
+            <span class="ai-comment-result-note">(edit before copying)</span>
+          </label>
+          <textarea
+            id="aiCommentText"
+            class="form-input ai-comment-textarea"
+            rows="5"
+          ></textarea>
+          <div class="ai-comment-actions">
+            <button class="btn btn-primary btn-sm" onclick="copyAiComment()">
+              <i class="bi bi-clipboard-check"></i> Copy comment
+            </button>
+            <button class="btn btn-sm" onclick="applyAiCommentToPDF()">
+              <i class="bi bi-file-pdf-fill"></i> Apply to PDF &amp; download
+            </button>
+            <button class="btn btn-sm" onclick="generateAiComment()">
+              <i class="bi bi-arrow-clockwise"></i> Regenerate
+            </button>
+          </div>
+        </div>
+        <div id="aiCommentLoading" class="ai-loading is-hidden">
+          <div class="spinner ai-loading-spinner"></div>
+          <div class="ai-loading-text">
+            Crafting a personalised comment…
+          </div>
+        </div>
+        <div id="aiCommentError" class="is-hidden"></div>
+        <div class="modal-actions" id="aiCommentActions">
+          <button class="btn btn-primary" onclick="generateAiComment()">
+            <i class="bi bi-stars"></i> Generate Comment
+          </button>
+          <button class="btn" onclick="closeModal('aiCommentModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ AI KEY MODAL -->
+    <div class="modal-overlay" id="aiKeyModal">
+      <div class="modal-box modal-box-narrow">
+        <button class="modal-close" onclick="closeModal('aiKeyModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">AI Key Setup</div>
+        <div class="modal-sub">
+          Enter your Gemini API key for this browser session only. It is not
+          stored in localStorage.
+        </div>
+        <div class="form-group">
+          <label class="form-label">Google Gemini API Key</label>
+          <input
+            type="password"
+            class="form-input"
+            id="aiApiKeyInput"
+            placeholder="AIza..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="saveAiKey()">
+            <i class="bi bi-key-fill"></i> Save for session
+          </button>
+          <button class="btn" onclick="closeModal('aiKeyModal')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ WHATSAPP SHARE MODAL -->
+    <div class="modal-overlay" id="whatsappShareModal">
+      <div class="modal-box modal-box-narrow">
+        <button class="modal-close" onclick="closeModal('whatsappShareModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="modal-emoji-lg">📲</div>
+          <div class="modal-title">Share via WhatsApp</div>
+          <div class="modal-sub" id="waShareStudentName">
+            Report card ready to share
+          </div>
+        </div>
+        <div class="wa-preview-box">
+          <div class="wa-preview-label">
+            Message preview
+          </div>
+          <div id="waMessagePreview" class="wa-message-preview"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"
+            >Parent phone number
+            <span class="text-muted text-75">(optional)</span>
+          </label>
+          <input
+            type="tel"
+            class="form-input"
+            id="waPhoneInput"
+            placeholder="e.g. 08012345678"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary btn-whatsapp-green" onclick="openWhatsApp()">
+            <i class="bi bi-whatsapp"></i> Send on WhatsApp
+          </button>
+          <button class="btn btn-sm" onclick="copyWaMessage()">
+            <i class="bi bi-clipboard"></i> Copy message
+          </button>
+          <button class="btn" onclick="closeModal('whatsappShareModal')">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ PWA INSTALL BANNER -->
+    <div id="pwaInstallBanner" class="pwa-install-banner">
+      <div class="pwa-install-icon">📲</div>
+      <div class="pwa-install-copy">
+        <div class="pwa-install-title">Install GradeFlow</div>
+        <div class="pwa-install-subtitle">Add to home screen for offline access</div>
+      </div>
+      <button
+        class="btn btn-primary btn-sm"
+        id="pwaInstallBtn"
+        onclick="installPWA()"
+      >
+        Install
+      </button>
+      <button class="pwa-install-close" onclick="document.getElementById('pwaInstallBanner').style.display = 'none'">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <!-- CREATE QUIZ MODAL -->
+    <div class="modal-overlay" id="createQuizModal">
+      <div class="modal-box modal-box-xl">
+        <button class="modal-close" onclick="closeModal('createQuizModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Create Quiz</div>
+        <div class="modal-sub">
+          Build a multiple-choice quiz. GradeFlow auto-marks when students
+          submit.
+        </div>
+        <div class="form-group mt-4">
+          <label class="form-label">Quiz Title</label
+          ><input
+            type="text"
+            class="form-input"
+            id="quizTitle"
+            placeholder="e.g. Week 5 Mathematics Test"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject / Topic</label
+          ><input
+            type="text"
+            class="form-input"
+            id="quizSubject"
+            placeholder="e.g. Fractions"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time Limit (minutes, 0 = no limit)</label
+          ><input
+            type="number"
+            id="quizTime"
+            value="30"
+            min="0"
+            class="form-input w-120"
+          />
+        </div>
+        <hr class="divider" />
+        <div class="quiz-questions-header">
+          <div class="form-label quiz-label">Questions</div>
+          <button class="btn btn-sm btn-primary" onclick="addQuizQuestion()">
+            <i class="bi bi-plus-lg"></i> Add Question
+          </button>
+        </div>
+        <div id="quizQuestionsEditor"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="saveQuiz()">
+            <i class="bi bi-floppy-fill"></i> Save Quiz</button
+          ><button class="btn" onclick="closeModal('createQuizModal')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAKE QUIZ MODAL -->
+    <div class="modal-overlay" id="takeQuizModal">
+      <div class="modal-box quiz-box">
+        <button
+          class="modal-close"
+          onclick="
+            clearQuizTimer();
+            closeModal('takeQuizModal');
+          "
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="quiz-header-row">
+          <div>
+            <div class="modal-title" id="takeQuizTitle">Quiz</div>
+            <div class="modal-sub" id="takeQuizMeta"></div>
+          </div>
+          <div id="quizTimer" class="quiz-timer"></div>
+        </div>
+        <div id="takeQuizBody"></div>
+        <div class="modal-actions quiz-actions-hidden" id="takeQuizActions">
+          <button class="btn btn-primary" onclick="submitQuiz()">
+            <i class="bi bi-send-fill"></i> Submit Answers</button
+          ><button class="btn" onclick="closeModal('takeQuizModal')">
+            Cancel
+          </button>
+        </div>
+        <div id="takeQuizResult" class="quiz-result"></div>
+      </div>
+    </div>
+
+    <!-- SUBJECT PICKER MODAL -->
+    <div class="modal-overlay" id="subjectPickerModal">
+      <div class="modal-box modal-box-lg">
+        <button
+          class="modal-close"
+          onclick="
+            closeModal('subjectPickerModal');
+            document.getElementById('subjectPickerSearch').value = '';
+            filterSubjectPicker('');
+          "
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-title">Add Subject</div>
+        <div class="modal-sub">
+          Pick from official WAEC/NECO subjects, or type your own below.
+        </div>
+        <div class="subject-picker-search-wrap">
+          <i class="bi bi-search subject-picker-search-icon"></i>
+          <input
+            type="text"
+            id="subjectPickerSearch"
+            placeholder="Search subjects…"
+            oninput="filterSubjectPicker(this.value)"
+            class="form-input subject-picker-search-input"
+          />
+        </div>
+        <div id="subjectPickerGrid" class="subject-picker-grid"></div>
+        <div class="subject-picker-row">
+          <input
+            type="text"
+            id="customSubjectInput"
+            placeholder="Or type a custom subject name…"
+            class="form-input subject-picker-input"
+            onkeydown="if (event.key === 'Enter') addCustomSubjectFromPicker();"
+          />
+          <button
+            class="btn btn-primary btn-sm"
+            onclick="addCustomSubjectFromPicker()"
+          >
+            <i class="bi bi-plus-lg"></i> Add
+          </button>
+        </div>
+        <div class="modal-actions mt-2">
+          <button class="btn" onclick="closeModal('subjectPickerModal')">
+            <i class="bi bi-check2"></i> Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ ONBOARDING MODAL -->
+    <div class="modal-overlay" id="onboardingModal">
+      <div class="modal-box modal-box-500 modal-box-center">
+        <div class="modal-emoji-lg">👋</div>
+        <div class="modal-title">
+          Welcome, <span id="onboardingUserName">Teacher</span>!
+        </div>
+        <div class="modal-sub onboarding-sub">
+          GradeFlow is ready. How would you like to start?
+        </div>
+        <div class="onboarding-stack">
+          <button
+            onclick="onboardingCreateClass()"
+            class="btn btn-primary btn-block-lg"
+          >
+            <i class="bi bi-plus-circle-fill"></i>&nbsp; Create my first class
+          </button>
+          <button
+            onclick="loadDemoData()"
+            class="btn btn-block-lg"
+          >
+            <i class="bi bi-eye"></i>&nbsp; Load sample data to explore first
+          </button>
+          <button
+            onclick="closeOnboarding()"
+            class="btn btn-sm onboarding-link"
+          >
+            I'll set up later
+          </button>
+        </div>
+        <div class="onboarding-footer">
+          <span><i class="bi bi-wifi-off"></i> 100% offline</span>
+          <span
+            ><i class="bi bi-shield-lock"></i> Data stays on your device</span
+          >
+          <span><i class="bi bi-phone"></i> Works on phone too</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSENT MODAL -->
+    <div class="modal-overlay" id="consentModal" data-locked="true">
+      <div class="modal-box modal-box-lg">
+        <div class="modal-title">Privacy & Terms Consent</div>
+        <div class="modal-sub mb-2">
+          To use GradeFlow, you must accept the Privacy Policy and Terms.
+        </div>
+        <div class="consent-box">
+          GradeFlow stores your records on your device by default. You can
+          export encrypted backups using a passphrase that only you know.
+        </div>
+        <div class="consent-links">
+          <a
+            href="privacy-policy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm"
+          >
+            <i class="bi bi-shield-lock"></i> Read Privacy Policy
+          </a>
+          <a
+            href="terms.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm"
+          >
+            <i class="bi bi-file-earmark-text"></i> Read Terms
+          </a>
+        </div>
+        <label class="consent-label">
+          <input
+            type="checkbox"
+            id="consentAgreeCheck"
+            class="consent-check"
+          />
+          <span>
+            I have read and agree to the GradeFlow Privacy Policy and Terms of
+            Service.
+          </span>
+        </label>
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="acceptConsent()">
+            <i class="bi bi-check2-circle"></i> I Agree
+          </button>
+          <button class="btn" onclick="declineConsent()">
+            Decline and Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ UPGRADE MODAL -->
+    <div class="modal-overlay" id="upgradeModal">
+      <div class="modal-box modal-box-narrow modal-box-center">
+        <button class="modal-close" onclick="closeModal('upgradeModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <div class="modal-emoji-lg">🚀</div>
+        <div class="modal-title">Upgrade to Pro</div>
+        <div class="modal-sub" id="upgradeReason">
+          Unlock unlimited classes and students.
+        </div>
+        <div class="upgrade-box">
+          <div class="upgrade-price">
+            ₦5,000
+            <span class="upgrade-price-term">/ term</span>
+          </div>
+          <div class="upgrade-features">
+            <div class="upgrade-feature">
+              <i class="bi bi-check-circle-fill upgrade-feature-icon"></i>
+              Unlimited classes
+            </div>
+            <div class="upgrade-feature">
+              <i class="bi bi-check-circle-fill upgrade-feature-icon"></i>
+              Unlimited students
+            </div>
+            <div class="upgrade-feature">
+              <i class="bi bi-check-circle-fill upgrade-feature-icon"></i>
+              All features (PDF, Excel, CBT, Analytics…)
+            </div>
+            <div class="upgrade-feature">
+              <i class="bi bi-check-circle-fill upgrade-feature-icon"></i>
+              Priority support
+            </div>
+          </div>
+        </div>
+        <div class="upgrade-note">
+          Contact us to pay and get your account activated instantly.
+        </div>
+        <div class="upgrade-stack">
+          <button
+            class="btn btn-primary btn-whatsapp-green"
+            onclick="upgradeContactWhatsApp()"
+          >
+            <i class="bi bi-whatsapp"></i> Contact us on WhatsApp
+          </button>
+          <button class="btn justify-center" onclick="upgradeContactEmail()">
+            <i class="bi bi-envelope-fill"></i> Send upgrade request by email
+          </button>
+          <button class="btn btn-sm text-muted" onclick="closeModal('upgradeModal')">
+            Stay on Free Plan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

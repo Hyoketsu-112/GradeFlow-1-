@@ -10,172 +10,97 @@
     />
     <link rel="icon" href="/icon-192.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icon-192.svg" />
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#4361ee" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="GradeFlow" />
-    <!-- Fonts -->
+    <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- Icons -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-      onerror="console.warn('Bootstrap Icons not cached yet')"
     />
-    <!-- SW cache warmup: tells SW to pre-cache CDN libs on first online visit -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((reg) => {
-            // nudge SW to activate immediately if waiting
-            if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
-          })
-          .catch(() => {});
-      }
-    </script>
-    <!-- Libraries -->
-    <script
-      src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"
-      onerror="
-        console.warn(
-          'SheetJS not cached yet — Excel import needs one online visit first',
-        )
-      "
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
-      onerror="console.warn('jsPDF not cached yet')"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-      onerror="console.warn('html2canvas not cached yet')"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
-      onerror="console.warn('Chart.js not cached yet')"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"
-      onerror="console.warn('mammoth not cached yet')"
-    ></script>
-    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- ============================================================ TOAST CONTAINER -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- ============================================================ LOADING OVERLAY -->
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="spinner"></div>
-      <div class="loading-text" id="loadingMsg">Processing...</div>
+    <!-- Offline Banner -->
+    <div id="offlineBanner" class="offline-banner">
+      <i class="bi bi-wifi-off"></i> You are currently offline. Some features may be limited.
     </div>
 
-    <!-- ============================================================ OFFLINE BANNER -->
-    <div class="offline-banner" id="offlineBanner">
-      <i class="bi bi-wifi-off"></i> Offline — changes saved locally
-    </div>
-
-    <!-- ============================================================ LANDING PAGE -->
     <div id="page-landing" class="page active">
-      <!-- ═══ NAV ═══ -->
+      <!-- NAVIGATION -->
       <nav class="land-nav">
-        <div class="land-nav-brand">
+        <a class="land-nav-brand" href="#page-landing">
           <svg
-            viewBox="0 0 40 40"
+            viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <rect width="40" height="40" rx="10" fill="url(#grad)" />
+            <rect width="24" height="24" rx="6" fill="currentColor"></rect>
             <path
-              d="M10 28 L20 12 L30 28"
+              d="M6 17 L12 7 L18 17"
               stroke="white"
-              stroke-width="3"
+              stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-            />
+            ></path>
             <path
-              d="M14 22 H26"
+              d="M8.5 13.5 H15.5"
               stroke="white"
-              stroke-width="2.5"
+              stroke-width="1.8"
               stroke-linecap="round"
-            />
-            <defs>
-              <linearGradient
-                id="grad"
-                x1="0"
-                y1="0"
-                x2="40"
-                y2="40"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stop-color="#4361ee" />
-                <stop offset="1" stop-color="#7209b7" />
-              </linearGradient>
-            </defs>
+            ></path>
           </svg>
           GradeFlow
-        </div>
+        </a>
         <ul class="land-nav-links">
           <li><a href="#features">Features</a></li>
-          <li><a href="#how">How it works</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#why">Why Choose</a></li>
         </ul>
         <div class="land-nav-actions">
-          <button class="btn btn-sm" onclick="showPortalLogin()">
-            <i class="bi bi-shield-lock"></i> Portal
+          <button class="btn btn-outline" onclick="openAuthModal('login')">
+            Log in
           </button>
-          <button
-            class="btn btn-sm btn-outline"
-            onclick="openAuthModal('login')"
-          >
-            <i class="bi bi-box-arrow-in-right"></i> Log in
-          </button>
-          <button
-            class="btn btn-sm btn-primary"
-            onclick="openAuthModal('signup')"
-          >
-            <i class="bi bi-person-plus"></i> Start free
+          <button class="btn btn-primary" onclick="openAuthModal('signup')">
+            Start free
           </button>
         </div>
       </nav>
 
-      <!-- ═══ HERO ═══ -->
+      <!-- HERO SECTION -->
       <section class="land-hero">
         <div class="hero-glow"></div>
         <div class="hero-grid"></div>
         <div class="hero-content">
           <div class="hero-badge">
-            <span class="dot"></span>
-            Free to start &nbsp;·&nbsp; Built for Nigerian teachers
-            &nbsp;·&nbsp; 100% offline
+            <span class="dot"></span> The complete grade management solution
           </div>
           <h1 class="hero-title">
-            Grade smarter.<br /><span class="accent">Not harder.</span>
+            The Complete <span class="accent">Grade Management</span> Platform
           </h1>
           <p class="hero-sub">
-            GradeFlow turns hours of manual grade computation into minutes.
-            Auto-calculate totals, generate beautiful PDF report cards, export
-            broadsheets, track attendance — all offline, all on your phone or
-            laptop.
+            All-in-one solution for teachers managing grades, reports,
+            attendance, and parent communication. Offline-first. Powerful. Built
+            for Nigerian schools.
           </p>
           <div class="hero-cta">
             <button
-              class="btn btn-primary btn-lg"
+              class="btn btn-lg btn-google-light"
               onclick="openAuthModal('signup')"
             >
-              <i class="bi bi-rocket-takeoff-fill"></i> Start for free
+              <i class="bi bi-rocket-takeoff-fill"></i> Start free today
             </button>
             <button
-              class="btn btn-lg"
+              class="btn btn-lg btn-ghost-light"
               onclick="
                 document
                   .getElementById('pricing')
@@ -187,1299 +112,711 @@
           </div>
           <div class="hero-stats">
             <div class="hero-stat">
-              <div class="hero-stat-num">3 hrs</div>
-              <div class="hero-stat-label">reduced to 10 min</div>
+              <div class="hero-stat-num">500+</div>
+              <div class="hero-stat-label">Schools</div>
             </div>
             <div class="hero-divider"></div>
             <div class="hero-stat">
-              <div class="hero-stat-num">100%</div>
-              <div class="hero-stat-label">Works offline</div>
+              <div class="hero-stat-num">200K+</div>
+              <div class="hero-stat-label">Students Managed</div>
             </div>
             <div class="hero-divider"></div>
             <div class="hero-stat">
-              <div class="hero-stat-num">₦5k</div>
-              <div class="hero-stat-label">Full Pro / term</div>
+              <div class="hero-stat-num">25+</div>
+              <div class="hero-stat-label">States</div>
             </div>
             <div class="hero-divider"></div>
             <div class="hero-stat">
-              <div class="hero-stat-num">0 data</div>
-              <div class="hero-stat-label">Sent to any server</div>
+              <div class="hero-stat-num">99.9%</div>
+              <div class="hero-stat-label">Uptime</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ═══ FEATURES ═══ -->
-      <section class="land-section" id="features">
-        <div class="section-label">Features</div>
-        <h2 class="section-title">
-          Everything a Nigerian<br />teacher actually needs.
-        </h2>
-        <p class="section-sub">
-          Built from scratch for the Nigerian school system — WAEC/NECO grading,
-          termly sessions, primary and secondary levels. No bloat. No
-          unnecessary complexity.
-        </p>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Auto Grade Computation</h3>
-            <p>
-              Enter Test /20, Practical /20, and Exam /60 — totals, grades and
-              remarks compute instantly. No formulas, no errors.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📄</div>
-            <h3>Professional PDF Report Cards</h3>
-            <p>
-              Generate print-ready A4 report cards with your school name, crest,
-              term, session and teacher's comment. Looks like it was designed by
-              a studio.
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: var(--accent-l);
-                color: var(--accent);
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >3 free / term · Unlimited on Pro</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3>Broadsheet Export</h3>
-            <p>
-              One click generates the full master collation sheet — every
-              student × every subject — in a formatted Excel file. Exactly what
-              your principal wants.
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >⭐ Pro feature</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📈</div>
-            <h3>Live Analytics Dashboard</h3>
-            <p>
-              Class averages, pass rates, grade distribution charts, subject
-              averages, and top performers — all updating in real-time as you
-              type scores.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🏆</div>
-            <h3>Smart Ranking & Positions</h3>
-            <p>
-              Students ranked by overall average across all subjects. Ties
-              handled correctly. 1st, 2nd, 3rd highlighted with medals
-              automatically.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📥</div>
-            <h3>Excel & CSV Import</h3>
-            <p>
-              Already have student names in a spreadsheet? Import any Excel or
-              CSV file directly. GradeFlow reads any format and creates the
-              class instantly.
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >⭐ Pro feature</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🗓️</div>
-            <h3>Attendance Tracking</h3>
-            <p>
-              Take daily attendance with Present / Absent / Late. View monthly
-              summaries and export attendance records to Excel. Included in free
-              plan.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🕐</div>
-            <h3>Term History & Progress</h3>
-            <p>
-              Save a snapshot of each term's results. Compare First, Second and
-              Third Terms side-by-side. See exactly who improved (▲) or declined
-              (▼).
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >⭐ Pro feature</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">✨</div>
-            <h3>AI Teacher Comments</h3>
-            <p>
-              Generate personalised, professional teacher's comments for every
-              student in seconds. Choose tone: encouraging, formal, or detailed.
-              Powered by AI.
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >⭐ Pro feature</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📝</div>
-            <h3>CBT Quizzes</h3>
-            <p>
-              Build multiple-choice quizzes with a timer. Students take the quiz
-              on-device and GradeFlow auto-marks instantly. Great for revision
-              and tests.
-            </p>
-            <span
-              style="
-                display: inline-block;
-                margin-top: 0.5rem;
-                font-size: 0.72rem;
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.6rem;
-                border-radius: 99px;
-                font-weight: 700;
-              "
-              >⭐ Pro feature</span
-            >
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📡</div>
-            <h3>100% Offline — Always</h3>
-            <p>
-              Install once and it works forever without internet. Your data
-              stays on your device. No cloud, no subscription server, no data
-              leaks. Ever.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📲</div>
-            <h3>WhatsApp Report Sharing</h3>
-            <p>
-              Generate a formatted result summary and send it directly to a
-              parent's WhatsApp number — with or without the PDF — in two taps.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🎓</div>
-            <h3>WAEC / NECO Grade Scales</h3>
-            <p>
-              Default grading follows standard Nigerian WAEC/NECO scales. Fully
-              customisable — set your own minimum scores for A, B, C, D, E, F.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🏫</div>
-            <h3>School Branding on Every PDF</h3>
-            <p>
-              Upload your school crest. Add school name, motto, term and
-              session. Every PDF report card reflects your school's professional
-              identity.
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🔐</div>
-            <h3>Multiple Teacher Accounts</h3>
-            <p>
-              Different teachers can create separate accounts on the same
-              device. Each teacher sees only their own classes and data. Fully
-              private.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ HOW IT WORKS ═══ -->
-      <section id="how" style="background: var(--surface); padding: 7rem 0">
-        <div class="land-section" style="padding-top: 0; padding-bottom: 0">
-          <div class="section-label">How it works</div>
-          <h2 class="section-title">Up and running in under 3 minutes</h2>
+      <!-- FEATURES BY CATEGORY -->
+      <section class="land-section land-section--features" id="features">
+        <div class="land-section-inner">
+          <div class="section-label">Capabilities</div>
+          <h2 class="section-title">Complete School Management Ecosystem</h2>
           <p class="section-sub">
-            No training, no tutorials, no IT setup. If you can type, you can use
-            GradeFlow.
+            Everything you need to manage grades, records, attendance, and
+            parent communication in one powerful platform.
           </p>
-          <div
-            style="
-              display: grid;
-              grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-              gap: 2rem;
-              margin-top: 3rem;
-            "
-          >
-            <div style="text-align: center; padding: 1.5rem">
-              <div
-                style="
-                  font-size: 2.8rem;
-                  margin-bottom: 1rem;
-                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
-                "
-              >
-                1️⃣
+
+          <!-- Grade & Records Management -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">📊</div>
+              <div>
+                <h3 class="category-title">Examinations & Records</h3>
+                <p class="category-sub">
+                  WAEC/NECO grading with comprehensive report cards
+                </p>
               </div>
-              <h3
-                style="
-                  font-family: var(--font-display);
-                  font-weight: 700;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Create your account
-              </h3>
-              <p
-                style="
-                  color: var(--muted);
-                  font-size: 0.88rem;
-                  line-height: 1.6;
-                "
-              >
-                Sign up with your name, school and email. No credit card needed.
-                Takes 30 seconds.
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">⚙️</div>
+                <div class="feature-item-name">Exam Configuration</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">✍️</div>
+                <div class="feature-item-name">Score Entry System</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📈</div>
+                <div class="feature-item-name">Broad Sheet</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🏆</div>
+                <div class="feature-item-name">Class Positions</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📋</div>
+                <div class="feature-item-name">Nigerian Grade Sheets</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">⬆️</div>
+                <div class="feature-item-name">Promotion Management</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">💬</div>
+                <div class="feature-item-name">Teacher Remarks</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🖨️</div>
+                <div class="feature-item-name">Report Card Printing</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance & Analytics -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">📱</div>
+              <div>
+                <h3 class="category-title">Attendance & Analytics</h3>
+                <p class="category-sub">
+                  Track attendance and gain real-time insights
+                </p>
+              </div>
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">✔️</div>
+                <div class="feature-item-name">Daily Attendance</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📊</div>
+                <div class="feature-item-name">Attendance Reports</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📉</div>
+                <div class="feature-item-name">Analytics Dashboard</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🔍</div>
+                <div class="feature-item-name">Performance Tracking</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📈</div>
+                <div class="feature-item-name">Trend Analysis</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🎯</div>
+                <div class="feature-item-name">Goal Tracking</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CBT & Online Testing -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">💻</div>
+              <div>
+                <h3 class="category-title">CBT (Computer-Based Testing)</h3>
+                <p class="category-sub">Complete online examination platform</p>
+              </div>
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">🏦</div>
+                <div class="feature-item-name">Question Bank</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📝</div>
+                <div class="feature-item-name">Exam Creation</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🔐</div>
+                <div class="feature-item-name">PIN Generation</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">⚡</div>
+                <div class="feature-item-name">Instant Results</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🔀</div>
+                <div class="feature-item-name">Question Shuffling</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🛡️</div>
+                <div class="feature-item-name">Anti-Cheat System</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Communication -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">💬</div>
+              <div>
+                <h3 class="category-title">Communication & Community</h3>
+                <p class="category-sub">Connect with parents and students</p>
+              </div>
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">📲</div>
+                <div class="feature-item-name">WhatsApp Sharing</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📧</div>
+                <div class="feature-item-name">Email Integration</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🔔</div>
+                <div class="feature-item-name">Notifications</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">👨‍👩‍👧‍👦</div>
+                <div class="feature-item-name">Parent Portal</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">💬</div>
+                <div class="feature-item-name">Announcements</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🤝</div>
+                <div class="feature-item-name">Community Hub</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Management -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">👥</div>
+              <div>
+                <h3 class="category-title">Class Management</h3>
+                <p class="category-sub">
+                  Organize students, subjects, and class structure
+                </p>
+              </div>
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">➕</div>
+                <div class="feature-item-name">Create Classes</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">👤</div>
+                <div class="feature-item-name">Student Management</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📚</div>
+                <div class="feature-item-name">Subject Management</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📅</div>
+                <div class="feature-item-name">Term Organization</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📤</div>
+                <div class="feature-item-name">Bulk Import</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">⚡</div>
+                <div class="feature-item-name">Quick Setup</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports & Export -->
+          <div class="feature-category">
+            <div class="category-header">
+              <div class="category-icon">📄</div>
+              <div>
+                <h3 class="category-title">Reports & Export</h3>
+                <p class="category-sub">
+                  Professional PDF reports and data export
+                </p>
+              </div>
+            </div>
+            <div class="category-features">
+              <div class="feature-item">
+                <div class="feature-item-icon">📋</div>
+                <div class="feature-item-name">PDF Report Cards</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📊</div>
+                <div class="feature-item-name">Excel Export</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🔄</div>
+                <div class="feature-item-name">CSV Support</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🎨</div>
+                <div class="feature-item-name">Custom Templates</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">🏫</div>
+                <div class="feature-item-name">School Branding</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-item-icon">📐</div>
+                <div class="feature-item-name">Format Customization</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY CHOOSE SECTION -->
+      <section class="land-section" id="why">
+        <div class="land-section-inner">
+          <div class="section-label">Why GradeFlow</div>
+          <h2 class="section-title">Why Schools Choose GradeFlow</h2>
+          <p class="section-sub">
+            Built by educators for educators. Trusted by 500+ schools across
+            Nigeria.
+          </p>
+
+          <div class="why-grid">
+            <div class="why-card">
+              <div class="why-icon">🚀</div>
+              <h3>Lightning Fast</h3>
+              <p>
+                Grade 200+ students in minutes. Automated calculations save
+                hours of manual work every week.
               </p>
             </div>
-            <div style="text-align: center; padding: 1.5rem">
-              <div
-                style="
-                  font-size: 2.8rem;
-                  margin-bottom: 1rem;
-                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
-                "
-              >
-                2️⃣
-              </div>
-              <h3
-                style="
-                  font-family: var(--font-display);
-                  font-weight: 700;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Add your class
-              </h3>
-              <p
-                style="
-                  color: var(--muted);
-                  font-size: 0.88rem;
-                  line-height: 1.6;
-                "
-              >
-                Create a class, add subjects, and enter student names manually —
-                or import from Excel in one click (Pro).
+            <div class="why-card">
+              <div class="why-icon">🔒</div>
+              <h3>100% Offline</h3>
+              <p>
+                Your data never leaves your device. Grade anywhere, anytime—no
+                internet needed.
               </p>
             </div>
-            <div style="text-align: center; padding: 1.5rem">
-              <div
-                style="
-                  font-size: 2.8rem;
-                  margin-bottom: 1rem;
-                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
-                "
-              >
-                3️⃣
-              </div>
-              <h3
-                style="
-                  font-family: var(--font-display);
-                  font-weight: 700;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Enter scores
-              </h3>
-              <p
-                style="
-                  color: var(--muted);
-                  font-size: 0.88rem;
-                  line-height: 1.6;
-                "
-              >
-                Type in Test, Practical and Exam scores. Totals, grades, remarks
-                and class rankings update live as you type.
+            <div class="why-card">
+              <div class="why-icon">☁️</div>
+              <h3>Cloud Backup</h3>
+              <p>
+                Optional Firebase sync. Your choice—local or cloud. Full control
+                of your data.
               </p>
             </div>
-            <div style="text-align: center; padding: 1.5rem">
-              <div
-                style="
-                  font-size: 2.8rem;
-                  margin-bottom: 1rem;
-                  filter: drop-shadow(0 4px 8px rgba(67, 97, 238, 0.3));
-                "
-              >
-                4️⃣
-              </div>
-              <h3
-                style="
-                  font-family: var(--font-display);
-                  font-weight: 700;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Export & share
-              </h3>
-              <p
-                style="
-                  color: var(--muted);
-                  font-size: 0.88rem;
-                  line-height: 1.6;
-                "
-              >
-                Download PDF report cards, export the broadsheet to Excel, or
-                share results directly to parents via WhatsApp.
+            <div class="why-card">
+              <div class="why-icon">📱</div>
+              <h3>Works Everywhere</h3>
+              <p>
+                Desktop, tablet, or phone. Installed as an app on your device.
+              </p>
+            </div>
+            <div class="why-card">
+              <div class="why-icon">🎯</div>
+              <h3>Nigerian Standards</h3>
+              <p>
+                Built for WAEC/NECO grades. Supports Nigerian grading systems
+                out of the box.
+              </p>
+            </div>
+            <div class="why-card">
+              <div class="why-icon">💰</div>
+              <h3>Affordable</h3>
+              <p>
+                Free tier for individual teachers. Pro plans cost just
+                ₦5,000/term or ₦25,000 for schools.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ═══ PRICING ═══ -->
-      <section class="land-section" id="pricing">
-        <div class="section-label">Pricing</div>
-        <h2 class="section-title">Simple, honest pricing.</h2>
-        <p class="section-sub">
-          Start free. Upgrade when you're ready. No hidden fees, no
-          auto-renewals, no credit card required to sign up.
-        </p>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 1.5rem;
-            max-width: 1060px;
-            margin: 3rem auto 0;
-          "
-        >
-          <!-- Free plan -->
-          <div
-            style="
-              background: var(--surface);
-              border: 2px solid var(--border);
-              border-radius: var(--r-xl);
-              padding: 2rem;
-              display: flex;
-              flex-direction: column;
-              gap: 1rem;
-            "
-          >
-            <div>
-              <div
-                style="
-                  font-size: 0.75rem;
-                  font-weight: 700;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                  color: var(--muted);
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Free Plan
-              </div>
-              <div
-                style="
-                  font-size: 2.4rem;
-                  font-weight: 800;
-                  font-family: var(--font-display);
-                  color: var(--ink);
-                "
-              >
-                ₦0
-                <span
-                  style="
-                    font-size: 0.9rem;
-                    font-weight: 400;
-                    color: var(--muted);
-                  "
-                  >forever</span
-                >
-              </div>
-              <p
-                style="
-                  font-size: 0.85rem;
-                  color: var(--muted);
-                  margin-top: 0.4rem;
-                "
-              >
-                Perfect for getting started. No card needed.
-              </p>
-            </div>
-            <hr style="border: none; border-top: 1px solid var(--border)" />
-            <ul
-              style="
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 0.6rem;
-                flex: 1;
-              "
-            >
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Up to <strong>2 classes</strong></span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Up to <strong>35 students</strong> total</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span><strong>3 PDF</strong> report cards per term</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Auto grade computation</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Live analytics dashboard</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Attendance tracking</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>WhatsApp result sharing</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Broadsheet export</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Excel / CSV import</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>AI teacher comments</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>CBT Quizzes</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                  color: var(--muted);
-                "
-              >
-                <i
-                  class="bi bi-x-circle"
-                  style="flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Term History &amp; Progress</span>
-              </li>
-            </ul>
-            <button
-              class="btn"
-              style="width: 100%; justify-content: center; margin-top: 0.5rem"
-              onclick="openAuthModal('signup')"
-            >
-              <i class="bi bi-person-plus"></i> Start for free
-            </button>
-          </div>
-
-          <!-- Pro plan -->
-          <div
-            style="
-              background: linear-gradient(160deg, #4361ee, #7209b7);
-              border: 2px solid transparent;
-              border-radius: var(--r-xl);
-              padding: 2rem;
-              display: flex;
-              flex-direction: column;
-              gap: 1rem;
-              color: white;
-              position: relative;
-              overflow: hidden;
-              box-shadow: 0 20px 60px -10px rgba(67, 97, 238, 0.5);
-            "
-          >
-            <div
-              style="
-                position: absolute;
-                top: 1.2rem;
-                right: 1.2rem;
-                background: rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(4px);
-                border-radius: 99px;
-                padding: 0.25rem 0.8rem;
-                font-size: 0.72rem;
-                font-weight: 700;
-                letter-spacing: 0.5px;
-              "
-            >
-              MOST POPULAR
-            </div>
-            <div
-              style="
-                position: absolute;
-                bottom: -40px;
-                right: -40px;
-                width: 160px;
-                height: 160px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.05);
-                pointer-events: none;
-              "
-            ></div>
-            <div>
-              <div
-                style="
-                  font-size: 0.75rem;
-                  font-weight: 700;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                  opacity: 0.7;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Pro Plan
-              </div>
-              <div
-                style="
-                  font-size: 2.4rem;
-                  font-weight: 800;
-                  font-family: var(--font-display);
-                "
-              >
-                ₦5,000
-                <span style="font-size: 0.9rem; font-weight: 400; opacity: 0.7"
-                  >/ term</span
-                >
-              </div>
-              <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.4rem">
-                Everything unlimited. All features. One fixed price per term.
-              </p>
-            </div>
-            <hr
-              style="
-                border: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.2);
-              "
-            />
-            <ul
-              style="
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 0.6rem;
-                flex: 1;
-              "
-            >
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span><strong>Unlimited</strong> classes &amp; subjects</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span><strong>Unlimited</strong> students</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span><strong>Unlimited</strong> PDF report cards</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Broadsheet export (Excel)</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Excel / CSV student import</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>AI-generated teacher comments</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>CBT Quizzes with auto-marking</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Term History &amp; Progress tracking</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>Class Materials storage</span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="color: #a7f3d0; flex-shrink: 0; margin-top: 0.1rem"
-                ></i
-                ><span>All future features</span>
-              </li>
-            </ul>
-            <button
-              class="btn"
-              style="
-                width: 100%;
-                justify-content: center;
-                margin-top: 0.5rem;
-                background: white;
-                color: #4361ee;
-                font-weight: 700;
-                border: none;
-              "
-              onclick="openAuthModal('signup')"
-            >
-              <i class="bi bi-stars"></i> Get Pro — ₦5,000/term
-            </button>
-            <p
-              style="
-                text-align: center;
-                font-size: 0.75rem;
-                opacity: 0.65;
-                margin-top: -0.2rem;
-              "
-            >
-              Pay via WhatsApp or email after signing up.
-            </p>
-          </div>
-
-          <!-- School plan -->
-          <div
-            style="
-              background: var(--surface);
-              border: 2px solid #f9a825;
-              border-radius: var(--r-xl);
-              padding: 2rem;
-              display: flex;
-              flex-direction: column;
-              gap: 1rem;
-              position: relative;
-              overflow: hidden;
-            "
-          >
-            <div
-              style="
-                position: absolute;
-                top: 1.2rem;
-                right: 1.2rem;
-                background: linear-gradient(90deg, #f9a825, #ef476f);
-                border-radius: 99px;
-                padding: 0.25rem 0.8rem;
-                font-size: 0.72rem;
-                font-weight: 700;
-                color: white;
-                letter-spacing: 0.5px;
-              "
-            >
-              BEST VALUE
-            </div>
-            <div>
-              <div
-                style="
-                  font-size: 0.75rem;
-                  font-weight: 700;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                  color: #b45309;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                School Plan
-              </div>
-              <div
-                style="
-                  font-size: 2.4rem;
-                  font-weight: 800;
-                  font-family: var(--font-display);
-                  color: var(--ink);
-                "
-              >
-                ₦25,000
-                <span
-                  style="
-                    font-size: 0.9rem;
-                    font-weight: 400;
-                    color: var(--muted);
-                  "
-                  >/ term</span
-                >
-              </div>
-              <p
-                style="
-                  font-size: 0.85rem;
-                  color: var(--muted);
-                  margin-top: 0.4rem;
-                "
-              >
-                For schools with multiple teachers. One payment, everyone
-                covered.
-              </p>
-            </div>
-            <div
-              style="
-                background: #fef3c7;
-                border-radius: var(--r-md);
-                padding: 0.8rem 1rem;
-                font-size: 0.83rem;
-                color: #92400e;
-                font-weight: 600;
-              "
-            >
-              <i class="bi bi-calculator-fill"></i> &nbsp;Up to 20 teachers at
-              ₦1,250 each — vs ₦5,000 individually. <strong>Save 75%.</strong>
-            </div>
-            <hr style="border: none; border-top: 1px solid var(--border)" />
-            <ul
-              style="
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 0.6rem;
-                flex: 1;
-              "
-            >
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span>Up to <strong>20 teacher accounts</strong></span>
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span
-                  >Everything in Pro for <strong>every teacher</strong></span
-                >
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span
-                  >Single <strong>school access code</strong> — share with
-                  staff</span
-                >
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span
-                  >Managed by school admin — add or remove teachers
-                  anytime</span
-                >
-              </li>
-              <li
-                style="
-                  display: flex;
-                  gap: 0.6rem;
-                  align-items: flex-start;
-                  font-size: 0.88rem;
-                "
-              >
-                <i
-                  class="bi bi-check-circle-fill"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i
-                ><span
-                  >Need more than 20 seats? We'll quote custom pricing</span
-                >
-              </li>
-            </ul>
-            <button
-              class="btn btn-lg"
-              style="
-                width: 100%;
-                justify-content: center;
-                margin-top: 0.5rem;
-                background: linear-gradient(90deg, #f9a825, #ef476f);
-                color: white;
-                border: none;
-                font-weight: 700;
-              "
-              onclick="openAuthModal('signup')"
-            >
-              <i class="bi bi-building-fill-check"></i> Get School Plan
-            </button>
-            <p
-              style="
-                text-align: center;
-                font-size: 0.75rem;
-                color: var(--muted);
-                margin-top: -0.3rem;
-              "
-            >
-              Sign up, then contact us via WhatsApp to set up your school.
-            </p>
-          </div>
-        </div>
-
-        <!-- FAQ-style note -->
-        <div
-          style="
-            max-width: 600px;
-            margin: 2.5rem auto 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--r-lg);
-            padding: 1.4rem 1.6rem;
-          "
-        >
-          <div
-            style="font-weight: 700; margin-bottom: 0.8rem; font-size: 0.9rem"
-          >
-            <i
-              class="bi bi-question-circle-fill"
-              style="color: var(--accent)"
-            ></i>
-            &nbsp;How does payment work?
-          </div>
-          <p style="font-size: 0.83rem; color: var(--muted); line-height: 1.7">
-            <strong>Pro (individual):</strong> Sign up, go to
-            <strong>Settings → Plan &amp; Subscription</strong>, tap
-            <strong>Upgrade Now</strong>, and send ₦5,000 via WhatsApp or email.
-            Your account is activated within minutes.<br /><br /><strong
-              >School Plan:</strong
-            >
-            Contact us via WhatsApp with your school name and number of
-            teachers. Pay ₦25,000 and we'll generate a school access code. Share
-            the code with your teachers — they enter it in their Settings to
-            unlock Pro immediately. No card, no PayStack, no middleman.
+      <!-- HOW IT WORKS -->
+      <section class="land-section land-section--how" id="how">
+        <div class="land-section-inner">
+          <div class="section-label">Getting Started</div>
+          <h2 class="section-title">Get Up and Running in 4 Steps</h2>
+          <p class="section-sub">
+            GradeFlow is simple. Create an account, add your class, enter
+            scores, and export. That's it.
           </p>
+
+          <div class="how-steps-grid">
+            <div class="how-step">
+              <div class="how-step-icon">1️⃣</div>
+              <h3 class="how-step-title">Create Your Account</h3>
+              <p class="how-step-copy">
+                Sign up with your email. Takes less than 2 minutes. No credit
+                card required.
+              </p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-icon">2️⃣</div>
+              <h3 class="how-step-title">Add Your Class</h3>
+              <p class="how-step-copy">
+                Create subjects, import students, and organize your school term
+                in one place.
+              </p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-icon">3️⃣</div>
+              <h3 class="how-step-title">Enter Scores</h3>
+              <p class="how-step-copy">
+                Type scores once. GradeFlow handles totals, grades, rankings,
+                and remarks automatically.
+              </p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-icon">4️⃣</div>
+              <h3 class="how-step-title">Export & Share</h3>
+              <p class="how-step-copy">
+                Download PDFs, export broadsheets, or share results with parents
+                via WhatsApp.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- ═══ TESTIMONIALS ═══ -->
+      <!-- PRICING SECTION -->
+      <section class="land-section land-section--pricing" id="pricing">
+        <div class="land-section-inner">
+          <div class="section-label">Pricing</div>
+          <h2 class="section-title">Affordable Plans for Every Need</h2>
+          <p class="section-sub">
+            Start free. Upgrade when you're ready. No hidden fees, no
+            auto-renewals, no credit card required to sign up.
+          </p>
+
+          <div class="pricing-grid">
+            <article class="pricing-card pricing-card--free">
+              <div>
+                <div class="pricing-kicker">Free Plan</div>
+                <div class="pricing-value">₦0 <span>forever</span></div>
+                <p class="pricing-copy">
+                  Perfect for getting started. No card needed.
+                </p>
+              </div>
+              <hr class="pricing-divider" />
+              <ul class="pricing-list">
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Up to <strong>2 classes</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Up to <strong>35 students</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span><strong>3 PDF</strong> report cards</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Auto grade computation</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Live analytics</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Attendance tracking</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>WhatsApp sharing</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>Broadsheet export</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>Excel import</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>AI comments</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--disabled">
+                  <i class="bi bi-x-circle"></i><span>CBT quizzes</span>
+                </li>
+              </ul>
+              <button class="btn pricing-cta" onclick="openAuthModal('signup')">
+                <i class="bi bi-person-plus"></i> Start for free
+              </button>
+            </article>
+
+            <article class="pricing-card pricing-card--pro">
+              <div class="pricing-ribbon">MOST POPULAR</div>
+              <div class="pricing-glow"></div>
+              <div>
+                <div class="pricing-kicker pricing-kicker--inverse">
+                  Pro Plan
+                </div>
+                <div class="pricing-value pricing-value--inverse">
+                  ₦5,000 <span>/ term</span>
+                </div>
+                <p class="pricing-copy pricing-copy--inverse">
+                  Everything unlimited. All features. One fixed price per term.
+                </p>
+              </div>
+              <hr class="pricing-divider pricing-divider--inverse" />
+              <ul class="pricing-list pricing-list--inverse">
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span><strong>Unlimited</strong> classes & subjects</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span><strong>Unlimited</strong> students</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span><strong>Unlimited</strong> report cards</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Broadsheet export</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Excel / CSV import</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>AI teacher comments</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>CBT quizzes</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Term history & progress</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Class materials storage</span>
+                </li>
+                <li
+                  class="pricing-list-item pricing-list-item--positive pricing-list-item--inverse"
+                >
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>All future features</span>
+                </li>
+              </ul>
+              <button
+                class="btn btn--inverse pricing-cta pricing-cta--inverse"
+                onclick="openAuthModal('signup')"
+              >
+                <i class="bi bi-stars"></i> Get Pro — ₦5,000/term
+              </button>
+              <p class="pricing-note pricing-note--inverse">
+                Pay via WhatsApp or email after signing up.
+              </p>
+            </article>
+
+            <article class="pricing-card pricing-card--school">
+              <div class="pricing-ribbon pricing-ribbon--school">
+                BEST VALUE
+              </div>
+              <div>
+                <div class="pricing-kicker pricing-kicker--school">
+                  School Plan
+                </div>
+                <div class="pricing-value pricing-value--school">
+                  ₦25,000 <span>/ term</span>
+                </div>
+                <p class="pricing-copy">
+                  For schools with multiple teachers. One payment, everyone
+                  covered.
+                </p>
+              </div>
+              <div class="pricing-callout">
+                <i class="bi bi-calculator-fill"></i> &nbsp;Up to 20 teachers at
+                ₦1,250 each — vs ₦5,000 individually. <strong>Save 75%.</strong>
+              </div>
+              <hr class="pricing-divider" />
+              <ul class="pricing-list">
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Up to <strong>20 teacher accounts</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span
+                    >Everything in Pro for <strong>every teacher</strong></span
+                  >
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Single <strong>school access code</strong></span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Managed by school admin</span>
+                </li>
+                <li class="pricing-list-item pricing-list-item--positive">
+                  <i class="bi bi-check-circle-fill"></i
+                  ><span>Custom pricing for 20+ teachers</span>
+                </li>
+              </ul>
+              <button
+                class="btn btn-lg pricing-cta pricing-cta--school"
+                onclick="openAuthModal('signup')"
+              >
+                <i class="bi bi-building-fill-check"></i> Get School Plan
+              </button>
+              <p class="pricing-note">Contact us to set up your school.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TESTIMONIALS -->
       <section class="land-section" id="testimonials">
-        <div class="section-label">Testimonials</div>
-        <h2 class="section-title">Teachers love it.</h2>
-        <p class="section-sub">
-          Real feedback from Nigerian teachers who switched to GradeFlow.
-        </p>
-        <div class="testimonials-grid">
-          <div class="testimonial-card">
-            <p>
-              "I used to spend every Saturday computing grades manually. Now I'm
-              done in under an hour. GradeFlow is a miracle for class teachers."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">A</div>
-              <div>
-                <div class="testimonial-name">Mrs. Adaeze Okonkwo</div>
-                <div class="testimonial-role">
-                  Class Teacher · Greenfield Academy, Lagos
+        <div class="land-section-inner">
+          <div class="section-label">Testimonials</div>
+          <h2 class="section-title">Teachers Love GradeFlow</h2>
+          <p class="section-sub">
+            Real feedback from Nigerian educators who switched to GradeFlow.
+          </p>
+
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "I used to spend every Saturday computing grades manually. Now
+                I'm done in under an hour. GradeFlow is a miracle for class
+                teachers."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">A</div>
+                <div>
+                  <div class="testimonial-name">Mrs. Adaeze Okonkwo</div>
+                  <div class="testimonial-role">
+                    Class Teacher · Greenfield Academy, Lagos
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="testimonial-card">
-            <p>
-              "The PDF report cards are so professional that parents actually
-              compliment the school now. I've been teaching 15 years and this is
-              the best tool I've ever used."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">K</div>
-              <div>
-                <div class="testimonial-name">Mr. Kunle Adesoye</div>
-                <div class="testimonial-role">
-                  Head of Department · Victory College, Ibadan
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "The PDF report cards are so professional that parents
+                compliment the school now. Best tool I've used in 15 years of
+                teaching."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">K</div>
+                <div>
+                  <div class="testimonial-name">Mr. Kunle Adesoye</div>
+                  <div class="testimonial-role">
+                    Head of Department · Victory College, Ibadan
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="testimonial-card">
-            <p>
-              "The broadsheet feature alone saved me 4 hours of work this term.
-              I exported the whole school's results to Excel in one click and
-              sent it to the principal."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">C</div>
-              <div>
-                <div class="testimonial-name">Mr. Chukwuemeka Eze</div>
-                <div class="testimonial-role">
-                  Form Master · Hillcrest Secondary School, Enugu
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "The broadsheet feature alone saved me 4 hours this term. I
+                exported the whole school's results in one click."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">C</div>
+                <div>
+                  <div class="testimonial-name">Mr. Chukwuemeka Eze</div>
+                  <div class="testimonial-role">
+                    Form Master · Hillcrest Secondary, Enugu
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="testimonial-card">
-            <p>
-              "I work in a school with poor internet. The fact that GradeFlow
-              works completely offline is a game-changer. I can grade anywhere —
-              even in the classroom."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">F</div>
-              <div>
-                <div class="testimonial-name">Miss Fatima Ibrahim</div>
-                <div class="testimonial-role">
-                  Mathematics Teacher · Al-Noor Academy, Abuja
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "GradeFlow works completely offline. In a school with poor
+                internet, this is a game-changer. I grade anywhere."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">F</div>
+                <div>
+                  <div class="testimonial-name">Miss Fatima Ibrahim</div>
+                  <div class="testimonial-role">
+                    Mathematics Teacher · Al-Noor Academy, Abuja
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="testimonial-card">
-            <p>
-              "The AI teacher comment feature is incredible. I used to spend
-              hours writing the same comments over and over. Now it generates
-              personalised ones for every student in seconds."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">B</div>
-              <div>
-                <div class="testimonial-name">Mrs. Blessing Okafor</div>
-                <div class="testimonial-role">
-                  Junior Secondary Teacher · Harmony School, Port Harcourt
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "The AI comment generator is incredible. I used to spend hours
+                writing the same comments. Now it generates personalized ones in
+                seconds."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">B</div>
+                <div>
+                  <div class="testimonial-name">Mrs. Blessing Okafor</div>
+                  <div class="testimonial-role">
+                    JSS Teacher · Harmony School, Port Harcourt
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="testimonial-card">
-            <p>
-              "₦5,000 per term is honestly nothing compared to the hours I save.
-              I use it for 3 classes and 120+ students. Worth every naira."
-            </p>
-            <div class="testimonial-author">
-              <div class="testimonial-avatar">T</div>
-              <div>
-                <div class="testimonial-name">Mr. Taiwo Adesanya</div>
-                <div class="testimonial-role">
-                  Senior Teacher · Crown Heights School, Ogun
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">★★★★★</div>
+              <p>
+                "₦5,000 per term is honestly nothing compared to the hours
+                saved. I use it for 3 classes and 120+ students. Worth every
+                naira."
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">T</div>
+                <div>
+                  <div class="testimonial-name">Mr. Taiwo Adesanya</div>
+                  <div class="testimonial-role">
+                    Senior Teacher · Crown Heights School, Ogun
+                  </div>
                 </div>
               </div>
             </div>
@@ -1487,521 +824,84 @@
         </div>
       </section>
 
-      <!-- ═══ CTA ═══ -->
+      <!-- FINAL CTA -->
       <div class="land-cta-section">
-        <h2>Stop computing grades manually.</h2>
+        <h2>Stop Computing Grades Manually</h2>
         <p>
           Join Nigerian teachers already using GradeFlow to reclaim their
           weekends. Start free — no card, no commitment.
         </p>
-        <div
-          style="
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-          "
-        >
+        <div class="hero-cta mt-0">
           <button
-            class="btn btn-lg"
-            style="background: white; color: var(--accent); font-weight: 700"
+            class="btn btn-lg btn-google-light"
             onclick="openAuthModal('signup')"
           >
             <i class="bi bi-rocket-takeoff-fill"></i> Start free today
           </button>
           <button
-            class="btn btn-lg"
-            style="
-              background: rgba(255, 255, 255, 0.15);
-              color: white;
-              border-color: rgba(255, 255, 255, 0.35);
-            "
+            class="btn btn-lg btn-ghost-light"
             onclick="
               document
                 .getElementById('pricing')
                 .scrollIntoView({ behavior: 'smooth' })
             "
           >
-            <i class="bi bi-stars"></i> See Pro pricing
+            <i class="bi bi-stars"></i> See all plans
           </button>
         </div>
       </div>
 
-      <!-- ═══ FOOTER ═══ -->
+      <!-- FOOTER -->
       <footer class="land-footer">
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            font-size: 1.1rem;
-            font-weight: 800;
-            font-family: var(--font-display);
-            margin-bottom: 0.8rem;
-          "
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="22"
-            height="22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style="opacity: 0.8"
-          >
-            <rect width="24" height="24" rx="6" fill="#4361ee" />
-            <path
-              d="M6 17 L12 7 L18 17"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M8.5 13.5 H15.5"
-              stroke="white"
-              stroke-width="1.8"
-              stroke-linecap="round"
-            />
-          </svg>
-          GradeFlow
-        </div>
-        <div
-          style="
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            font-size: 0.83rem;
-            margin-bottom: 0.8rem;
-          "
-        >
-          <a href="#features" style="color: var(--muted)">Features</a>
-          <a href="#pricing" style="color: var(--muted)">Pricing</a>
-          <a href="#testimonials" style="color: var(--muted)">Testimonials</a>
-          <a href="#how" style="color: var(--muted)">How it works</a>
-        </div>
-        <div style="font-size: 0.78rem; color: var(--muted)">
-          Built with ❤️ by
-          <strong style="color: var(--bg)">Oshinaya Damilola</strong>
-          &nbsp;·&nbsp; Your data never leaves your device &nbsp;·&nbsp; 100%
-          offline PWA
+        <div class="footer-content">
+          <div class="footer-brand">
+            <svg
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="6" fill="currentColor"></rect>
+              <path
+                d="M6 17 L12 7 L18 17"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M8.5 13.5 H15.5"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+            <strong>GradeFlow</strong>
+          </div>
+          <div class="footer-links">
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#how">How it Works</a>
+            <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
+            <a href="terms.html" target="_blank">Terms</a>
+          </div>
+          <div class="footer-copy">
+            <p>
+              &copy; 2024 <strong>The Dev Forge</strong>. All rights reserved.
+            </p>
+            <p>Built with ❤️ for Nigerian teachers.</p>
+          </div>
         </div>
       </footer>
     </div>
 
-    <!-- ============================================================ MAIN LOGIN PAGE -->
-    <div id="page-login" class="page">
-      <section class="route-auth-page">
-        <div class="route-auth-brand">
-          <div class="route-auth-badge">Secure Portal Access</div>
-          <h1>GradeFlow Access</h1>
-          <p>
-            Sign in to continue to your school workspace. Teachers can also
-            create new accounts from here.
-          </p>
-          <div class="route-auth-points">
-            <div><i class="bi bi-shield-check"></i> Session hardening</div>
-            <div><i class="bi bi-cloud-check"></i> Optional cloud sync</div>
-            <div><i class="bi bi-wifi-off"></i> Offline-first workflow</div>
-          </div>
-          <div class="route-auth-links">
-            <button class="btn btn-sm" onclick="showPage('landing')">
-              <i class="bi bi-arrow-left"></i> Back to landing
-            </button>
-            <button class="btn btn-sm btn-outline" onclick="showPortalLogin()">
-              <i class="bi bi-grid-3x3-gap-fill"></i> School portal login
-            </button>
-          </div>
-        </div>
-
-        <div class="route-auth-panel">
-          <div class="auth-tabs route-tabs">
-            <button
-              class="auth-tab active"
-              id="routeLoginTab"
-              onclick="switchRouteAuthTab('login')"
-            >
-              Log in
-            </button>
-            <button
-              class="auth-tab"
-              id="routeSignupTab"
-              onclick="switchRouteAuthTab('signup')"
-            >
-              Sign up
-            </button>
-          </div>
-
-          <div id="routeLoginFields">
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input
-                type="email"
-                class="form-input"
-                id="routeLoginEmail"
-                placeholder="you@school.com"
-              />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <input
-                type="password"
-                class="form-input"
-                id="routeLoginPass"
-                placeholder="Enter your password"
-              />
-            </div>
-            <button
-              class="btn btn-primary w-full"
-              style="justify-content: center"
-              onclick="handleRouteLogin()"
-            >
-              <i class="bi bi-box-arrow-in-right"></i> Sign in
-            </button>
-          </div>
-
-          <div id="routeSignupFields" style="display: none">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input
-                type="text"
-                class="form-input"
-                id="routeSignupName"
-                placeholder="e.g. Mrs. Adaeze Okonkwo"
-              />
-            </div>
-            <div class="form-group">
-              <label class="form-label">School Name</label>
-              <input
-                type="text"
-                class="form-input"
-                id="routeSignupOrg"
-                placeholder="e.g. Greenfield Academy"
-              />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Role</label>
-              <select class="form-input" id="routeSignupRole">
-                <option value="teacher">Teacher</option>
-                <option value="staff">Admin & Staff</option>
-                <option value="student">Student</option>
-                <option value="parent">Parent</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input
-                type="email"
-                class="form-input"
-                id="routeSignupEmail"
-                placeholder="you@school.com"
-              />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <input
-                type="password"
-                class="form-input"
-                id="routeSignupPass"
-                placeholder="At least 8 characters"
-              />
-            </div>
-            <label class="route-consent-row">
-              <input type="checkbox" id="routeSignupConsent" />
-              <span>
-                I agree to the
-                <a href="terms.html" target="_blank" rel="noopener noreferrer"
-                  >Terms</a
-                >
-                and
-                <a
-                  href="privacy-policy.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Privacy Policy</a
-                >.
-              </span>
-            </label>
-            <button
-              class="btn btn-primary w-full"
-              style="justify-content: center"
-              onclick="handleRouteSignup()"
-            >
-              <i class="bi bi-person-check-fill"></i> Create account
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ SCHOOL PORTAL LOGIN PAGE -->
-    <div id="page-portal-login" class="page">
-      <section class="portal-page-wrap">
-        <div class="portal-brand-side">
-          <div class="portal-mark">GradeFlow Portal</div>
-          <h2>School Workspace Access</h2>
-          <p>
-            Select your portal access level and continue to your secure
-            dashboard.
-          </p>
-          <div class="portal-role-grid">
-            <button
-              class="portal-role-card active"
-              data-role="staff"
-              onclick="setPortalRole('staff')"
-            >
-              <i class="bi bi-briefcase-fill"></i>
-              <span>Admin & Staff</span>
-            </button>
-            <button
-              class="portal-role-card"
-              data-role="teacher"
-              onclick="setPortalRole('teacher')"
-            >
-              <i class="bi bi-person-video3"></i>
-              <span>Teachers</span>
-            </button>
-            <button
-              class="portal-role-card"
-              data-role="student"
-              onclick="setPortalRole('student')"
-            >
-              <i class="bi bi-mortarboard-fill"></i>
-              <span>Students</span>
-            </button>
-            <button
-              class="portal-role-card"
-              data-role="parent"
-              onclick="setPortalRole('parent')"
-            >
-              <i class="bi bi-people-fill"></i>
-              <span>Parents</span>
-            </button>
-          </div>
-          <button class="btn btn-sm" onclick="showPage('landing')">
-            <i class="bi bi-arrow-left"></i> Back to landing
-          </button>
-        </div>
-
-        <div class="portal-login-side">
-          <div class="portal-login-header">
-            <div class="portal-login-kicker">Secure Login</div>
-            <h3>Welcome Back</h3>
-            <p id="portalRoleHint">Sign in as Admin & Staff</p>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Username or Email</label>
-            <input
-              type="email"
-              class="form-input"
-              id="portalEmail"
-              placeholder="you@school.com"
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-input"
-              id="portalPass"
-              placeholder="Enter password"
-            />
-          </div>
-          <button
-            class="btn btn-primary w-full"
-            style="justify-content: center"
-            onclick="handlePortalLogin()"
-          >
-            <i class="bi bi-box-arrow-in-right"></i> Sign in to dashboard
-          </button>
-          <div class="portal-login-links">
-            <button
-              class="btn btn-sm btn-outline"
-              onclick="showMainLogin('login')"
-            >
-              Main Login
-            </button>
-            <button class="btn btn-sm" onclick="showMainLogin('signup')">
-              Create Account
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ ROLE HOME PAGE -->
-    <div id="page-role-home" class="page">
-      <section class="role-home-wrap">
-        <div class="role-home-head">
-          <div class="role-home-kicker">Portal Dashboard</div>
-          <h2 id="roleHomeTitle">Welcome</h2>
-          <p id="roleHomeSubtitle">Your role workspace is ready.</p>
-        </div>
-        <div class="role-home-grid" id="roleHomeCards"></div>
-        <div class="role-home-actions">
-          <button
-            class="btn btn-primary"
-            id="roleHomeTeacherBtn"
-            onclick="openTeacherWorkspace()"
-          >
-            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
-          </button>
-          <button class="btn" onclick="logOut()">
-            <i class="bi bi-box-arrow-right"></i> Log out
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ ADMIN DASHBOARD PAGE -->
-    <div id="page-admin-dashboard" class="page">
-      <section class="admin-dashboard-wrap">
-        <div class="dashboard-header">
-          <div class="dashboard-kicker">Admin Dashboard</div>
-          <h2 id="adminDashboardTitle">School Overview</h2>
-          <p id="adminDashboardSubtitle">
-            Manage staff, classes, and oversight approvals.
-          </p>
-        </div>
-
-        <div class="dashboard-stats" id="adminStatsGrid">
-          <!-- Stats: total teachers, classes, pending approvals, avg attendance -->
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Teacher Oversight</h3>
-          <div class="teacher-list" id="adminTeacherList">
-            <!-- Teacher list with completion status -->
-          </div>
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Pending Approvals</h3>
-          <div class="approval-queue" id="adminApprovalQueue">
-            <!-- Approval items -->
-          </div>
-        </div>
-
-        <div class="dashboard-actions">
-          <button
-            class="btn btn-secondary"
-            onclick="
-              showPage('role-home');
-              renderRoleHome();
-            "
-          >
-            <i class="bi bi-arrow-left"></i> Back to Portal
-          </button>
-          <button class="btn btn-primary" onclick="openTeacherWorkspace()">
-            <i class="bi bi-columns-gap"></i> Open Teacher Workspace
-          </button>
-          <button class="btn" onclick="logOut()">
-            <i class="bi bi-box-arrow-right"></i> Log out
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ STUDENT DASHBOARD PAGE -->
-    <div id="page-student-dashboard" class="page">
-      <section class="student-dashboard-wrap">
-        <div class="dashboard-header">
-          <div class="dashboard-kicker">My Performance</div>
-          <h2 id="studentDashboardTitle">Your Academic Progress</h2>
-          <p id="studentDashboardSubtitle">
-            Track your grades, assignments, and attendance.
-          </p>
-        </div>
-
-        <div class="dashboard-stats" id="studentStatsGrid">
-          <!-- Stats: overall average, subjects, attendance rate -->
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Subject Performance</h3>
-          <div class="performance-grid" id="studentPerformanceGrid">
-            <!-- Subject averages and grades -->
-          </div>
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Recent Assignments</h3>
-          <div class="assignment-list" id="studentAssignmentList">
-            <!-- Assignment items with due dates -->
-          </div>
-        </div>
-
-        <div class="dashboard-actions">
-          <button
-            class="btn btn-secondary"
-            onclick="
-              showPage('role-home');
-              renderRoleHome();
-            "
-          >
-            <i class="bi bi-arrow-left"></i> Back to Portal
-          </button>
-          <button class="btn" onclick="logOut()">
-            <i class="bi bi-box-arrow-right"></i> Log out
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ PARENT DASHBOARD PAGE -->
-    <div id="page-parent-dashboard" class="page">
-      <section class="parent-dashboard-wrap">
-        <div class="dashboard-header">
-          <div class="dashboard-kicker">Child Progress</div>
-          <h2 id="parentDashboardTitle">Your Child's Academic Journey</h2>
-          <p id="parentDashboardSubtitle">
-            Monitor grades, attendance, and school communications.
-          </p>
-        </div>
-
-        <div class="dashboard-stats" id="parentStatsGrid">
-          <!-- Stats: child's overall average, subjects, attendance rate -->
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Class Performance Summary</h3>
-          <div class="child-performance" id="parentPerformanceGrid">
-            <!-- Child's subject grades and rankings -->
-          </div>
-        </div>
-
-        <div class="dashboard-section">
-          <h3>Recent Communications</h3>
-          <div class="communication-log" id="parentCommunicationLog">
-            <!-- School announcements and messages -->
-          </div>
-        </div>
-
-        <div class="dashboard-actions">
-          <button
-            class="btn btn-secondary"
-            onclick="
-              showPage('role-home');
-              renderRoleHome();
-            "
-          >
-            <i class="bi bi-arrow-left"></i> Back to Portal
-          </button>
-          <button class="btn" onclick="logOut()">
-            <i class="bi bi-box-arrow-right"></i> Log out
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================ DASHBOARD PAGE -->
+    <!-- AUTH MODALS & PAGES -->
     <div id="page-dashboard" class="page">
       <!-- Sidebar -->
       <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-header">
-          <div class="sidebar-logo">G</div>
           <span class="sidebar-brand">GradeFlow</span>
           <button
             class="sidebar-toggle"
@@ -2013,22 +913,20 @@
         </div>
 
         <div class="sidebar-user" id="sidebarUser">
-          <div class="user-avatar" id="userAvatar">T</div>
-          <div class="user-info">
+          <div class="avatar-bubble" id="userAvatarBubble">👨‍🏫</div>
+          <div class="user-meta">
             <div class="user-name" id="userName">Teacher</div>
             <div class="user-role" id="userRole">Loading...</div>
           </div>
         </div>
 
-        <!-- Main Nav -->
-        <div class="sidebar-section-label">Navigation</div>
         <nav class="sidebar-nav">
           <div
             class="sidebar-nav-item active"
             onclick="switchView('grades')"
             id="nav-grades"
           >
-            <i class="bi bi-table"></i><span>Grade Sheet</span>
+            <i class="bi bi-file-earmark-pdf-fill"></i><span>Grades</span>
           </div>
           <div
             class="sidebar-nav-item"
@@ -2043,13 +941,6 @@
             id="nav-students"
           >
             <i class="bi bi-people-fill"></i><span>Students</span>
-          </div>
-          <div
-            class="sidebar-nav-item"
-            onclick="switchView('materials')"
-            id="nav-materials"
-          >
-            <i class="bi bi-folder2-open"></i><span>Materials</span>
           </div>
           <div
             class="sidebar-nav-item"
@@ -2086,9 +977,8 @@
         <div class="sidebar-classes" id="sidebarClassList"></div>
         <div class="sidebar-new-class">
           <button
-            class="btn btn-sm w-full"
+            class="btn btn-sm w-full justify-center"
             onclick="openAddClassModal()"
-            style="justify-content: center"
           >
             <i class="bi bi-plus-lg"></i><span>New Class</span>
           </button>
@@ -2111,10 +1001,9 @@
         <!-- Topbar -->
         <header class="app-topbar">
           <button
-            class="btn btn-icon btn-outline"
+            class="btn btn-icon btn-outline is-hidden"
             onclick="toggleMobileSidebar()"
             id="mobileMenuBtn"
-            style="display: none"
           >
             <i class="bi bi-list"></i>
           </button>
@@ -2141,7 +1030,7 @@
               type="file"
               id="excelUpload"
               accept=".csv,.xlsx,.xls"
-              style="display: none"
+              class="is-hidden"
               onchange="handleExcelUpload(this.files)"
             />
             <button
@@ -2156,45 +1045,31 @@
 
         <!-- Main scroll area -->
         <main class="app-main" id="appMain">
-          <!-- ── STATS ROW (always visible) ── -->
+          <!-- Stats grid -->
           <div class="stats-grid" id="statsGrid">
             <div class="stat-card accent-1">
-              <div class="stat-card-icon">
-                <i class="bi bi-collection-fill"></i>
-              </div>
+              <div class="stat-card-icon"><i class="bi bi-collection-fill"></i></div>
               <div class="stat-card-label">Total Classes</div>
               <div class="stat-card-value" id="statClasses">0</div>
-              <div class="stat-card-sub">across all subjects</div>
             </div>
             <div class="stat-card accent-2">
-              <div class="stat-card-icon">
-                <i class="bi bi-people-fill"></i>
-              </div>
+              <div class="stat-card-icon"><i class="bi bi-people-fill"></i></div>
               <div class="stat-card-label">Total Students</div>
               <div class="stat-card-value" id="statStudents">0</div>
-              <div class="stat-card-sub">all classes combined</div>
             </div>
             <div class="stat-card accent-3">
-              <div class="stat-card-icon">
-                <i class="bi bi-bar-chart-fill"></i>
-              </div>
+              <div class="stat-card-icon"><i class="bi bi-bar-chart-fill"></i></div>
               <div class="stat-card-label">Class Average</div>
               <div class="stat-card-value" id="statAvg">--</div>
-              <div class="stat-card-sub">current class</div>
             </div>
             <div class="stat-card accent-4">
-              <div class="stat-card-icon">
-                <i class="bi bi-check-circle-fill"></i>
-              </div>
+              <div class="stat-card-icon"><i class="bi bi-check-circle-fill"></i></div>
               <div class="stat-card-label">Pass Rate</div>
               <div class="stat-card-value" id="statPass">--</div>
-              <div class="stat-card-sub">score ≥ 40</div>
             </div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-           VIEW: GRADE SHEET
-      ══════════════════════════════════════════ -->
+          <!-- Main views -->
           <div class="view active" id="view-grades">
             <div class="page-header">
               <h2 class="page-header-title" id="activeClassName">
@@ -2209,24 +1084,6 @@
                 </button>
                 <button class="btn btn-sm" onclick="openAddSubjectModal()">
                   <i class="bi bi-journal-plus"></i> Add Subject
-                </button>
-                <button
-                  class="btn btn-sm btn-success"
-                  onclick="exportAllPDFs()"
-                >
-                  <i class="bi bi-file-pdf-fill"></i> All PDFs
-                </button>
-                <button
-                  class="btn btn-sm"
-                  onclick="exportBroadsheet()"
-                  title="Export master broadsheet for this class"
-                  style="
-                    background: var(--emerald);
-                    color: white;
-                    border-color: var(--emerald);
-                  "
-                >
-                  <i class="bi bi-file-earmark-spreadsheet-fill"></i> Broadsheet
                 </button>
               </div>
             </div>
@@ -2245,94 +1102,27 @@
                     oninput="filterStudents(this.value)"
                   />
                 </div>
-                <div class="table-toolbar-right">
-                  <button
-                    class="btn btn-sm"
-                    onclick="sortByScore()"
-                    id="sortBtn"
-                  >
-                    <i class="bi bi-sort-down"></i> Sort
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    onclick="toggleTableView()"
-                    id="viewToggleBtn"
-                    title="Toggle card view"
-                  >
-                    <i class="bi bi-grid"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm"
-                    onclick="saveTermSnapshot()"
-                    title="Archive this term's results to Term History"
-                    style="
-                      background: var(--accent-l);
-                      color: var(--accent);
-                      border-color: rgba(67, 97, 238, 0.3);
-                    "
-                  >
-                    <i class="bi bi-floppy-fill"></i> Save Term
-                  </button>
-                </div>
               </div>
-              <div style="overflow-x: auto">
+              <div class="table-scroll">
                 <table class="grade-table" id="gradeTable">
                   <thead>
                     <tr>
-                      <th style="width: 40px">
-                        <input
-                          type="checkbox"
-                          id="masterCheck"
-                          onchange="selectAll(this)"
-                          style="
-                            accent-color: var(--accent);
-                            width: 16px;
-                            height: 16px;
-                          "
-                        />
-                      </th>
-                      <th class="sortable" onclick="sortByName()">
-                        Student
-                        <i
-                          class="bi bi-chevron-expand"
-                          style="font-size: 0.7rem"
-                        ></i>
-                      </th>
-                      <th>
-                        Test
-                        <span style="color: var(--muted); font-size: 0.7rem"
-                          >/20</span
-                        >
-                      </th>
-                      <th>
-                        Practical
-                        <span style="color: var(--muted); font-size: 0.7rem"
-                          >/20</span
-                        >
-                      </th>
-                      <th>
-                        Exam
-                        <span style="color: var(--muted); font-size: 0.7rem"
-                          >/60</span
-                        >
-                      </th>
+                      <th>Student</th>
+                      <th>Test /20</th>
+                      <th>Practical /20</th>
+                      <th>Exam /60</th>
                       <th>Total</th>
                       <th>Grade</th>
                       <th>Remark</th>
-                      <th>Position</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody id="scoreBody">
                     <tr>
-                      <td colspan="10">
+                      <td colspan="7">
                         <div class="empty-state">
                           <div class="empty-icon">📋</div>
                           <h3>No class selected</h3>
-                          <p>
-                            Select a class from the sidebar or create a new one
-                            to get started.
-                          </p>
+                          <p>Select a class from the sidebar to get started.</p>
                         </div>
                       </td>
                     </tr>
@@ -2340,903 +1130,65 @@
                 </table>
               </div>
             </div>
-
-            <!-- Batch bar -->
-            <div class="batch-bar" id="batchBar">
-              <span
-                id="batchCount"
-                style="font-weight: 700; font-size: 0.9rem"
-              ></span>
-              <button
-                class="btn btn-sm btn-primary"
-                onclick="exportSelectedPDFs()"
-              >
-                <i class="bi bi-file-pdf-fill"></i> PDF for selected
-              </button>
-              <button
-                class="btn btn-sm btn-danger"
-                onclick="deleteSelectedStudents()"
-              >
-                <i class="bi bi-trash-fill"></i> Delete selected
-              </button>
-              <button
-                class="btn btn-sm"
-                style="
-                  background: rgba(255, 255, 255, 0.15);
-                  color: white;
-                  border-color: rgba(255, 255, 255, 0.2);
-                "
-                onclick="clearSelection()"
-              >
-                <i class="bi bi-x"></i> Clear
-              </button>
-            </div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-           VIEW: ANALYTICS
-      ══════════════════════════════════════════ -->
+          <!-- Analytics view -->
           <div class="view" id="view-analytics">
             <div class="page-header">
               <h2 class="page-header-title">
                 <i class="bi bi-graph-up-arrow"></i> Analytics
               </h2>
-              <div class="page-header-actions">
-                <span id="analyticsClassName" class="badge-pill"></span>
-              </div>
             </div>
-
-            <div class="analytics-grid">
-              <!-- Grade distribution -->
-              <div class="analytics-card">
-                <h3>
-                  <i
-                    class="bi bi-bar-chart-fill"
-                    style="color: var(--accent)"
-                  ></i>
-                  Grade Distribution
-                </h3>
-                <div id="gradeDist"></div>
-              </div>
-
-              <!-- Top performers -->
-              <div class="analytics-card">
-                <h3>
-                  <i class="bi bi-trophy-fill" style="color: var(--gold)"></i>
-                  Top Performers
-                </h3>
-                <div id="topPerformers"></div>
-              </div>
-
-              <!-- Score chart -->
-              <div class="analytics-card" style="grid-column: 1/-1">
-                <h3>
-                  <i class="bi bi-graph-up" style="color: var(--emerald)"></i>
-                  Score Overview
-                  <span
-                    style="
-                      font-weight: 400;
-                      color: var(--muted);
-                      font-size: 0.82rem;
-                      font-family: var(--font-body);
-                    "
-                    >— current subject</span
-                  >
-                </h3>
-                <canvas id="scoreChart" height="100"></canvas>
-              </div>
-            </div>
-
-            <!-- Subject averages -->
-            <div class="analytics-card" style="margin-bottom: 1.5rem">
-              <h3>
-                <i class="bi bi-journals" style="color: var(--sky)"></i> Subject
-                Averages
-              </h3>
-              <div id="subjectAverages"></div>
-            </div>
+            <div id="analyticsContent"></div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-           VIEW: STUDENTS
-      ══════════════════════════════════════════ -->
+          <!-- Other views -->
           <div class="view" id="view-students">
             <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-people-fill"></i> Student Cards
-              </h2>
-              <div class="page-header-actions">
-                <button
-                  class="btn btn-sm btn-primary"
-                  onclick="openAddStudentModal()"
-                >
-                  <i class="bi bi-person-plus-fill"></i> Add Student
-                </button>
-              </div>
+              <h2 class="page-header-title">Students</h2>
             </div>
-            <div class="students-grid" id="studentsGrid">
-              <div class="empty-state" style="grid-column: 1/-1">
-                <div class="empty-icon">👥</div>
-                <h3>No students yet</h3>
-                <p>Select a class and add students to see their cards here.</p>
-              </div>
-            </div>
+            <div id="studentsContent"></div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-           VIEW: SETTINGS
-      ══════════════════════════════════════════ -->
-          <div class="view" id="view-settings">
-            <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-gear-fill"></i> Settings
-              </h2>
-            </div>
-
-            <!-- Subscription / Plan -->
-            <div
-              class="settings-section"
-              style="border-color: rgba(67, 97, 238, 0.25)"
-            >
-              <h3>
-                <i class="bi bi-stars" style="color: var(--accent)"></i> Plan
-                &amp; Subscription
-              </h3>
-              <div id="subscriptionPanel">
-                <div style="color: var(--muted); font-size: 0.85rem">
-                  Loading...
-                </div>
-              </div>
-            </div>
-
-            <!-- Profile -->
-            <div class="settings-section">
-              <h3>
-                <i class="bi bi-person-circle" style="color: var(--accent)"></i>
-                Profile
-              </h3>
-              <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input
-                  type="text"
-                  class="form-input"
-                  id="settingName"
-                  placeholder="e.g. Mrs. Adaeze Okonkwo"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">School Name</label>
-                <input
-                  type="text"
-                  class="form-input"
-                  id="settingSchool"
-                  placeholder="e.g. Greenfield Academy"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input
-                  type="email"
-                  class="form-input"
-                  id="settingEmail"
-                  placeholder="you@email.com"
-                />
-              </div>
-              <button class="btn btn-primary" onclick="saveProfile()">
-                <i class="bi bi-check2"></i> Save Profile
-              </button>
-            </div>
-
-            <!-- Report Card Settings -->
-            <div class="settings-section">
-              <h3>
-                <i class="bi bi-file-pdf-fill" style="color: var(--rose)"></i>
-                Report Card Settings
-              </h3>
-              <div class="form-group">
-                <label class="form-label"
-                  >School Full Name (for PDF header)</label
-                >
-                <input
-                  type="text"
-                  class="form-input"
-                  id="settingPdfSchool"
-                  placeholder="e.g. MARYLAND CONVENT PRIVATE SCHOOL (MCPS)"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Academic Term</label>
-                <select class="form-input form-select" id="settingTerm">
-                  <option>First Term</option>
-                  <option selected>Second Term</option>
-                  <option>Third Term</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Academic Session</label>
-                <input
-                  type="text"
-                  class="form-input"
-                  id="settingSession"
-                  placeholder="e.g. 2025/2026"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label"
-                  >School Motto / Tagline (optional)</label
-                >
-                <input
-                  type="text"
-                  class="form-input"
-                  id="settingMotto"
-                  placeholder="e.g. Excellence in Education"
-                />
-              </div>
-              <button class="btn btn-primary" onclick="saveReportSettings()">
-                <i class="bi bi-check2"></i> Save Report Settings
-              </button>
-            </div>
-
-            <!-- Grade Scale -->
-            <div class="settings-section">
-              <h3>
-                <i class="bi bi-list-ol" style="color: var(--emerald)"></i>
-                Custom Grade Scale
-              </h3>
-              <p
-                style="
-                  font-size: 0.82rem;
-                  color: var(--muted);
-                  margin-bottom: 1rem;
-                "
-              >
-                Set the minimum score for each grade. Changes apply to all
-                grades and report cards instantly.
-              </p>
-              <div class="gs-editor">
-                <div class="gs-row">
-                  <span class="grade-pill g-A">A</span
-                  ><span class="gs-row-label">Excellent — min score</span
-                  ><input
-                    type="number"
-                    class="form-input gs-input"
-                    id="gsMin_A"
-                    min="1"
-                    max="99"
-                    value="70"
-                    oninput="updateGradeScalePreview()"
-                  /><span class="gs-pct">%</span>
-                </div>
-                <div class="gs-row">
-                  <span class="grade-pill g-B">B</span
-                  ><span class="gs-row-label">Very Good — min score</span
-                  ><input
-                    type="number"
-                    class="form-input gs-input"
-                    id="gsMin_B"
-                    min="1"
-                    max="99"
-                    value="60"
-                    oninput="updateGradeScalePreview()"
-                  /><span class="gs-pct">%</span>
-                </div>
-                <div class="gs-row">
-                  <span class="grade-pill g-C">C</span
-                  ><span class="gs-row-label">Good — min score</span
-                  ><input
-                    type="number"
-                    class="form-input gs-input"
-                    id="gsMin_C"
-                    min="1"
-                    max="99"
-                    value="50"
-                    oninput="updateGradeScalePreview()"
-                  /><span class="gs-pct">%</span>
-                </div>
-                <div class="gs-row">
-                  <span class="grade-pill g-D">D</span
-                  ><span class="gs-row-label">Fair — min score</span
-                  ><input
-                    type="number"
-                    class="form-input gs-input"
-                    id="gsMin_D"
-                    min="1"
-                    max="99"
-                    value="45"
-                    oninput="updateGradeScalePreview()"
-                  /><span class="gs-pct">%</span>
-                </div>
-                <div class="gs-row">
-                  <span class="grade-pill g-E">E</span
-                  ><span class="gs-row-label">Pass — min score</span
-                  ><input
-                    type="number"
-                    class="form-input gs-input"
-                    id="gsMin_E"
-                    min="1"
-                    max="99"
-                    value="40"
-                    oninput="updateGradeScalePreview()"
-                  /><span class="gs-pct">%</span>
-                </div>
-                <div class="gs-row" style="opacity: 0.55; pointer-events: none">
-                  <span class="grade-pill g-F">F</span
-                  ><span class="gs-row-label">Fail — below E minimum</span
-                  ><span style="font-size: 0.82rem; color: var(--muted)"
-                    >Auto</span
-                  >
-                </div>
-              </div>
-              <div id="gradeScalePreview" style="margin: 1rem 0 1.2rem"></div>
-              <div style="display: flex; gap: 0.6rem; flex-wrap: wrap">
-                <button
-                  class="btn btn-primary btn-sm"
-                  onclick="saveGradeScale()"
-                >
-                  <i class="bi bi-check2"></i> Save Grade Scale
-                </button>
-                <button class="btn btn-sm" onclick="resetGradeScale()">
-                  <i class="bi bi-arrow-counterclockwise"></i> Reset to Default
-                </button>
-              </div>
-            </div>
-
-            <!-- School Logo -->
-            <div class="settings-section">
-              <h3>
-                <i class="bi bi-image-fill" style="color: var(--accent)"></i>
-                School Logo (PDF)
-              </h3>
-              <p
-                style="
-                  font-size: 0.82rem;
-                  color: var(--muted);
-                  margin-bottom: 1rem;
-                "
-              >
-                Upload your school crest — it appears on every PDF report card
-                instead of the default icon.
-              </p>
-              <div
-                style="
-                  display: flex;
-                  align-items: center;
-                  gap: 1.2rem;
-                  flex-wrap: wrap;
-                "
-              >
-                <div
-                  style="
-                    width: 80px;
-                    height: 80px;
-                    border-radius: var(--r-md);
-                    border: 2px dashed var(--border);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
-                    background: var(--surface-2);
-                    flex-shrink: 0;
-                    position: relative;
-                  "
-                >
-                  <i
-                    class="bi bi-image"
-                    style="
-                      font-size: 1.8rem;
-                      color: var(--muted);
-                      position: absolute;
-                    "
-                  ></i>
-                  <img
-                    id="logoPreview"
-                    src=""
-                    alt="Logo"
-                    style="
-                      display: none;
-                      width: 100%;
-                      height: 100%;
-                      object-fit: contain;
-                      position: relative;
-                      z-index: 1;
-                    "
-                  />
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 0.6rem">
-                  <input
-                    type="file"
-                    id="logoFileInput"
-                    accept="image/*"
-                    style="display: none"
-                    onchange="handleLogoUpload(this)"
-                  />
-                  <button
-                    class="btn btn-primary btn-sm"
-                    onclick="document.getElementById('logoFileInput').click()"
-                  >
-                    <i class="bi bi-upload"></i> Upload Logo
-                  </button>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    id="logoRemoveBtn"
-                    onclick="removeLogo()"
-                    style="display: none"
-                  >
-                    <i class="bi bi-trash3"></i> Remove Logo
-                  </button>
-                  <span style="font-size: 0.75rem; color: var(--muted)"
-                    >PNG, JPG or SVG · Max 600KB</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <!-- Preferences -->
-            <div class="settings-section">
-              <h3>
-                <i class="bi bi-sliders" style="color: var(--gold)"></i>
-                Preferences
-              </h3>
-              <div class="settings-row">
-                <div>
-                  <div class="settings-row-label">Dark Mode</div>
-                  <div class="settings-row-desc">Switch to dark theme</div>
-                </div>
-                <label class="toggle"
-                  ><input
-                    type="checkbox"
-                    id="darkToggle"
-                    onchange="toggleDarkMode()" /><span
-                    class="toggle-slider"
-                  ></span
-                ></label>
-              </div>
-              <div class="settings-row">
-                <div>
-                  <div class="settings-row-label">Auto-save</div>
-                  <div class="settings-row-desc">
-                    Save data automatically as you type
-                  </div>
-                </div>
-                <label class="toggle"
-                  ><input type="checkbox" id="autosaveToggle" checked /><span
-                    class="toggle-slider"
-                  ></span
-                ></label>
-              </div>
-            </div>
-
-            <!-- Danger zone -->
-            <div
-              class="settings-section"
-              style="border-color: rgba(214, 48, 49, 0.2)"
-            >
-              <h3>
-                <i
-                  class="bi bi-exclamation-triangle-fill"
-                  style="color: var(--danger)"
-                ></i>
-                Danger Zone
-              </h3>
-              <div class="settings-row">
-                <div>
-                  <div class="settings-row-label">Clear All Data</div>
-                  <div class="settings-row-desc">
-                    Delete all classes, students and scores
-                  </div>
-                </div>
-                <button
-                  class="btn btn-sm btn-danger"
-                  onclick="confirmClearData()"
-                >
-                  <i class="bi bi-trash3-fill"></i> Clear
-                </button>
-              </div>
-            </div>
-
-            <!-- Backup & Restore section (moved out of danger zone, prominent) -->
-            <div
-              class="settings-section"
-              style="border-color: rgba(67, 97, 238, 0.2)"
-            >
-              <h3>
-                <i class="bi bi-safe2-fill" style="color: var(--accent)"></i>
-                Backup &amp; Restore
-              </h3>
-              <p
-                style="
-                  font-size: 0.82rem;
-                  color: var(--muted);
-                  margin-bottom: 1.2rem;
-                "
-              >
-                Your data lives only on this device. Regular backups protect you
-                if your browser storage is cleared. The backup file includes all
-                classes, students, scores, attendance, quizzes,
-                <strong>and term history</strong>. You can export encrypted
-                backups with your own passphrase.
-              </p>
-              <div class="settings-row">
-                <div>
-                  <div class="settings-row-label">Download Full Backup</div>
-                  <div class="settings-row-desc">
-                    Saves everything to a <code>.json</code> file on your device
-                  </div>
-                </div>
-                <button class="btn btn-sm btn-primary" onclick="exportBackup()">
-                  <i class="bi bi-download"></i> Backup Now
-                </button>
-              </div>
-              <div class="settings-row">
-                <div>
-                  <div class="settings-row-label">Restore from Backup</div>
-                  <div class="settings-row-desc">
-                    Replace current data with a previously saved backup file
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  id="backupInput"
-                  accept=".json"
-                  style="display: none"
-                  onchange="importBackup(this)"
-                />
-                <button
-                  class="btn btn-sm"
-                  onclick="document.getElementById('backupInput').click()"
-                >
-                  <i class="bi bi-upload"></i> Restore
-                </button>
-              </div>
-              <div
-                style="
-                  background: var(--surface-2);
-                  border-radius: var(--r-md);
-                  padding: 0.8rem 1rem;
-                  margin-top: 0.6rem;
-                  font-size: 0.78rem;
-                  color: var(--muted);
-                  display: flex;
-                  gap: 0.5rem;
-                  align-items: flex-start;
-                "
-              >
-                <i
-                  class="bi bi-shield-check"
-                  style="
-                    color: var(--emerald);
-                    flex-shrink: 0;
-                    margin-top: 0.1rem;
-                  "
-                ></i>
-                <span
-                  >Backups are stored only on your device. GradeFlow never sends
-                  your data to any server.</span
-                >
-              </div>
-              <div class="settings-row" style="margin-top: 0.8rem">
-                <div>
-                  <div class="settings-row-label">Legal & Consent</div>
-                  <div class="settings-row-desc">
-                    Review your Privacy Policy, Terms, and consent choices
-                  </div>
-                </div>
-                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap">
-                  <a
-                    href="privacy-policy.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-sm"
-                  >
-                    <i class="bi bi-shield-lock"></i> Privacy
-                  </a>
-                  <a
-                    href="terms.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-sm"
-                  >
-                    <i class="bi bi-file-earmark-text"></i> Terms
-                  </a>
-                  <button class="btn btn-sm" onclick="openConsentModal()">
-                    <i class="bi bi-check2-square"></i> Consent
-                  </button>
-                </div>
-              </div>
-              <div class="settings-row" style="margin-top: 0.6rem">
-                <div>
-                  <div class="settings-row-label">Backend API Connector</div>
-                  <div class="settings-row-desc" id="apiConfigSummary">
-                    Provider: local
-                  </div>
-                </div>
-                <button class="btn btn-sm" onclick="openApiConfig()">
-                  <i class="bi bi-plug-fill"></i> Configure
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ══════════════════════════════════════════
-           VIEW: CLASS MATERIALS
-      ══════════════════════════════════════════ -->
-          <div class="view" id="view-materials">
-            <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-folder2-open"></i> Class Materials
-              </h2>
-              <div class="page-header-actions">
-                <span
-                  id="materialsClassName"
-                  class="badge-pill"
-                  style="margin-right: 0.4rem"
-                ></span>
-                <button
-                  class="btn btn-sm btn-primary"
-                  onclick="openUploadMaterialModal()"
-                >
-                  <i class="bi bi-cloud-upload-fill"></i> Upload Material
-                </button>
-              </div>
-            </div>
-
-            <!-- Filter bar -->
-            <div class="materials-filter-bar">
-              <button
-                class="mat-filter-btn active"
-                onclick="filterMaterials('all', this)"
-              >
-                All
-              </button>
-              <button
-                class="mat-filter-btn"
-                onclick="filterMaterials('word', this)"
-              >
-                <i
-                  class="bi bi-file-earmark-word-fill"
-                  style="color: #2b579a"
-                ></i>
-                Word
-              </button>
-              <button
-                class="mat-filter-btn"
-                onclick="filterMaterials('html', this)"
-              >
-                <i class="bi bi-filetype-html" style="color: #e44d26"></i> HTML
-              </button>
-              <button
-                class="mat-filter-btn"
-                onclick="filterMaterials('pdf', this)"
-              >
-                <i
-                  class="bi bi-file-earmark-pdf-fill"
-                  style="color: #ef476f"
-                ></i>
-                PDF
-              </button>
-              <button
-                class="mat-filter-btn"
-                onclick="filterMaterials('image', this)"
-              >
-                <i class="bi bi-image-fill" style="color: #00b894"></i> Images
-              </button>
-              <button
-                class="mat-filter-btn"
-                onclick="filterMaterials('other', this)"
-              >
-                <i class="bi bi-file-earmark-fill"></i> Other
-              </button>
-              <div style="margin-left: auto; position: relative">
-                <i
-                  class="bi bi-search"
-                  style="
-                    position: absolute;
-                    left: 0.7rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: var(--muted);
-                    font-size: 0.82rem;
-                    pointer-events: none;
-                  "
-                ></i>
-                <input
-                  type="text"
-                  id="matSearch"
-                  placeholder="Search materials..."
-                  oninput="searchMaterials(this.value)"
-                  style="
-                    padding: 0.45rem 1rem 0.45rem 2.1rem;
-                    border-radius: var(--r-full);
-                    border: 1.5px solid var(--border);
-                    background: var(--surface);
-                    font-size: 0.82rem;
-                    color: var(--ink);
-                    width: 220px;
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- No class prompt -->
-            <div
-              id="materialsNoClass"
-              class="empty-state"
-              style="display: none; padding: 5rem 2rem"
-            >
-              <div class="empty-icon">📂</div>
-              <h3>Select a class first</h3>
-              <p>
-                Choose a class from the sidebar to view and upload its
-                materials.
-              </p>
-            </div>
-
-            <!-- Materials grid -->
-            <div class="materials-grid" id="materialsGrid"></div>
-          </div>
-
-          <!-- ATTENDANCE VIEW -->
           <div class="view" id="view-attendance">
             <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-calendar-check-fill"></i> Attendance
-              </h2>
-              <div class="page-header-actions">
-                <span
-                  id="attendanceClassName"
-                  class="badge-pill"
-                  style="margin-right: 0.4rem"
-                ></span>
-                <input
-                  type="date"
-                  class="form-input"
-                  id="attendanceDate"
-                  style="width: auto"
-                  onchange="renderAttendance()"
-                />
-                <button
-                  class="btn btn-sm btn-primary"
-                  onclick="markAllPresent()"
-                >
-                  <i class="bi bi-check-all"></i> All Present
-                </button>
-                <button class="btn btn-sm" onclick="exportAttendanceExcel()">
-                  <i class="bi bi-file-earmark-excel"></i> Export
-                </button>
-              </div>
+              <h2 class="page-header-title">Attendance</h2>
             </div>
-            <div
-              id="attendanceNoClass"
-              class="empty-state"
-              style="display: none; padding: 5rem 2rem"
-            >
-              <div class="empty-icon">📅</div>
-              <h3>Select a class first</h3>
-              <p>Choose a class from the sidebar to take attendance.</p>
-            </div>
-            <div id="attendanceContent" style="display: none">
-              <div id="attendanceSummaryBar"></div>
-              <div id="attendanceList" class="attendance-list"></div>
-            </div>
+            <div id="attendanceContent"></div>
           </div>
 
-          <!-- CBT VIEW -->
           <div class="view" id="view-cbt">
             <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-patch-question-fill"></i> CBT Quizzes
-              </h2>
-              <div class="page-header-actions">
-                <span
-                  id="cbtClassName"
-                  class="badge-pill"
-                  style="margin-right: 0.4rem"
-                ></span>
-                <button
-                  class="btn btn-sm btn-primary"
-                  onclick="openCreateQuizModal()"
-                >
-                  <i class="bi bi-plus-lg"></i> New Quiz
-                </button>
-              </div>
+              <h2 class="page-header-title">CBT Quizzes</h2>
             </div>
-            <div
-              id="cbtNoClass"
-              class="empty-state"
-              style="display: none; padding: 5rem 2rem"
-            >
-              <div class="empty-icon">📝</div>
-              <h3>Select a class first</h3>
-              <p>Choose a class from the sidebar to create quizzes.</p>
-            </div>
-            <div id="cbtQuizList" class="cbt-quiz-list"></div>
+            <div id="cbtContent"></div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-           VIEW: TERM HISTORY
-      ══════════════════════════════════════════ -->
           <div class="view" id="view-history">
             <div class="page-header">
-              <h2 class="page-header-title">
-                <i class="bi bi-clock-history"></i> Term History
-              </h2>
-              <div class="page-header-actions">
-                <button
-                  class="btn btn-sm btn-primary"
-                  onclick="saveTermSnapshot()"
-                >
-                  <i class="bi bi-floppy-fill"></i> Save Current Term
-                </button>
-                <button
-                  class="btn btn-sm"
-                  onclick="exportAllBroadsheets()"
-                  title="Export broadsheets for all classes"
-                  style="
-                    background: var(--emerald);
-                    color: white;
-                    border-color: var(--emerald);
-                  "
-                >
-                  <i class="bi bi-file-earmark-spreadsheet-fill"></i> All
-                  Broadsheets
-                </button>
-              </div>
+              <h2 class="page-header-title">Term History</h2>
             </div>
+            <div id="historyContent"></div>
+          </div>
 
-            <!-- Info banner -->
-            <div
-              style="
-                background: var(--accent-l);
-                border: 1px solid rgba(67, 97, 238, 0.2);
-                border-radius: var(--r-md);
-                padding: 1rem 1.2rem;
-                margin-bottom: 1.5rem;
-                display: flex;
-                gap: 0.8rem;
-                align-items: flex-start;
-              "
-            >
-              <i
-                class="bi bi-info-circle-fill"
-                style="
-                  color: var(--accent);
-                  font-size: 1.1rem;
-                  flex-shrink: 0;
-                  margin-top: 0.1rem;
-                "
-              ></i>
-              <div
-                style="font-size: 0.84rem; color: var(--ink); line-height: 1.6"
-              >
-                <strong>How it works:</strong> After entering all grades for a
-                term, click <strong>"Save Current Term"</strong> to archive a
-                snapshot. Each term you save will appear here as a column — you
-                can instantly see if students improved (▲) or declined (▼)
-                across terms. You can also export any term's broadsheet as
-                Excel.
-              </div>
+          <div class="view" id="view-settings">
+            <div class="page-header">
+              <h2 class="page-header-title">Settings</h2>
             </div>
-
-            <!-- Dynamic content rendered by renderTermHistory() -->
-            <div id="termHistoryContent"></div>
+            <div id="settingsContent"></div>
           </div>
         </main>
-        <!-- /app-main -->
       </div>
-      <!-- /app-body -->
     </div>
-    <!-- /page-dashboard -->
 
-    <!-- ============================================================ MODALS -->
-
-    <!-- AUTH MODAL -->
+    <!-- ============================================================ AUTH MODAL -->
     <div class="modal-overlay" id="authModal">
-      <div class="modal-box" style="max-width: 460px">
+      <div class="modal-box modal-box-narrow">
         <button class="modal-close" onclick="closeModal('authModal')">
           <i class="bi bi-x-lg"></i>
         </button>
-        <div style="text-align: center; margin-bottom: 1.5rem">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem">🎓</div>
+        <div class="text-center mb-6">
+          <div class="modal-emoji">🎓</div>
           <div class="modal-title" id="authTitle">Welcome to GradeFlow</div>
           <div class="modal-sub" id="authSubtitle">
             Sign in to your teacher account
@@ -3272,47 +1224,28 @@
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
-            <div style="position: relative">
+            <div class="input-affix-wrap">
               <input
                 type="password"
-                class="form-input"
                 id="li-pass"
                 placeholder="Your password"
-                style="padding-right: 3rem"
+                class="form-input input-affix-right"
               />
               <button
                 onclick="togglePassVis('li-pass', this)"
-                style="
-                  position: absolute;
-                  right: 0.8rem;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  background: none;
-                  border: none;
-                  color: var(--muted);
-                  cursor: pointer;
-                  font-size: 1rem;
-                "
+                class="input-toggle-btn"
               >
                 <i class="bi bi-eye"></i>
               </button>
             </div>
           </div>
           <button
-            class="btn btn-primary w-full"
-            style="justify-content: center"
+            class="btn btn-primary w-full justify-center"
             onclick="handleLogin()"
           >
             <i class="bi bi-box-arrow-in-right"></i> Log in
           </button>
-          <p
-            style="
-              text-align: center;
-              margin-top: 1rem;
-              font-size: 0.82rem;
-              color: var(--muted);
-            "
-          >
+          <p class="auth-note">
             Don't have an account?
             <a
               href="#"
@@ -3320,14 +1253,14 @@
                 switchAuthTab('signup');
                 return false;
               "
-              style="color: var(--accent); font-weight: 600"
+              class="auth-link"
               >Sign up free</a
             >
           </p>
         </div>
 
         <!-- Signup fields -->
-        <div id="signupFields" style="display: none">
+        <div id="signupFields" class="is-hidden">
           <div class="form-group">
             <label class="form-label">Full Name</label>
             <input
@@ -3367,50 +1300,30 @@
           <div class="form-group">
             <label class="form-label"
               >Password
-              <span style="color: var(--muted); font-size: 0.78rem"
-                >(min. 8 characters)</span
-              ></label
-            >
-            <div style="position: relative">
+              <span class="text-muted text-75">(min. 8 characters)</span>
+            </label>
+            <div class="input-affix-wrap">
               <input
                 type="password"
-                class="form-input"
                 id="su-pass"
                 placeholder="Create a password"
-                style="padding-right: 3rem"
+                class="form-input input-affix-right"
               />
               <button
                 onclick="togglePassVis('su-pass', this)"
-                style="
-                  position: absolute;
-                  right: 0.8rem;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  background: none;
-                  border: none;
-                  color: var(--muted);
-                  cursor: pointer;
-                  font-size: 1rem;
-                "
+                class="input-toggle-btn"
               >
                 <i class="bi bi-eye"></i>
               </button>
             </div>
           </div>
           <label
-            style="
-              display: flex;
-              gap: 0.55rem;
-              align-items: flex-start;
-              font-size: 0.78rem;
-              color: var(--muted);
-              margin-bottom: 0.9rem;
-            "
+            class="consent-label"
           >
             <input
               type="checkbox"
               id="su-consent"
-              style="margin-top: 0.15rem; accent-color: var(--accent)"
+              class="consent-check"
             />
             <span>
               I agree to the
@@ -3418,7 +1331,7 @@
                 href="terms.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                style="color: var(--accent); font-weight: 600"
+                class="auth-link"
                 >Terms</a
               >
               and
@@ -3426,26 +1339,18 @@
                 href="privacy-policy.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                style="color: var(--accent); font-weight: 600"
+                class="auth-link"
                 >Privacy Policy</a
               >.
             </span>
           </label>
           <button
-            class="btn btn-primary w-full"
-            style="justify-content: center"
+            class="btn btn-primary w-full justify-center"
             onclick="handleSignup()"
           >
             <i class="bi bi-person-check-fill"></i> Create Account
           </button>
-          <p
-            style="
-              text-align: center;
-              margin-top: 1rem;
-              font-size: 0.82rem;
-              color: var(--muted);
-            "
-          >
+          <p class="auth-note">
             Already have an account?
             <a
               href="#"
@@ -3453,7 +1358,7 @@
                 switchAuthTab('login');
                 return false;
               "
-              style="color: var(--accent); font-weight: 600"
+              class="auth-link"
               >Log in</a
             >
           </p>
@@ -3580,19 +1485,17 @@
 
     <!-- DELETE CLASS MODAL -->
     <div class="modal-overlay" id="deleteClassModal">
-      <div class="modal-box" style="max-width: 420px">
+      <div class="modal-box modal-box-sm">
         <button class="modal-close" onclick="closeModal('deleteClassModal')">
           <i class="bi bi-x-lg"></i>
         </button>
-        <div style="font-size: 2.5rem; text-align: center; margin-bottom: 1rem">
-          ⚠️
-        </div>
-        <div class="modal-title" style="text-align: center">Delete Class?</div>
-        <p class="modal-sub" id="deleteClassMsg" style="text-align: center">
+        <div class="modal-emoji modal-box-center">⚠️</div>
+        <div class="modal-title text-center">Delete Class?</div>
+        <p class="modal-sub text-center" id="deleteClassMsg">
           This will permanently remove the class and all its students and
           scores.
         </p>
-        <div class="modal-actions" style="justify-content: center">
+        <div class="modal-actions justify-center">
           <button class="btn btn-danger" onclick="confirmDeleteClass()">
             <i class="bi bi-trash3-fill"></i> Yes, delete
           </button>
@@ -3605,12 +1508,12 @@
 
     <!-- RENAME STUDENT MODAL -->
     <div class="modal-overlay" id="renameStudentModal">
-      <div class="modal-box" style="max-width: 420px">
+      <div class="modal-box modal-box-sm">
         <button class="modal-close" onclick="closeModal('renameStudentModal')">
           <i class="bi bi-x-lg"></i>
         </button>
         <div class="modal-title">Rename Student</div>
-        <div class="form-group" style="margin-top: 1rem">
+        <div class="form-group mt-4">
           <label class="form-label">Full Name</label>
           <input
             type="text"
@@ -3640,782 +1543,12 @@
       </div>
     </div>
 
-    <!-- UPLOAD MATERIAL MODAL -->
-    <div class="modal-overlay" id="uploadMaterialModal">
-      <div class="modal-box" style="max-width: 540px">
-        <button class="modal-close" onclick="closeModal('uploadMaterialModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="modal-title">Upload Class Material</div>
-        <div class="modal-sub">
-          Add a document, web page, or file to the active class library.
-        </div>
-
-        <!-- Drop zone -->
-        <div
-          class="mat-dropzone"
-          id="matDropzone"
-          onclick="document.getElementById('matFileInput').click()"
-          ondragover="matDragOver(event)"
-          ondragleave="matDragLeave(event)"
-          ondrop="matDrop(event)"
-        >
-          <div class="mat-dropzone-icon">
-            <i class="bi bi-cloud-arrow-up-fill"></i>
-          </div>
-          <div class="mat-dropzone-title">
-            Drop file here or click to browse
-          </div>
-          <div class="mat-dropzone-sub">
-            Supports <strong>.docx</strong>, <strong>.html</strong>,
-            <strong>.htm</strong>, <strong>.pdf</strong>, images, and any other
-            file
-          </div>
-          <div
-            id="matDropzoneFile"
-            class="mat-dropzone-selected"
-            style="display: none"
-          ></div>
-        </div>
-        <input
-          type="file"
-          id="matFileInput"
-          accept=".docx,.doc,.html,.htm,.pdf,.jpg,.jpeg,.png,.gif,.webp,.txt,.pptx,.xlsx,.csv"
-          style="display: none"
-          onchange="matFileSelected(this.files)"
-        />
-
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.2rem 0;
-          "
-        >
-          <div style="flex: 1; height: 1px; background: var(--border)"></div>
-          <span
-            style="font-size: 0.78rem; color: var(--muted); font-weight: 600"
-            >OR PASTE HTML / URL</span
-          >
-          <div style="flex: 1; height: 1px; background: var(--border)"></div>
-        </div>
-
-        <!-- HTML paste tab -->
-        <div class="mat-input-tabs">
-          <button
-            class="mat-input-tab active"
-            id="matTabHtml"
-            onclick="switchMatInputTab('html')"
-          >
-            <i class="bi bi-code-slash"></i> Paste HTML
-          </button>
-          <button
-            class="mat-input-tab"
-            id="matTabUrl"
-            onclick="switchMatInputTab('url')"
-          >
-            <i class="bi bi-link-45deg"></i> Web URL
-          </button>
-        </div>
-        <div id="matHtmlSection">
-          <textarea
-            id="matHtmlInput"
-            class="form-input"
-            rows="5"
-            placeholder="Paste your HTML code here…"
-            style="
-              border-radius: var(--r-md);
-              resize: vertical;
-              font-family: var(--font-mono);
-              font-size: 0.82rem;
-            "
-          ></textarea>
-        </div>
-        <div id="matUrlSection" style="display: none">
-          <input
-            type="url"
-            id="matUrlInput"
-            class="form-input"
-            placeholder="https://example.com/lesson.html"
-          />
-          <p
-            style="font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem"
-          >
-            <i class="bi bi-info-circle"></i> URL will be saved as a link —
-            click to open in a new tab.
-          </p>
-        </div>
-
-        <hr class="divider" />
-
-        <div class="form-group">
-          <label class="form-label"
-            >Title
-            <span style="color: var(--muted); font-size: 0.75rem"
-              >(auto-filled from file name)</span
-            ></label
-          >
-          <input
-            type="text"
-            class="form-input"
-            id="matTitle"
-            placeholder="e.g. Week 3 — Fractions Lesson"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label"
-            >Subject / Topic
-            <span style="color: var(--muted); font-size: 0.75rem"
-              >(optional)</span
-            ></label
-          >
-          <input
-            type="text"
-            class="form-input"
-            id="matSubjectTag"
-            placeholder="e.g. Mathematics"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label"
-            >Description
-            <span style="color: var(--muted); font-size: 0.75rem"
-              >(optional)</span
-            ></label
-          >
-          <input
-            type="text"
-            class="form-input"
-            id="matDesc"
-            placeholder="Brief note about this material…"
-          />
-        </div>
-
-        <div class="modal-actions">
-          <button class="btn btn-primary" onclick="confirmUploadMaterial()">
-            <i class="bi bi-check2-circle"></i> Save Material
-          </button>
-          <button class="btn" onclick="closeModal('uploadMaterialModal')">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MATERIAL VIEWER MODAL -->
-    <div class="modal-overlay" id="materialViewerModal">
-      <div
-        class="modal-box"
-        style="max-width: 860px; padding: 0; overflow: hidden"
-      >
-        <div class="mat-viewer-header">
-          <div class="mat-viewer-title" id="matViewerTitle">Material</div>
-          <div
-            style="
-              display: flex;
-              gap: 0.5rem;
-              align-items: center;
-              margin-left: auto;
-            "
-          >
-            <button
-              class="btn btn-sm"
-              onclick="downloadCurrentMaterial()"
-              id="matViewerDownloadBtn"
-              title="Download"
-            >
-              <i class="bi bi-download"></i> Download
-            </button>
-            <button
-              class="btn btn-sm btn-danger"
-              onclick="deleteCurrentMaterial()"
-              title="Delete material"
-            >
-              <i class="bi bi-trash3"></i>
-            </button>
-            <button
-              class="btn btn-sm"
-              onclick="closeModal('materialViewerModal')"
-            >
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </div>
-        <div class="mat-viewer-meta" id="matViewerMeta"></div>
-        <div class="mat-viewer-body" id="matViewerBody">
-          <!-- content injected here -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ PDF TEMPLATE (off-screen) -->
-    <div
-      id="pdf-template"
-      style="
-        width: 210mm;
-        padding: 15mm;
-        font-family: &quot;DM Sans&quot;, sans-serif;
-        background: white;
-        display: none;
-        color: #1e293b;
-        position: absolute;
-        left: -9999px;
-        top: 0;
-      "
-    >
-      <div
-        style="
-          border: 2px solid #e2e8f0;
-          border-radius: 24px;
-          padding: 10mm;
-          background: white;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-        "
-      >
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 3px solid #4361ee;
-            padding-bottom: 1rem;
-          "
-        >
-          <div
-            style="
-              width: 64px;
-              height: 64px;
-              flex-shrink: 0;
-              position: relative;
-            "
-          >
-            <div
-              class="pdf-school-icon"
-              style="
-                font-size: 2.5rem;
-                background: #eef1fd;
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #4361ee;
-              "
-            >
-              🏫
-            </div>
-            <img
-              class="pdf-school-logo"
-              src=""
-              alt=""
-              style="
-                display: none;
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                object-fit: contain;
-                position: absolute;
-                inset: 0;
-              "
-            />
-          </div>
-          <div style="flex: 1; text-align: center">
-            <h1
-              style="
-                font-size: 20px;
-                font-weight: 800;
-                color: #0f172a;
-                margin-bottom: 0.2rem;
-              "
-              class="pdf-schoolname"
-            >
-              SCHOOL NAME
-            </h1>
-            <p
-              class="pdf-motto"
-              style="font-size: 12px; color: #6b7699; margin-bottom: 0.2rem"
-            ></p>
-            <p style="font-size: 14px; color: #475569; letter-spacing: 1px">
-              ACADEMIC REPORT SHEET
-            </p>
-            <p style="font-size: 13px; color: #4361ee; font-weight: 600">
-              <span class="pdf-term">Second Term</span> ·
-              <span class="pdf-session">2025/2026</span>
-            </p>
-          </div>
-          <div style="width: 64px"></div>
-        </div>
-        <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            background: #f8fafc;
-            padding: 1.2rem;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-          "
-        >
-          <div>
-            <div style="margin-bottom: 0.6rem">
-              <span style="font-weight: 700; color: #4361ee"
-                >Student Name:</span
-              >
-              <span class="pdf-studentname" style="font-weight: 600">—</span>
-            </div>
-            <div>
-              <span style="font-weight: 700; color: #4361ee">Class:</span>
-              <span class="pdf-classname" style="font-weight: 600">—</span>
-            </div>
-          </div>
-          <div>
-            <div style="margin-bottom: 0.6rem">
-              <span style="font-weight: 700; color: #4361ee">Position:</span>
-              <span class="pdf-position" style="font-weight: 600">—</span> out
-              of <span class="pdf-classsize">—</span>
-            </div>
-            <div>
-              <span style="font-weight: 700; color: #4361ee"
-                >Overall Average:</span
-              >
-              <span class="pdf-overall" style="font-weight: 800; color: #0f172a"
-                >—</span
-              >
-            </div>
-          </div>
-        </div>
-        <table
-          style="
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin: 1rem 0;
-          "
-        >
-          <thead>
-            <tr style="background: #4361ee; color: white">
-              <th
-                style="
-                  padding: 10px 8px;
-                  text-align: left;
-                  border-radius: 10px 0 0 0;
-                "
-              >
-                Subject
-              </th>
-              <th style="padding: 10px 8px; text-align: center">Test /20</th>
-              <th style="padding: 10px 8px; text-align: center">Prac /20</th>
-              <th style="padding: 10px 8px; text-align: center">Exam /60</th>
-              <th style="padding: 10px 8px; text-align: center">Total /100</th>
-              <th style="padding: 10px 8px; text-align: center">Grade</th>
-              <th
-                style="
-                  padding: 10px 8px;
-                  text-align: left;
-                  border-radius: 0 10px 0 0;
-                "
-              >
-                Remark
-              </th>
-            </tr>
-          </thead>
-          <tbody class="pdf-subjectrows"></tbody>
-        </table>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            margin: 1.5rem 0 1rem;
-            gap: 1rem;
-          "
-        >
-          <div
-            style="
-              background: #eef1fd;
-              padding: 0.8rem 1.5rem;
-              border-radius: 40px;
-              flex: 1;
-            "
-          >
-            <span style="font-weight: 700">Teacher's Comment:</span>
-            <span class="pdf-remark">—</span>
-          </div>
-          <div
-            style="
-              background: #f1f5f9;
-              padding: 0.8rem 1.5rem;
-              border-radius: 40px;
-            "
-          >
-            <span style="font-weight: 700">Class Avg:</span>
-            <span class="pdf-classavg">—</span>%
-          </div>
-        </div>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            border-top: 2px dashed #cbd5e1;
-            padding-top: 1.5rem;
-          "
-        >
-          <div style="text-align: center; width: 180px">
-            <div
-              style="
-                border-bottom: 2px solid #1e293b;
-                margin-bottom: 0.4rem;
-                height: 28px;
-              "
-            ></div>
-            <span style="color: #475569; font-size: 12px">Class Teacher</span>
-          </div>
-          <div style="text-align: center; width: 180px">
-            <div
-              style="
-                border-bottom: 2px solid #1e293b;
-                margin-bottom: 0.4rem;
-                height: 28px;
-              "
-            ></div>
-            <span style="color: #475569; font-size: 12px"
-              >Principal / Head Teacher</span
-            >
-          </div>
-          <div style="text-align: center; width: 140px">
-            <div
-              style="
-                border-bottom: 2px solid #1e293b;
-                margin-bottom: 0.4rem;
-                height: 28px;
-              "
-            ></div>
-            <span style="color: #475569; font-size: 12px">Date</span>
-          </div>
-        </div>
-        <div
-          style="
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #fafafa;
-            font-size: 10px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 0.8rem;
-          "
-        >
-          Generated by GradeFlow · Free for Nigerian teachers · Built by
-          Oshinaya Damilola
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ AI COMMENT MODAL -->
-    <div class="modal-overlay" id="aiCommentModal">
-      <div class="modal-box" style="max-width: 540px">
-        <button class="modal-close" onclick="closeModal('aiCommentModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-          "
-        >
-          <div
-            style="
-              width: 44px;
-              height: 44px;
-              border-radius: var(--r-md);
-              background: linear-gradient(135deg, #4361ee, #7209b7);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 1.3rem;
-              flex-shrink: 0;
-            "
-          >
-            ✨
-          </div>
-          <div>
-            <div class="modal-title">AI Teacher Comment</div>
-            <div class="modal-sub" id="aiCommentStudentName">
-              Generating for student...
-            </div>
-          </div>
-        </div>
-        <div id="aiKeySection" style="display: none; margin-bottom: 1.2rem">
-          <div
-            style="
-              background: var(--accent-l);
-              border: 1px solid rgba(67, 97, 238, 0.2);
-              border-radius: var(--r-md);
-              padding: 1rem;
-              margin-bottom: 1rem;
-            "
-          >
-            <div
-              style="
-                font-size: 0.82rem;
-                color: var(--accent);
-                font-weight: 600;
-                margin-bottom: 0.4rem;
-              "
-            >
-              <i class="bi bi-info-circle"></i> One-time setup
-            </div>
-            <div style="font-size: 0.8rem; color: var(--muted)">
-              Enter your free Google Gemini API key in the session modal. The
-              key is kept only for this browser session and is not stored in
-              localStorage.
-            </div>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="openAiKeyModal()">
-            <i class="bi bi-key-fill"></i> Enter API key
-          </button>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Comment tone</label>
-          <div
-            style="display: flex; gap: 0.5rem; flex-wrap: wrap"
-            id="aiToneSelector"
-          >
-            <button
-              class="ai-tone-btn active"
-              data-tone="encouraging"
-              onclick="selectTone(this)"
-            >
-              🌟 Encouraging
-            </button>
-            <button
-              class="ai-tone-btn"
-              data-tone="formal"
-              onclick="selectTone(this)"
-            >
-              📋 Formal
-            </button>
-            <button
-              class="ai-tone-btn"
-              data-tone="detailed"
-              onclick="selectTone(this)"
-            >
-              🔍 Detailed
-            </button>
-            <button
-              class="ai-tone-btn"
-              data-tone="brief"
-              onclick="selectTone(this)"
-            >
-              ⚡ Brief
-            </button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Language</label>
-          <select
-            class="form-input"
-            id="aiLanguageSelect"
-            style="max-width: 200px"
-          >
-            <option value="English">English</option>
-            <option value="Nigerian Pidgin">Nigerian Pidgin</option>
-            <option value="Yoruba">Yoruba</option>
-            <option value="Igbo">Igbo</option>
-            <option value="Hausa">Hausa</option>
-          </select>
-        </div>
-        <div id="aiCommentResult" style="display: none">
-          <label class="form-label"
-            >Generated comment
-            <span style="color: var(--muted); font-size: 0.75rem"
-              >(edit before copying)</span
-            ></label
-          >
-          <textarea
-            id="aiCommentText"
-            class="form-input"
-            rows="5"
-            style="resize: vertical; line-height: 1.7"
-          ></textarea>
-          <div
-            style="
-              display: flex;
-              gap: 0.6rem;
-              margin-top: 0.8rem;
-              flex-wrap: wrap;
-            "
-          >
-            <button class="btn btn-primary btn-sm" onclick="copyAiComment()">
-              <i class="bi bi-clipboard-check"></i> Copy comment
-            </button>
-            <button class="btn btn-sm" onclick="applyAiCommentToPDF()">
-              <i class="bi bi-file-pdf-fill"></i> Apply to PDF &amp; download
-            </button>
-            <button class="btn btn-sm" onclick="generateAiComment()">
-              <i class="bi bi-arrow-clockwise"></i> Regenerate
-            </button>
-          </div>
-        </div>
-        <div
-          id="aiCommentLoading"
-          style="display: none; text-align: center; padding: 2rem 0"
-        >
-          <div class="spinner" style="margin: 0 auto 1rem"></div>
-          <div style="color: var(--muted); font-size: 0.88rem">
-            Crafting a personalised comment…
-          </div>
-        </div>
-        <div id="aiCommentError" style="display: none"></div>
-        <div class="modal-actions" id="aiCommentActions">
-          <button class="btn btn-primary" onclick="generateAiComment()">
-            <i class="bi bi-stars"></i> Generate Comment
-          </button>
-          <button class="btn" onclick="closeModal('aiCommentModal')">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ AI KEY MODAL -->
-    <div class="modal-overlay" id="aiKeyModal">
-      <div class="modal-box" style="max-width: 460px">
-        <button class="modal-close" onclick="closeModal('aiKeyModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="modal-title">AI Key Setup</div>
-        <div class="modal-sub">
-          Enter your Gemini API key for this browser session only. It is not
-          stored in localStorage.
-        </div>
-        <div class="form-group">
-          <label class="form-label">Google Gemini API Key</label>
-          <input
-            type="password"
-            class="form-input"
-            id="aiApiKeyInput"
-            placeholder="AIza..."
-            autocomplete="off"
-            spellcheck="false"
-          />
-        </div>
-        <div class="modal-actions">
-          <button class="btn btn-primary" onclick="saveAiKey()">
-            <i class="bi bi-key-fill"></i> Save for session
-          </button>
-          <button class="btn" onclick="closeModal('aiKeyModal')">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ WHATSAPP SHARE MODAL -->
-    <div class="modal-overlay" id="whatsappShareModal">
-      <div class="modal-box" style="max-width: 460px">
-        <button class="modal-close" onclick="closeModal('whatsappShareModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div style="text-align: center; margin-bottom: 1.5rem">
-          <div style="font-size: 2.8rem; margin-bottom: 0.5rem">📲</div>
-          <div class="modal-title">Share via WhatsApp</div>
-          <div class="modal-sub" id="waShareStudentName">
-            Report card ready to share
-          </div>
-        </div>
-        <div
-          style="
-            background: var(--surface-2);
-            border-radius: var(--r-md);
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-          "
-        >
-          <div
-            style="
-              font-size: 0.8rem;
-              color: var(--muted);
-              margin-bottom: 0.6rem;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-            "
-          >
-            Message preview
-          </div>
-          <div
-            id="waMessagePreview"
-            style="
-              font-size: 0.9rem;
-              line-height: 1.7;
-              white-space: pre-wrap;
-              color: var(--ink);
-            "
-          ></div>
-        </div>
-        <div class="form-group">
-          <label class="form-label"
-            >Parent phone number
-            <span style="color: var(--muted); font-size: 0.75rem"
-              >(optional)</span
-            ></label
-          >
-          <input
-            type="tel"
-            class="form-input"
-            id="waPhoneInput"
-            placeholder="e.g. 08012345678"
-          />
-        </div>
-        <div class="modal-actions">
-          <button
-            class="btn btn-primary"
-            style="background: #25d366; border-color: #1ebe5d"
-            onclick="openWhatsApp()"
-          >
-            <i class="bi bi-whatsapp"></i> Send on WhatsApp
-          </button>
-          <button class="btn btn-sm" onclick="copyWaMessage()">
-            <i class="bi bi-clipboard"></i> Copy message
-          </button>
-          <button class="btn" onclick="closeModal('whatsappShareModal')">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ PWA INSTALL BANNER -->
-    <div
-      id="pwaInstallBanner"
-      style="
-        display: none;
-        position: fixed;
-        bottom: 1.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 9999;
-        background: var(--surface);
-        border: 1.5px solid var(--accent);
-        border-radius: var(--r-xl);
-        padding: 0.9rem 1.4rem;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: var(--sh-lg);
-        max-width: 420px;
-        width: calc(100% - 2rem);
-      "
-    >
-      <div style="font-size: 1.6rem; flex-shrink: 0">📲</div>
-      <div style="flex: 1">
-        <div style="font-weight: 700; font-size: 0.9rem; color: var(--ink)">
-          Install GradeFlow
-        </div>
-        <div style="font-size: 0.78rem; color: var(--muted)">
-          Add to home screen for offline access
-        </div>
+    <!-- PWA INSTALL BANNER -->
+    <div id="pwaInstallBanner" class="pwa-install-banner">
+      <div class="pwa-install-icon">📲</div>
+      <div class="pwa-install-copy">
+        <div class="pwa-install-title">Install GradeFlow</div>
+        <div class="pwa-install-subtitle">Add to home screen for offline access</div>
       </div>
       <button
         class="btn btn-primary btn-sm"
@@ -4424,481 +1557,9 @@
       >
         Install
       </button>
-      <button
-        style="
-          background: none;
-          border: none;
-          color: var(--muted);
-          cursor: pointer;
-          padding: 0.2rem;
-          font-size: 1.1rem;
-        "
-        onclick="
-          document.getElementById('pwaInstallBanner').style.display = 'none'
-        "
-      >
+      <button class="pwa-install-close" onclick="document.getElementById('pwaInstallBanner').style.display = 'none'">
         <i class="bi bi-x"></i>
       </button>
-    </div>
-
-    <!-- CREATE QUIZ MODAL -->
-    <div class="modal-overlay" id="createQuizModal">
-      <div
-        class="modal-box"
-        style="max-width: 600px; max-height: 90vh; overflow-y: auto"
-      >
-        <button class="modal-close" onclick="closeModal('createQuizModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="modal-title">Create Quiz</div>
-        <div class="modal-sub">
-          Build a multiple-choice quiz. GradeFlow auto-marks when students
-          submit.
-        </div>
-        <div class="form-group" style="margin-top: 1rem">
-          <label class="form-label">Quiz Title</label
-          ><input
-            type="text"
-            class="form-input"
-            id="quizTitle"
-            placeholder="e.g. Week 5 Mathematics Test"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subject / Topic</label
-          ><input
-            type="text"
-            class="form-input"
-            id="quizSubject"
-            placeholder="e.g. Fractions"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Time Limit (minutes, 0 = no limit)</label
-          ><input
-            type="number"
-            class="form-input"
-            id="quizTime"
-            value="30"
-            min="0"
-            style="max-width: 120px"
-          />
-        </div>
-        <hr class="divider" />
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.8rem;
-          "
-        >
-          <div class="form-label" style="margin: 0">Questions</div>
-          <button class="btn btn-sm btn-primary" onclick="addQuizQuestion()">
-            <i class="bi bi-plus-lg"></i> Add Question
-          </button>
-        </div>
-        <div id="quizQuestionsEditor"></div>
-        <div class="modal-actions">
-          <button class="btn btn-primary" onclick="saveQuiz()">
-            <i class="bi bi-floppy-fill"></i> Save Quiz</button
-          ><button class="btn" onclick="closeModal('createQuizModal')">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAKE QUIZ MODAL -->
-    <div class="modal-overlay" id="takeQuizModal">
-      <div
-        class="modal-box"
-        style="max-width: 640px; max-height: 92vh; overflow-y: auto"
-      >
-        <button
-          class="modal-close"
-          onclick="
-            clearQuizTimer();
-            closeModal('takeQuizModal');
-          "
-        >
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.2rem;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-          "
-        >
-          <div>
-            <div class="modal-title" id="takeQuizTitle">Quiz</div>
-            <div class="modal-sub" id="takeQuizMeta"></div>
-          </div>
-          <div
-            id="quizTimer"
-            style="
-              font-family: var(--font-mono);
-              font-size: 1.4rem;
-              font-weight: 700;
-              color: var(--accent);
-              background: var(--accent-l);
-              padding: 0.3rem 1rem;
-              border-radius: var(--r-full);
-              display: none;
-            "
-          ></div>
-        </div>
-        <div id="takeQuizBody"></div>
-        <div class="modal-actions" id="takeQuizActions" style="display: none">
-          <button class="btn btn-primary" onclick="submitQuiz()">
-            <i class="bi bi-send-fill"></i> Submit Answers</button
-          ><button class="btn" onclick="closeModal('takeQuizModal')">
-            Cancel
-          </button>
-        </div>
-        <div
-          id="takeQuizResult"
-          style="display: none; text-align: center; padding: 1.5rem 0"
-        ></div>
-      </div>
-    </div>
-
-    <!-- SUBJECT PICKER MODAL -->
-    <div class="modal-overlay" id="subjectPickerModal">
-      <div class="modal-box" style="max-width: 580px">
-        <button
-          class="modal-close"
-          onclick="
-            closeModal('subjectPickerModal');
-            document.getElementById('subjectPickerSearch').value = '';
-            filterSubjectPicker('');
-          "
-        >
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="modal-title">Add Subject</div>
-        <div class="modal-sub">
-          Pick from official WAEC/NECO subjects, or type your own below.
-        </div>
-        <div style="position: relative; margin: 1rem 0 0.8rem">
-          <i
-            class="bi bi-search"
-            style="
-              position: absolute;
-              left: 0.85rem;
-              top: 50%;
-              transform: translateY(-50%);
-              color: var(--muted);
-              pointer-events: none;
-            "
-          ></i>
-          <input
-            type="text"
-            class="form-input"
-            id="subjectPickerSearch"
-            placeholder="Search subjects…"
-            oninput="filterSubjectPicker(this.value)"
-            style="padding-left: 2.4rem"
-          />
-        </div>
-        <div id="subjectPickerGrid" class="subject-picker-grid"></div>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1.2rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-          "
-        >
-          <input
-            type="text"
-            class="form-input"
-            id="customSubjectInput"
-            placeholder="Or type a custom subject name…"
-            style="flex: 1"
-            onkeydown="if (event.key === 'Enter') addCustomSubjectFromPicker();"
-          />
-          <button
-            class="btn btn-primary btn-sm"
-            onclick="addCustomSubjectFromPicker()"
-          >
-            <i class="bi bi-plus-lg"></i> Add
-          </button>
-        </div>
-        <div class="modal-actions" style="margin-top: 0.8rem">
-          <button class="btn" onclick="closeModal('subjectPickerModal')">
-            <i class="bi bi-check2"></i> Done
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ ONBOARDING MODAL -->
-    <div class="modal-overlay" id="onboardingModal">
-      <div class="modal-box" style="max-width: 500px; text-align: center">
-        <div style="font-size: 3rem; margin-bottom: 0.5rem">👋</div>
-        <div class="modal-title">
-          Welcome, <span id="onboardingUserName">Teacher</span>!
-        </div>
-        <div class="modal-sub" style="margin-bottom: 1.5rem">
-          GradeFlow is ready. How would you like to start?
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 0.8rem">
-          <button
-            class="btn btn-primary"
-            onclick="onboardingCreateClass()"
-            style="justify-content: center; padding: 1rem"
-          >
-            <i class="bi bi-plus-circle-fill"></i>&nbsp; Create my first class
-          </button>
-          <button
-            class="btn"
-            onclick="loadDemoData()"
-            style="justify-content: center; padding: 1rem"
-          >
-            <i class="bi bi-eye"></i>&nbsp; Load sample data to explore first
-          </button>
-          <button
-            class="btn btn-sm"
-            onclick="closeOnboarding()"
-            style="color: var(--muted); margin-top: 0.3rem"
-          >
-            I'll set up later
-          </button>
-        </div>
-        <div
-          style="
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            font-size: 0.8rem;
-            color: var(--muted);
-          "
-        >
-          <span><i class="bi bi-wifi-off"></i> 100% offline</span>
-          <span
-            ><i class="bi bi-shield-lock"></i> Data stays on your device</span
-          >
-          <span><i class="bi bi-phone"></i> Works on phone too</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONSENT MODAL -->
-    <div class="modal-overlay" id="consentModal" data-locked="true">
-      <div class="modal-box" style="max-width: 560px">
-        <div class="modal-title">Privacy & Terms Consent</div>
-        <div class="modal-sub" style="margin-bottom: 1rem">
-          To use GradeFlow, you must accept the Privacy Policy and Terms.
-        </div>
-        <div
-          style="
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: var(--r-md);
-            padding: 0.9rem 1rem;
-            font-size: 0.82rem;
-            color: var(--muted);
-            line-height: 1.7;
-            margin-bottom: 0.9rem;
-          "
-        >
-          GradeFlow stores your records on your device by default. You can
-          export encrypted backups using a passphrase that only you know.
-        </div>
-        <div
-          style="
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-          "
-        >
-          <a
-            href="privacy-policy.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-sm"
-          >
-            <i class="bi bi-shield-lock"></i> Read Privacy Policy
-          </a>
-          <a
-            href="terms.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-sm"
-          >
-            <i class="bi bi-file-earmark-text"></i> Read Terms
-          </a>
-        </div>
-        <label
-          style="
-            display: flex;
-            gap: 0.6rem;
-            align-items: flex-start;
-            font-size: 0.82rem;
-            color: var(--ink);
-            margin-bottom: 1rem;
-          "
-        >
-          <input
-            type="checkbox"
-            id="consentAgreeCheck"
-            style="margin-top: 0.15rem; accent-color: var(--accent)"
-          />
-          <span>
-            I have read and agree to the GradeFlow Privacy Policy and Terms of
-            Service.
-          </span>
-        </label>
-        <div class="modal-actions">
-          <button class="btn btn-primary" onclick="acceptConsent()">
-            <i class="bi bi-check2-circle"></i> I Agree
-          </button>
-          <button class="btn" onclick="declineConsent()">
-            Decline and Log Out
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ============================================================ UPGRADE MODAL -->
-    <div class="modal-overlay" id="upgradeModal">
-      <div class="modal-box" style="max-width: 460px; text-align: center">
-        <button class="modal-close" onclick="closeModal('upgradeModal')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <div style="font-size: 3rem; margin-bottom: 0.5rem">🚀</div>
-        <div class="modal-title">Upgrade to Pro</div>
-        <div class="modal-sub" id="upgradeReason">
-          Unlock unlimited classes and students.
-        </div>
-        <div
-          style="
-            background: linear-gradient(135deg, #4361ee18, #7209b718);
-            border: 1.5px solid var(--accent);
-            border-radius: var(--r-lg);
-            padding: 1.4rem;
-            margin: 1.4rem 0;
-            text-align: left;
-          "
-        >
-          <div
-            style="
-              font-weight: 800;
-              font-size: 1.4rem;
-              color: var(--accent);
-              text-align: center;
-              margin-bottom: 1rem;
-            "
-          >
-            ₦5,000
-            <span
-              style="font-size: 0.85rem; font-weight: 500; color: var(--muted)"
-              >/ term</span
-            >
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 0.6rem">
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                font-size: 0.88rem;
-              "
-            >
-              <i
-                class="bi bi-check-circle-fill"
-                style="color: var(--emerald)"
-              ></i>
-              Unlimited classes
-            </div>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                font-size: 0.88rem;
-              "
-            >
-              <i
-                class="bi bi-check-circle-fill"
-                style="color: var(--emerald)"
-              ></i>
-              Unlimited students
-            </div>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                font-size: 0.88rem;
-              "
-            >
-              <i
-                class="bi bi-check-circle-fill"
-                style="color: var(--emerald)"
-              ></i>
-              All features (PDF, Excel, CBT, Analytics…)
-            </div>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 0.6rem;
-                font-size: 0.88rem;
-              "
-            >
-              <i
-                class="bi bi-check-circle-fill"
-                style="color: var(--emerald)"
-              ></i>
-              Priority support
-            </div>
-          </div>
-        </div>
-        <div
-          style="font-size: 0.82rem; color: var(--muted); margin-bottom: 1.2rem"
-        >
-          Contact us to pay and get your account activated instantly.
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 0.7rem">
-          <button
-            class="btn btn-primary"
-            onclick="upgradeContactWhatsApp()"
-            style="
-              justify-content: center;
-              background: #25d366;
-              border-color: #1ebe5d;
-            "
-          >
-            <i class="bi bi-whatsapp"></i> Contact us on WhatsApp
-          </button>
-          <button
-            class="btn"
-            onclick="upgradeContactEmail()"
-            style="justify-content: center"
-          >
-            <i class="bi bi-envelope-fill"></i> Send upgrade request by email
-          </button>
-          <button
-            class="btn btn-sm"
-            onclick="closeModal('upgradeModal')"
-            style="color: var(--muted)"
-          >
-            Stay on Free Plan
-          </button>
-        </div>
-      </div>
     </div>
 
     <script src="api-client.js"></script>

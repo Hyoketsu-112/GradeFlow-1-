@@ -19,6 +19,7 @@
 # API Keys & Credentials
 google-credentials.json
 firebase-config.json
+firebase-config.local.json
 supabase-config.json
 config/secrets.json
 secrets.json

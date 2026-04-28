@@ -11,7 +11,7 @@
 
 ## 🎯 Overview
 
-GradeFlow is a Progressive Web App (PWA) designed to streamline grade management in Nigerian primary and secondary schools. Teachers can manage classes, track student performance, generate reports, and monitor attendance—all offline-first, with automatic cloud backup.
+GradeFlow is a Progressive Web App (PWA) designed to streamline grade management in Nigerian primary and secondary schools. Teachers can manage classes, track student performance, generate reports, and monitor attendance—all offline-first, with optional Firebase cloud backup.
 
 **Key Stats:**
 
@@ -122,7 +122,7 @@ npm test
 **Data Storage:**
 
 - Browser `localStorage` (Phase 1-2)
-- Cloud sync ready (Phase 3 - Supabase integration)
+- Cloud sync ready (Phase 3 - Firebase integration)
 
 **Export Libraries:**
 
@@ -132,8 +132,32 @@ npm test
 
 **Optional Cloud:**
 
-- Supabase for user records (Phase 2)
+- Firebase Auth + Firestore for active cloud sync
+- Optional local copy of the Firebase web config can be saved as `firebase-config.local.json` and stays gitignored
+- Supabase support remains in the provider abstraction for legacy/backward compatibility, but Firebase is the active cloud path
 - Google Gemini API for AI comments
+
+**Firebase quick setup:**
+
+1. Open Firebase Console and copy the web app config JSON object from Project settings > General.
+2. In GradeFlow, open Settings > Cloud Connector, choose `firebase`, and paste the JSON object.
+3. Publish Firestore rules that match the current app schema. GradeFlow currently writes one document per Firebase user at `gradeflow_users/{uid}` with `profile`, `data`, and `updatedAt` fields.
+4. For the current app, use this rule set first:
+
+```firestore
+rules_version = '2';
+
+service cloud.firestore {
+	match /databases/{database}/documents {
+		match /gradeflow_users/{uid} {
+			allow read, write: if request.auth != null && request.auth.uid == uid;
+		}
+	}
+}
+```
+
+5. If you use school-based rules with `role`, `schoolId`, or `childIds`, you must refactor the app to write those fields at the top level first.
+6. Reload the app, then sign up or log in again.
 
 ---
 

@@ -1,14 +1,15 @@
-📱 **LOCAL TESTING GUIDE - GradeFlow Sync Engine**
-====================================================
+# 📱 **LOCAL TESTING GUIDE - GradeFlow Sync Engine**
 
 ## Quick Start
 
 ### 1️⃣ Open Test Dashboard
+
 ```
 http://localhost:3000/ui/test-dashboard.html
 ```
 
 **What you'll see:**
+
 - System Status panel (IndexedDB, Queue, Resolver)
 - Test Results panel (live results as tests run)
 - Console output capture
@@ -21,6 +22,7 @@ http://localhost:3000/ui/test-dashboard.html
 ### METHOD 1: Web UI Test Dashboard (EASIEST)
 
 **Step 1: Start Local Server**
+
 ```bash
 npm install
 npm run dev
@@ -29,17 +31,20 @@ npm run dev
 ```
 
 **Step 2: Open Dashboard**
+
 ```
 http://localhost:3000/ui/test-dashboard.html
 ```
 
 **Step 3: Click "Run All Tests"**
+
 - ✅ Tests run in your browser
 - 📊 Results display in real-time
 - 📝 Console output captured
 - 🔴 Failures highlighted
 
 **Available Buttons:**
+
 - ▶️ **Run All Tests** - Execute all 10 tests
 - 🗑️ **Clear Data** - Delete all IndexedDB data
 - 📊 **Load Demo Data** - Insert sample records
@@ -50,6 +55,7 @@ http://localhost:3000/ui/test-dashboard.html
 ### METHOD 2: Browser Console Testing
 
 **Step 1: Open DevTools**
+
 ```
 Press F12 or Ctrl+Shift+I
 Go to "Console" tab
@@ -58,17 +64,20 @@ Go to "Console" tab
 **Step 2: Run Manual Tests**
 
 **Initialize:**
+
 ```javascript
 const testSuite = new LocalTestSuite();
 await testSuite.init();
 ```
 
 **Run All Tests:**
+
 ```javascript
 await testSuite.runAll();
 ```
 
 **Individual Tests:**
+
 ```javascript
 // Test IndexedDB
 await testSuite.testIndexedDBStores();
@@ -87,6 +96,7 @@ testSuite.testComponentMerge();
 ```
 
 **Check Results:**
+
 ```javascript
 console.log(testSuite.results);
 console.log(`${testSuite.passCount}/${testSuite.testCount} tests passed`);
@@ -99,32 +109,35 @@ console.log(`${testSuite.passCount}/${testSuite.testCount} tests passed`);
 **Test Offline Functionality:**
 
 **Step 1: Open Browser DevTools**
+
 ```
 F12 → Network tab
 ```
 
 **Step 2: Test Offline Mode**
+
 ```javascript
 // Simulate offline
-window.dispatchEvent(new Event('offline'));
+window.dispatchEvent(new Event("offline"));
 
 // Try adding a score (should queue locally)
-await syncManager.queueOperation('scores', 'insert', id, data);
+await syncManager.queueOperation("scores", "insert", id, data);
 
 // Check it's in queue
 const pending = await syncQueue.getPending();
-console.log('Pending operations:', pending.length);
+console.log("Pending operations:", pending.length);
 
 // Come back online
-window.dispatchEvent(new Event('online'));
+window.dispatchEvent(new Event("online"));
 
 // Sync should start automatically
 ```
 
 **Step 3: Check IndexedDB**
+
 ```javascript
 // View all schools
-const schools = await indexedDB.getAll('schools');
+const schools = await indexedDB.getAll("schools");
 console.table(schools);
 
 // View sync queue
@@ -141,49 +154,59 @@ console.table(failed);
 ## 🎯 What Each Test Does
 
 ### Test 1: IndexedDB Stores Created
+
 ✅ Verifies all 13 object stores exist  
 ✅ Stores: schools, users, classes, students, scores, attendance, materials, quizzes, quiz_results, audit_logs, sync_queue, sync_log, auth_state
 
 ### Test 2: Can Insert Data
+
 ✅ Insert a school record  
 ✅ Retrieve it back  
 ✅ Verify data matches
 
-### Test 3: Can Query Data  
+### Test 3: Can Query Data
+
 ✅ Insert multiple users  
 ✅ Query all users  
 ✅ Verify count
 
 ### Test 4: Can Update Data
+
 ✅ Insert a class  
 ✅ Update the name  
 ✅ Verify change persisted
 
 ### Test 5: Can Delete Data
+
 ✅ Insert a material record  
 ✅ Delete it  
 ✅ Verify it's gone
 
 ### Test 6: Queue Operations Work
+
 ✅ Queue an operation  
 ✅ Verify it's pending  
 ✅ Check status is "pending"
 
 ### Test 7: Conflict Detection
+
 ✅ Detect no conflict (identical timestamps)  
 ✅ Detect conflict (different timestamps)
 
 ### Test 8: LWW Resolution
+
 ✅ Local version updated at 10:00  
 ✅ Remote version updated at 10:05  
 ✅ Remote should win (newer)
 
 ### Test 9: Component Merge
+
 ✅ Local: test=75, practical=90, exam=60  
 ✅ Remote: test=80, practical=85, exam=95  
 ✅ Result: test=80, practical=90, exam=95 (best of each)
 
 ### Test 10: Backoff Calculation
+
 ✅ 1s → 2s → 4s → 8s → 16s → 32s → 64s → 128s → 1h  
 ✅ Exponential growth verified
 
@@ -198,24 +221,24 @@ console.table(failed);
 localStorage.clear();
 
 // Create fresh DB
-const db = new SyncIndexedDB('gradeflow-test', 1);
+const db = new SyncIndexedDB("gradeflow-test", 1);
 await db.init();
 
 // Add a school offline
 const school = {
-  id: 'test-school-1',
-  name: 'Test School',
-  code: 'TS001',
+  id: "test-school-1",
+  name: "Test School",
+  code: "TS001",
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
+  updated_at: new Date().toISOString(),
 };
 
-await db.insert('schools', school);
-console.log('✅ School added to local cache');
+await db.insert("schools", school);
+console.log("✅ School added to local cache");
 
 // Verify it's there
-const retrieved = await db.get('schools', 'test-school-1');
-console.log('✅ School retrieved:', retrieved.name);
+const retrieved = await db.get("schools", "test-school-1");
+console.log("✅ School retrieved:", retrieved.name);
 ```
 
 ### 2. Test Queue Operations
@@ -225,18 +248,18 @@ console.log('✅ School retrieved:', retrieved.name);
 const queue = new SyncQueue(db);
 
 const queueEntry = await queue.enqueue({
-  entity_type: 'scores',
-  operation: 'insert',
-  entity_id: 'score-1',
+  entity_type: "scores",
+  operation: "insert",
+  entity_id: "score-1",
   new_value: {
-    student_id: 'student-1',
+    student_id: "student-1",
     test: 90,
     practical: 85,
-    exam: 88
-  }
+    exam: 88,
+  },
 });
 
-console.log('✅ Operation queued:', queueEntry.id);
+console.log("✅ Operation queued:", queueEntry.id);
 
 // Get pending operations
 const pending = await queue.getPending();
@@ -244,11 +267,11 @@ console.log(`✅ ${pending.length} operations pending`);
 
 // Mark as syncing
 await queue.markSyncing(queueEntry.id);
-console.log('✅ Marked as syncing');
+console.log("✅ Marked as syncing");
 
 // Mark as synced (after successful upload)
 await queue.markSynced(queueEntry.id);
-console.log('✅ Marked as synced');
+console.log("✅ Marked as synced");
 
 // Verify it's gone from pending
 const stillPending = await queue.getPending();
@@ -260,34 +283,34 @@ console.log(`✅ ${stillPending.length} operations still pending`);
 ```javascript
 // Scenario: Two teachers edit the same score
 const local = {
-  id: 'score-1',
-  student_id: 'student-1',
+  id: "score-1",
+  student_id: "student-1",
   test: 75,
   practical: 90,
   exam: 60,
-  updated_at: '2026-04-13T10:00:00Z'
+  updated_at: "2026-04-13T10:00:00Z",
 };
 
 const remote = {
-  id: 'score-1',
-  student_id: 'student-1',
+  id: "score-1",
+  student_id: "student-1",
   test: 80,
   practical: 85,
   exam: 95,
-  updated_at: '2026-04-13T10:05:00Z' // 5 minutes later
+  updated_at: "2026-04-13T10:05:00Z", // 5 minutes later
 };
 
 // Detect conflict
 const conflict = ConflictResolver.detectConflict(local, remote);
-console.log('Conflict detected:', conflict.conflict); // true
+console.log("Conflict detected:", conflict.conflict); // true
 
 // Resolve (LWW - remote wins)
 const resolved = ConflictResolver.resolveByTimestamp(local, remote);
-console.log('Winner:', resolved.winner); // 'remote'
+console.log("Winner:", resolved.winner); // 'remote'
 
 // For scores: Component Merge
 const merged = ConflictResolver.mergeScores(local, remote);
-console.log('Merged:', merged.value);
+console.log("Merged:", merged.value);
 // Result: {test: 80, practical: 90, exam: 95} (best of each)
 ```
 
@@ -298,7 +321,7 @@ console.log('Merged:', merged.value);
 
 // 1. Initialize
 const supabase = createSupabaseClient();
-const db = new SyncIndexedDB('gradeflow-sync', 1);
+const db = new SyncIndexedDB("gradeflow-sync", 1);
 const queue = new SyncQueue(db);
 const resolver = ConflictResolver;
 const syncManager = new SyncManager(supabase, db, queue, resolver);
@@ -307,28 +330,28 @@ await db.init();
 await syncManager.init();
 
 // 2. Queue some operations (offline)
-await syncManager.queueOperation('scores', 'insert', 'score-1', {
+await syncManager.queueOperation("scores", "insert", "score-1", {
   test: 90,
   practical: 85,
-  exam: 88
+  exam: 88,
 });
 
-console.log('✅ Operation queued');
+console.log("✅ Operation queued");
 
 // 3. Sync (if online)
 if (syncManager.isOnline) {
   const success = await syncManager.performSync();
-  console.log(success ? '✅ Sync successful' : '❌ Sync failed');
+  console.log(success ? "✅ Sync successful" : "❌ Sync failed");
 } else {
-  console.log('⏳ Offline - operations will sync when online');
+  console.log("⏳ Offline - operations will sync when online");
 }
 
 // 4. Monitor events
-syncManager.on('sync:complete', ({ duration }) => {
+syncManager.on("sync:complete", ({ duration }) => {
   console.log(`✅ Sync complete in ${duration}ms`);
 });
 
-syncManager.on('sync:error', (error) => {
+syncManager.on("sync:error", (error) => {
   console.error(`❌ Sync failed: ${error.message}`);
 });
 ```
@@ -341,7 +364,7 @@ syncManager.on('sync:error', (error) => {
 
 ```javascript
 // Get all test results
-testSuite.results
+testSuite.results;
 
 // Example output:
 // [
@@ -352,13 +375,13 @@ testSuite.results
 // ]
 
 // Count results
-const passed = testSuite.results.filter(r => r.status === 'PASS').length;
-const failed = testSuite.results.filter(r => r.status === 'FAIL').length;
+const passed = testSuite.results.filter((r) => r.status === "PASS").length;
+const failed = testSuite.results.filter((r) => r.status === "FAIL").length;
 
 console.log(`Results: ${passed} passed, ${failed} failed`);
 
 // Get failures
-const failures = testSuite.results.filter(r => r.status === 'FAIL');
+const failures = testSuite.results.filter((r) => r.status === "FAIL");
 console.table(failures);
 ```
 
@@ -376,6 +399,7 @@ console.table(failures);
 ## 🐛 Debugging Failed Tests
 
 ### Issue: "IndexedDB not supported"
+
 ```
 ❌ Use a modern browser:
 - Chrome/Edge: ✅ Full support
@@ -385,6 +409,7 @@ console.table(failures);
 ```
 
 ### Issue: "SyncIndexedDB not loaded"
+
 ```
 ✅ Make sure scripts are loaded:
 <script src="/sync-indexeddb.js"></script>
@@ -394,6 +419,7 @@ console.table(failures);
 ```
 
 ### Issue: "Database initialization failed"
+
 ```
 ✅ Try clearing:
 1. Open DevTools > Application > IndexedDB
@@ -403,6 +429,7 @@ console.table(failures);
 ```
 
 ### Issue: "Operation failed - permission denied"
+
 ```
 ✅ Check RLS policies:
 1. Verify SUPABASE_URL correct
@@ -420,12 +447,12 @@ console.table(failures);
 const start = performance.now();
 
 for (let i = 0; i < 1000; i++) {
-  await db.insert('schools', {
+  await db.insert("schools", {
     id: `school-${i}`,
     name: `School ${i}`,
     code: `SC${i}`,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 }
 

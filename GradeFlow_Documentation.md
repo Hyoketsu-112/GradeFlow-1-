@@ -538,7 +538,7 @@ These are the critical gaps to unlock multi-device reliability, institutional tr
 - Community support
 - Perfect for: Evaluating the product
 
-**Pro Teacher Plan (₦)5,000/month)**
+### Pro Teacher Plan (₦5,000/month)
 
 - Unlimited classes and students
 - Cloud sync + multi-device access
@@ -548,7 +548,7 @@ These are the critical gaps to unlock multi-device reliability, institutional tr
 - Email support
 - Perfect for: Individual teachers who want reliability and features
 
-**School Plan (₦15,000/month per teacher)**
+### School Plan (₦15,000/month per teacher)
 
 - Everything in Pro
 - Multi-teacher admin workspace
@@ -613,7 +613,7 @@ Users will pay when GradeFlow saves time and prevents mistakes.
 
 ### 7.3 Data Model Hardening (Phase 3)
 
-```
+````text
 Tables:
 - users (id, email, password_hash, role, school_id, created_at, updated_at)
 - schools (id, name, code, plan, subscription_status, created_at)
@@ -628,15 +628,17 @@ Tables:
 
 Indexes: (school_id, class_id), (school_id, user_id), (student_id, class_id)
 RLS: Users only see data from their school
-```
+```text
 
 ### 7.4 Sync Architecture (Phase 3)
 
-```
+````
+
 Local: IndexedDB (offline cache)
 Server: PostgreSQL (canonical source)
 
 Sync Flow:
+
 1. User makes change locally → written to IndexedDB
 2. Mark record as "pending_sync"
 3. When online: POST /sync with pending records
@@ -644,6 +646,7 @@ Sync Flow:
 5. Client marks as "synced"
 6. Conflict: Server wins (deterministic)
 7. Sync status indicator shows: local/syncing/synced/error
+
 ```
 
 ### 7.5 Performance Targets (Phase 3)
@@ -838,3 +841,4 @@ GradeFlow expands into holistic school management: advanced analytics, parent co
    - Create staging environment
    - Plan data migration strategy
    - Build comprehensive test suite
+```
